@@ -15,23 +15,29 @@
  */
 function handleMovieResult(resultData) {
     console.log("handleMovieResult: populating movie table from resultData");
-    console.log("status: YOu made it");
     // Populate the movie table
     // Find the empty table body by id "movie_table_body"
     let movieTableBodyElement = jQuery("#movie_table_body");
 
     // Iterate through resultData, no more than 10 entries
-    for (let i = 0; i < Math.min(20, resultData.length); i++) {
+    for (let i = 0; i < resultData.length; i++) {
         // Concatenate the html tags with resultData jsonObject
         let rowHTML = "";
         rowHTML += "<tr>";
         rowHTML += "<th>" + '<a href="single-movie.html?id=' + resultData[i]['movie_id'] + '">' + resultData[i]['movie_title'] + '</a>' + "</th>"
         rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_director"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_genres"] + "</th>";
+        rowHTML += "<th>" + resultData[i]["movie_genres"].split(",").join(", ") + "</th>";
         const stars = resultData[i]["movie_stars"].split(",");
-        console.log(stars[0]);
-        rowHTML += "<th>" + stars.join(', ') + "</th>";
+        rowHTML += "<th>"
+        for (let i = 0; i < stars.length; i++) {
+            const star_info = stars[i].split(":");
+            rowHTML += '<a href="single-star.html?id=' + star_info[0] + '">' + star_info[1] + '</a>';
+            if (i != stars.length - 1) {
+                rowHTML += ", ";
+            }
+        }
+        rowHTML += "</th>"
         rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
         rowHTML += "</tr>";
 

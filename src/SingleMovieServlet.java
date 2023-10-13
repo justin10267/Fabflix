@@ -99,6 +99,7 @@ public class SingleMovieServlet extends HttpServlet {
 
             // Iterate through each row of rs
             while (rs.next()) {
+
                 String movie_id = rs.getString("id");
                 String movie_title = rs.getString("title");
                 String movie_year = rs.getString("year");
