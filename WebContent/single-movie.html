@@ -16,19 +16,42 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="singleMovie.css">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
 
     <title>Single Movie</title>
+
 </head>
 <body>
+<!-- Top Navbar -->
+<nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="http://18.223.255.78:8080/cs122b-project1-api-example/">Movie List</a>
+</nav>
+
 <div class="topnav">
     <a class="active" href="http://18.223.255.78:8080/cs122b-project1-api-example/">Movie List</a>
 </div>
 <h1>Single Movie Page</h1>
 
-<!-- H3 body is left empty here, will be populated with the data retrieved with single-star.js -->
-<!-- single-star.js will find this html element by it's id "star_info" -->
-<h2 id="movie_info"></h2>
-<h4 id="star_info"></h4>
+<!--&lt;!&ndash; H3 body is left empty here, will be populated with the data retrieved with single-star.js &ndash;&gt;-->
+<!--&lt;!&ndash; single-star.js will find this html element by it's id "star_info" &ndash;&gt;-->
+<!--<h2 id="movie_info"></h2>-->
+<!--<h4 id="star_info"></h4>-->
+
+<!-- ... (rest of the HTML above remains unchanged) -->
+
+<div class="content-wrapper">
+    <h1>Single Movie Page</h1>
+
+    <!-- H3 body is left empty here, will be populated with the data retrieved with single-star.js -->
+    <!-- single-star.js will find this html element by it's id "star_info" -->
+    <h2 id="movie_info"></h2>
+    <h4 id="star_info"></h4>
+</div>
 
 <!-- Load jQuery and Bootstrap JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

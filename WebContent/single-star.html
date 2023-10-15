@@ -17,17 +17,24 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
+    <!-- Link to your CSS -->
+    <link rel="stylesheet" href="starStyle.css">
     <title>Single Star</title>
 </head>
 <body>
-<div class="topnav">
-    <a class="active" href="http://18.223.255.78:8080/cs122b-project1-api-example/">Movie List</a>
-</div>
-<h1>Single Star Page</h1>
+<nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="http://18.223.255.78:8080/cs122b-project1-api-example/">Movie List</a>
+</nav>
 
-<!-- H3 body is left empty here, will be populated with the data retrieved with single-star.js -->
-<!-- single-star.js will find this html element by it's id "star_info" -->
-<h3 id="star_info"></h3>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Star Details</h1>
+
+<!--    &lt;!&ndash; Star Information Card &ndash;&gt;-->
+<!--    <div class="card mb-4">-->
+<!--        <div class="card-body">-->
+<!--            <h3 id="star_info"></h3>-->
+<!--        </div>-->
+<!--    </div>-->
 <table id=movie_table class="table table-striped">
     <thead>
     <tr>
@@ -37,6 +44,15 @@
         <th>
     </tr>
     </thead>
+    <div class="content-wrapper">
+        <h1>Single Movie Page</h1>
+
+        <!-- H3 body is left empty here, will be populated with the data retrieved with single-star.js -->
+        <!-- single-star.js will find this html element by it's id "star_info" -->
+        <h2 id="movie_info"></h2>
+        <h4 id="star_info"></h4>
+    </div>
+
 
     <!-- Table body is left empty here, will be populated with the data retrieved with single-star.js -->
     <!-- single-star.js will find this html element by it's id "movie_table_body" -->

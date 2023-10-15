@@ -1,0 +1,75 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #121212;
+    color: #FFFFFF;
+    margin: 0;
+    padding: 0;
+    background: url('https://images4.alphacoders.com/132/1323682.png') no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* Top Navbar */
+.navbar {
+    background-color: #232323;
+    border-bottom: 1px solid #333;
+}
+
+.navbar-brand {
+    color: #FFA726;
+    transition: color 0.2s;
+}
+
+.navbar-brand:hover {
+    color: #FF7043;
+}
+
+/* Secondary Navigation */
+.topnav {
+    background-color: #232323;
+    border-bottom: 1px solid #333;
+    padding: 10px 0;
+}
+
+.topnav a {
+    color: #FFA726;
+    padding: 10px 15px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.topnav a.active, .topnav a:hover {
+    color: #FF7043;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Main Content Wrapper */
+.content-wrapper {
+    background-color: rgba(30, 30, 30, 0.8);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 40px 20px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Title Styling */
+h1 {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#movie_info, #star_info {
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+#movie_info:hover, #star_info:hover {
+    background-color: #292929;
+}
