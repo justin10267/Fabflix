@@ -23,7 +23,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
 
-    <title>Single Movie</title>
+    <title id="movie_title"></title>
 
 </head>
 <body>
@@ -32,10 +32,9 @@
     <a class="navbar-brand" href="http://3.128.220.62:8080/cs122b-project1-api-example/">Movie List</a>
 </nav>
 
-<div class="topnav">
-    <a class="active" href="http://3.128.220.62:8080/cs122b-project1-api-example/">Movie List</a>
-</div>
-<h1>Single Movie Page</h1>
+<!--<div class="topnav">-->
+<!--    <a class="active" href="http://3.128.220.62:8080/cs122b-project1-api-example/">Movie List</a>-->
+<!--</div>-->
 
 <!--&lt;!&ndash; H3 body is left empty here, will be populated with the data retrieved with single-star.js &ndash;&gt;-->
 <!--&lt;!&ndash; single-star.js will find this html element by it's id "star_info" &ndash;&gt;-->
@@ -45,13 +44,9 @@
 <!-- ... (rest of the HTML above remains unchanged) -->
 
 <div class="content-wrapper">
-    <h1>Single Movie Page</h1>
-
-    <!-- H3 body is left empty here, will be populated with the data retrieved with single-star.js -->
-    <!-- single-star.js will find this html element by it's id "star_info" -->
-    <h2 id="movie_info"></h2>
-    <h4 id="star_info"></h4>
-</div>
+    <h1 id="movieTitle"></h1>
+    <div id="movie_info"></div>
+    <div id="star_info"></div>
 
 <!-- Load jQuery and Bootstrap JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
