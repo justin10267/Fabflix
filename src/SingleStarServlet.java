@@ -71,17 +71,16 @@ public class SingleStarServlet extends HttpServlet {
             // Iterate through each row of rs
             while (rs.next()) {
 
-                String starId = rs.getString("starId");
-                String starName = rs.getString("name");
-                String starDob = rs.getString("birthYear");
+                String starId = checkNull(rs.getString("starId"));
+                String starName = checkNull(rs.getString("name"));
+                String starDob = checkNull(rs.getString("birthYear"));
 
-                String movieId = rs.getString("movieId");
-                String movieTitle = rs.getString("title");
-                String movieYear = rs.getString("year");
-                String movieDirector = rs.getString("director");
+                String movieId = checkNull(rs.getString("movieId"));
+                String movieTitle = checkNull(rs.getString("title"));
+                String movieYear = checkNull(rs.getString("year"));
+                String movieDirector = checkNull(rs.getString("director"));
 
                 // Create a JsonObject based on the data we retrieve from rs
-
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("star_id", starId);
                 jsonObject.addProperty("star_name", starName);
@@ -117,6 +116,9 @@ public class SingleStarServlet extends HttpServlet {
 
         // Always remember to close db connection after usage. Here it's done by try-with-resources
 
+    }
+    protected String checkNull(String value) {
+        return value == null ? "N/A" : value;
     }
 
 }
