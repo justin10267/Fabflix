@@ -39,7 +39,7 @@ function getParameterByName(target) {
 function handleResult(resultData) {
 
     console.log("handleResult: populating movie info from resultData");
-    document.getElementById("movieTitle").textContent = resultData[0]["movie_title"];
+    document.querySelector("h1").textContent = resultData[0]["movie_title"];
     // populate the star info h3
     // find the empty h3 body by id "star_info"
     let movieInfoElement = jQuery("#movie_info");

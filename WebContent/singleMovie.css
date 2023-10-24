@@ -1,4 +1,5 @@
 body {
+
     font-family: 'Roboto', sans-serif;
     background-color: #121212;
     color: #FFFFFF;
@@ -7,7 +8,15 @@ body {
     background: url('https://images4.alphacoders.com/132/1323682.png') no-repeat center center fixed;
     background-size: cover;
 }
-
+h1 {
+    color: #FFA726;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+    text-align: center;
+}
 /* Top Navbar */
 .navbar {
     background-color: #232323;
@@ -44,6 +53,7 @@ body {
 
 /* Main Content Wrapper */
 .content-wrapper {
+
     background-color: rgba(30, 30, 30, 0.8);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
@@ -55,14 +65,7 @@ body {
 }
 
 /* Title Styling */
-h1 {
-    font-family: 'Open Sans', sans-serif;
-    font-size: 3rem;
-    font-weight: 700;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    margin-bottom: 20px;
-    text-align: center;
-}
+
 
 #movie_info, #star_info {
     padding: 10px;
