@@ -56,23 +56,47 @@ public class ListServlet extends HttpServlet {
             String prefix = request.getParameter("prefix");
             String limit = request.getParameter("limit");
             String page = request.getParameter("page");
-
+            String sort = request.getParameter("sort");
 
             // if there is no page, assume we are on page 1
 
-            if (page != null) {
+            if (page == null) {
                 page = "1";
             }
 
             // if there is no limit, we take from the session
-            if (limit != null) {
+            if (limit == null) {
                 limit = ((User)request.getSession().getAttribute("user")).getLimit();
             }
+            else {
+                ((User)request.getSession().getAttribute("user")).setLimit(limit);
+            }
+
+            // if there is no sort, we take from the session
+            if (sort == null) {
+                sort = ((User)request.getSession().getAttribute("user")).getSort();
+            }
+            else {
+                ((User)request.getSession().getAttribute("user")).setSort(sort);
+            }
+
+            // convert sort number into a sort query string
+
+            sort = User.getSortQuery(sort);
+
+            // formula for offset used in query for pages
+            // assume limit is 50
+            // offset = (page - 1) * limit
+
+            String offset = Integer.toString((Integer.parseInt(page) - 1 ) * Integer.parseInt(limit));
 
             // three kinds of queries we need
                 // the first is a search query which will include the parameters title, year, director, star
                 // the second is browsing query for genre which will include a genre parameter
                 // the third is a browsing query for title which will include a title parameter
+
+            // TODO: Please write queries for search, browse by genre, and browse by title. Each query should use limit
+            //  and offset
 
             String query;
 
