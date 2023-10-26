@@ -50,8 +50,8 @@ function handleResult(resultData) {
         "<p>Release Year: " + resultData[0]["movie_year"] + "</p>" +
         "<p>Director: " + resultData[0]["movie_director"] + "</p>" +
         "<p>Genres: " + resultData[0]["movie_genres"] + "</p>" +
-        "<p>Rating: " + resultData[0]["movie_rating"] + "</p>" +
-        "<p>Stars: " + "</p>"
+        "<p>Rating: " + resultData[0]["movie_rating"] + "</p>"
+        //"<p>Stars: " + "</p>"
     );
 
     console.log("handleResult: populating star table from resultData");

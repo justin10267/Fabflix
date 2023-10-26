@@ -1,4 +1,3 @@
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -18,8 +17,8 @@ import java.sql.Statement;
 
 
 // Declaring a WebServlet called MovieListServlet, which maps to url "/api/movies"
-@WebServlet(name = "MovieListServlet", urlPatterns = "/api/movies")
-public class MovieListServlet extends HttpServlet {
+@WebServlet(name = "ListServlet", urlPatterns = "/api/list")
+public class ListServlet extends HttpServlet {
     private static final long serialVersionUID = 3L;
 
     // Create a dataSource which registered in web.
@@ -49,41 +48,43 @@ public class MovieListServlet extends HttpServlet {
             // Declare our statement
             Statement statement = conn.createStatement();
 
-            String query = "SELECT \n" +
-                    "    m.id,\n" +
-                    "    m.title,\n" +
-                    "    m.year,\n" +
-                    "    m.director,\n" +
-                    "    SUBSTRING_INDEX((SELECT \n" +
-                    "                    GROUP_CONCAT(g.name\n" +
-                    "                            ORDER BY g.name DESC)\n" +
-                    "                FROM\n" +
-                    "                    genres_in_movies gm\n" +
-                    "                        INNER JOIN\n" +
-                    "                    genres g ON gm.genreId = g.id\n" +
-                    "                WHERE\n" +
-                    "                    gm.movieId = m.id),\n" +
-                    "            ',',\n" +
-                    "            3) AS genres,\n" +
-                    "    SUBSTRING_INDEX((SELECT \n" +
-                    "                    GROUP_CONCAT(CONCAT(s.id, ':', s.name)\n" +
-                    "                            ORDER BY s.name DESC , s.id)\n" +
-                    "                FROM\n" +
-                    "                    stars_in_movies sm\n" +
-                    "                        INNER JOIN\n" +
-                    "                    stars s ON sm.starId = s.id\n" +
-                    "                WHERE\n" +
-                    "                    sm.movieId = m.id),\n" +
-                    "            ',',\n" +
-                    "            3) AS stars,\n" +
-                    "    r.rating\n" +
-                    "FROM\n" +
-                    "    movies m\n" +
-                    "        JOIN\n" +
-                    "    ratings r ON m.id = r.movieId\n" +
-                    "GROUP BY m.id , m.title , m.year , m.director , r.rating\n" +
-                    "ORDER BY r.rating DESC\n" +
-                    "LIMIT 20;";
+            String title = request.getParameter("title");
+            String year = request.getParameter("title");
+            String director = request.getParameter("title");
+            String star = request.getParameter("title");
+            String genre = request.getParameter("genre");
+            String prefix = request.getParameter("prefix");
+            String limit = request.getParameter("limit");
+            String page = request.getParameter("page");
+
+
+            // if there is no page, assume we are on page 1
+
+            if (page != null) {
+                page = "1";
+            }
+
+            // if there is no limit, we take from the session
+            if (limit != null) {
+                limit = ((User)request.getSession().getAttribute("user")).getLimit();
+            }
+
+            // three kinds of queries we need
+                // the first is a search query which will include the parameters title, year, director, star
+                // the second is browsing query for genre which will include a genre parameter
+                // the third is a browsing query for title which will include a title parameter
+
+            String query;
+
+            if (title != null || year != null || director != null || star != null) {
+                query = "";
+            }
+            else if (genre != null) {
+                query = "";
+            }
+            else {
+                query = "";
+            }
 
             // Perform the query
             ResultSet rs = statement.executeQuery(query);
