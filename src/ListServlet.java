@@ -16,15 +16,89 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 
-// Declaring a WebServlet called MovieListServlet, which maps to url "/api/list"
 @WebServlet(name = "ListServlet", urlPatterns = "/api/list")
 public class ListServlet extends HttpServlet {
     private static final long serialVersionUID = 3L;
-    private static final String GENRE_QUERY = "";
-    private static final String TITLE_QUERY = "";
+    private static final String GENRE_QUERY =
+            "WITH\n" +
+            "\tgenredFilteredMovies AS \n" +
+            "\t(\n" +
+            "\t\tSELECT m.id, m.title, m.year, m.director, g.name as genre\n" +
+            "\t\tFROM movies as m JOIN genres_in_movies as gm ON m.id = gm.movieId JOIN genres as g ON gm.genreId = g.id\n" +
+            "\t\tWHERE g.name = ?\n" +
+            "    )\n" +
+            "SELECT \n" +
+            "    gfm.id,\n" +
+            "    gfm.title,\n" +
+            "    gfm.year,\n" +
+            "    gfm.director,\n" +
+            "    (SELECT \n" +
+            "            GROUP_CONCAT(g.name\n" +
+            "                    ORDER BY g.name DESC)\n" +
+            "        FROM\n" +
+            "            genres_in_movies gm\n" +
+            "                INNER JOIN\n" +
+            "            genres g ON gm.genreId = g.id\n" +
+            "        WHERE\n" +
+            "            gm.movieId = gfm.id\n" +
+            "        LIMIT 3) AS genres,\n" +
+            "    (SELECT \n" +
+            "            GROUP_CONCAT(CONCAT(s.id, ':', s.name)\n" +
+            "                    ORDER BY s.name DESC , s.id)\n" +
+            "        FROM\n" +
+            "            stars_in_movies sm\n" +
+            "                INNER JOIN\n" +
+            "            stars s ON sm.starId = s.id\n" +
+            "        WHERE\n" +
+            "            sm.movieId = gfm.id\n" +
+            "        LIMIT 3) AS stars,\n" +
+            "    r.rating\n" +
+            "FROM\n" +
+            "    genredFilteredMovies gfm\n" +
+            "        JOIN\n" +
+            "    ratings r ON gfm.id = r.movieId\n" +
+            "GROUP BY gfm.id , gfm.title , gfm.year , gfm.director , r.rating\n" +
+            "ORDER BY ?\n" +
+            "LIMIT ?\n" +
+            "OFFSET ?;";
+    private static final String TITLE_QUERY =
+            "SELECT \n" +
+            "    m.id,\n" +
+            "    m.title,\n" +
+            "    m.year,\n" +
+            "    m.director,\n" +
+            "    (SELECT \n" +
+            "            GROUP_CONCAT(g.name\n" +
+            "                    ORDER BY g.name DESC)\n" +
+            "        FROM\n" +
+            "            genres_in_movies gm\n" +
+            "                INNER JOIN\n" +
+            "            genres g ON gm.genreId = g.id\n" +
+            "        WHERE\n" +
+            "            gm.movieId = m.id\n" +
+            "        LIMIT 3) AS genres,\n" +
+            "    (SELECT \n" +
+            "            GROUP_CONCAT(CONCAT(s.id, ':', s.name)\n" +
+            "                    ORDER BY s.name DESC , s.id)\n" +
+            "        FROM\n" +
+            "            stars_in_movies sm\n" +
+            "                INNER JOIN\n" +
+            "            stars s ON sm.starId = s.id\n" +
+            "        WHERE\n" +
+            "            sm.movieId = m.id\n" +
+            "        LIMIT 3) AS stars,\n" +
+            "    r.rating\n" +
+            "FROM\n" +
+            "    movies m\n" +
+            "        JOIN\n" +
+            "    ratings r ON m.id = r.movieId\n" +
+            "WHERE UPPER(m.title) LIKE '?%'\n" +
+            "GROUP BY m.id , m.title , m.year , m.director , r.rating\n" +
+            "ORDER BY ?\n" +
+            "LIMIT ?\n" +
+            "OFFSET ?;";
     private static final String SEARCH_QUERY = "";
     private DataSource dataSource;
-
     public void init(ServletConfig config) {
         try {
             dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/moviedb");
@@ -32,22 +106,13 @@ public class ListServlet extends HttpServlet {
             e.printStackTrace();
         }
     }
-
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        response.setContentType("application/json"); // Response mime type
-
-
+        response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
-        // Get a connection from dataSource and let resource manager close the connection after usage.
-        try (Connection conn = dataSource.getConnection()) {
-
-            // Declare our statement
-            Statement statement = conn.createStatement();
+        try (Connection conn = dataSource.getConnection();
+             Statement statement = conn.createStatement()) {
 
             String title = request.getParameter("title");
             String year = request.getParameter("year");
@@ -65,7 +130,6 @@ public class ListServlet extends HttpServlet {
 
 
             // if there is no page, assume we are on page 1
-
             if (page == null) {
                 page = "1";
             }
