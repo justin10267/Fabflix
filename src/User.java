@@ -42,7 +42,7 @@ public class User {
 
     public User(String username) {
         this.username = username;
-        this.limit = "100";
+        this.limit = "25";
         this.sort = "1";
     }
 

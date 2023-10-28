@@ -16,12 +16,13 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 
-// Declaring a WebServlet called MovieListServlet, which maps to url "/api/movies"
+// Declaring a WebServlet called MovieListServlet, which maps to url "/api/list"
 @WebServlet(name = "ListServlet", urlPatterns = "/api/list")
 public class ListServlet extends HttpServlet {
     private static final long serialVersionUID = 3L;
-
-    // Create a dataSource which registered in web.
+    private static final String GENRE_QUERY = "";
+    private static final String TITLE_QUERY = "";
+    private static final String SEARCH_QUERY = "";
     private DataSource dataSource;
 
     public void init(ServletConfig config) {
@@ -39,7 +40,7 @@ public class ListServlet extends HttpServlet {
 
         response.setContentType("application/json"); // Response mime type
 
-        // Output stream to STDOUT
+
         PrintWriter out = response.getWriter();
 
         // Get a connection from dataSource and let resource manager close the connection after usage.
@@ -49,14 +50,19 @@ public class ListServlet extends HttpServlet {
             Statement statement = conn.createStatement();
 
             String title = request.getParameter("title");
-            String year = request.getParameter("title");
-            String director = request.getParameter("title");
-            String star = request.getParameter("title");
+            String year = request.getParameter("year");
+            String director = request.getParameter("director");
+            String star = request.getParameter("star");
+
             String genre = request.getParameter("genre");
+
             String prefix = request.getParameter("prefix");
+
             String limit = request.getParameter("limit");
-            String page = request.getParameter("page");
             String sort = request.getParameter("sort");
+
+            String page = request.getParameter("page");
+
 
             // if there is no page, assume we are on page 1
 
@@ -90,13 +96,18 @@ public class ListServlet extends HttpServlet {
 
             String offset = Integer.toString((Integer.parseInt(page) - 1 ) * Integer.parseInt(limit));
 
-            // three kinds of queries we need
+            // five kinds of queries we need
                 // the first is a search query which will include the parameters title, year, director, star
                 // the second is browsing query for genre which will include a genre parameter
                 // the third is a browsing query for title which will include a title parameter
+                // the fourth is a query that reloads the previous user query with an updated limit and sort
+                // the fifth is a query that reloads the previous user query with an updated page
 
             // TODO: Please write queries for search, browse by genre, and browse by title. Each query should use limit
             //  and offset
+
+            // TODO: Store queries in User object to allow for list.html requests that have parameters page or limit and
+            //  sort
 
             String query;
 
