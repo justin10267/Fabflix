@@ -21,10 +21,21 @@ import java.sql.Statement;
 @WebServlet(name = "MainServlet", urlPatterns = "/api/main")
 public class MainServlet extends HttpServlet {
     private static final long serialVersionUID = 3L;
-    private static final String GENRE_QUERY =
-            "SELECT name\n" +
-            "FROM genres\n" +
-            "ORDER BY name ASC;";
+    private static final String GENRE_AND_PREFIX_QUERY =
+            "SELECT result\n" +
+            "FROM (\n" +
+            "  SELECT CONCAT('Genre:', name) AS result, 1 as `limit`\n" +
+            "  FROM genres\n" +
+            "  UNION ALL\n" +
+            "  SELECT DISTINCT\n" +
+            "    CASE\n" +
+            "      WHEN title REGEXP '^[A-Za-z]' THEN CONCAT('1_Prefix:', UPPER(LEFT(title, 1)))\n" +
+            "      WHEN title REGEXP '^[0-9]' THEN CONCAT('2_Prefix:', LEFT(title, 1))\n" +
+            "      ELSE '3_Prefix: *'\n" +
+            "    END AS result, -1 as `limit`\n" +
+            "  FROM movies\n" +
+            ") AS combined_result\n" +
+            "ORDER BY `limit`, result ASC;";
     private DataSource dataSource;
     public void init(ServletConfig config) {
         try {
@@ -38,13 +49,14 @@ public class MainServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         try (Connection conn = dataSource.getConnection();
                 Statement statement = conn.createStatement();
-                ResultSet rs = statement.executeQuery(GENRE_QUERY)) {
+                ResultSet rs = statement.executeQuery(GENRE_AND_PREFIX_QUERY)) {
             JsonArray jsonArray = new JsonArray();
             while (rs.next()) {
-                String genre_name = rs.getString("name");
+                String genre_prefix_item = rs.getString("result");
+                String[] parts = genre_prefix_item.split(":");
                 JsonObject jsonObject = new JsonObject();
-                System.out.println(genre_name);
-                jsonObject.addProperty("genre", genre_name);
+                jsonObject.addProperty("type", parts[0]);
+                jsonObject.addProperty("value", parts[1]);
                 jsonArray.add(jsonObject);
             }
             request.getServletContext().log("getting " + jsonArray.size() + " results");

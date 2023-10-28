@@ -33,7 +33,7 @@ function handleMovieResult(resultData) {
         for (let i = 0; i < stars.length; i++) {
             const star_info = stars[i].split(":");
             rowHTML += '<a href="single-star.html?id=' + star_info[0] + '">' + star_info[1] + '</a>';
-            if (i != stars.length - 1) {
+            if (i !== stars.length - 1) {
                 rowHTML += ", ";
             }
         }
