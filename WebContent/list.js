@@ -1,3 +1,18 @@
+function getParameterByName(target) {
+    // Get request URL
+    let url = window.location.href;
+    // Encode target parameter name to url encoding
+    target = target.replace(/[\[\]]/g, "\\$&");
+
+    // Ues regular expression to find matched parameter value
+    let regex = new RegExp("[?&]" + target + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+
+    // Return the decoded parameter value
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
 function handleMovieResult(resultData) {
     console.log("handleMovieResult: populating movie table from resultData");
     // Populate the movie table
@@ -34,9 +49,30 @@ function handleMovieResult(resultData) {
 /**
  * Once this .js is loaded, following scripts will be executed by the browser
  */
+url = new URL(window.location.href);
+
+ let apiUrl;
+if (url.searchParams.has('genre')) {
+    let genre = getParameterByName('genre');
+    apiUrl = `api/list?genre=${genre}`;
+}
+if (url.searchParams.has('title')) {
+    let title = getParameterByName('title');
+    let year = getParameterByName('year');
+    let director = getParameterByName('director');
+    let stars = getParameterByName('stars');
+    apiUrl = `api/list?title=${title}&year=${year}&director=${director}&star=${stars}`;
+}
+if (url.searchParams.has('prefix')) {
+    let prefix = getParameterByName('prefix');
+    apiUrl = `api/list?prefix=${prefix}`;
+}
+
+console.log(apiUrl);
+
 jQuery.ajax({
     dataType: "json",
     method: "GET",
-    url: "api/list",
+    url: apiUrl,
     success: (resultData) => handleMovieResult(resultData)
 });

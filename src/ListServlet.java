@@ -15,18 +15,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Enumeration;
 
 
 @WebServlet(name = "ListServlet", urlPatterns = "/api/list")
 public class ListServlet extends HttpServlet {
     private static final long serialVersionUID = 3L;
-    private static final String SEARCH_QUERY =
+    private static String SEARCH_QUERY =
             "SELECT \n" +
             "    m.id,\n" +
             "    m.title,\n" +
             "    m.year,\n" +
             "    m.director,\n" +
-            "    (SELECT \n" +
+            "    SUBSTRING_INDEX((SELECT \n" +
             "            GROUP_CONCAT(g.name\n" +
             "                    ORDER BY g.name DESC)\n" +
             "        FROM\n" +
@@ -34,9 +35,8 @@ public class ListServlet extends HttpServlet {
             "                INNER JOIN\n" +
             "            genres g ON gm.genreId = g.id\n" +
             "        WHERE\n" +
-            "            gm.movieId = m.id\n" +
-            "        LIMIT 3) AS genres,\n" +
-            "    (SELECT \n" +
+            "            gm.movieId = m.id), ',', 3) AS genres,\n" +
+            "    SUBSTRING_INDEX((SELECT \n" +
             "            GROUP_CONCAT(CONCAT(s.id, ':', s.name)\n" +
             "                    ORDER BY s.name DESC , s.id)\n" +
             "        FROM\n" +
@@ -44,8 +44,7 @@ public class ListServlet extends HttpServlet {
             "                INNER JOIN\n" +
             "            stars s ON sm.starId = s.id\n" +
             "        WHERE\n" +
-            "            sm.movieId = m.id\n" +
-            "        LIMIT 3) AS stars,\n" +
+            "            sm.movieId = m.id), ',', 3) AS stars,\n" +
             "    r.rating\n" +
             "FROM\n" +
             "    movies m\n" +
@@ -57,10 +56,10 @@ public class ListServlet extends HttpServlet {
             "AND (SOUNDEX(director) = SOUNDEX(?) OR director LIKE ?)\n" +
             "GROUP BY m.id , m.title , m.year , m.director , r.rating\n" +
             "HAVING stars LIKE ?" +
-            "ORDER BY ?\n" +
+            "ORDER BY %s\n" +
             "LIMIT ?\n" +
             "OFFSET ?;";
-    private static final String GENRE_QUERY =
+    private static String GENRE_QUERY =
             "WITH\n" +
             "\tgenredFilteredMovies AS \n" +
             "\t(\n" +
@@ -73,7 +72,7 @@ public class ListServlet extends HttpServlet {
             "    gfm.title,\n" +
             "    gfm.year,\n" +
             "    gfm.director,\n" +
-            "    (SELECT \n" +
+            "    SUBSTRING_INDEX((SELECT \n" +
             "            GROUP_CONCAT(g.name\n" +
             "                    ORDER BY g.name DESC)\n" +
             "        FROM\n" +
@@ -81,9 +80,8 @@ public class ListServlet extends HttpServlet {
             "                INNER JOIN\n" +
             "            genres g ON gm.genreId = g.id\n" +
             "        WHERE\n" +
-            "            gm.movieId = gfm.id\n" +
-            "        LIMIT 3) AS genres,\n" +
-            "    (SELECT \n" +
+            "            gm.movieId = gfm.id), ',', 3) AS genres,\n" +
+            "    SUBSTRING_INDEX((SELECT \n" +
             "            GROUP_CONCAT(CONCAT(s.id, ':', s.name)\n" +
             "                    ORDER BY s.name DESC , s.id)\n" +
             "        FROM\n" +
@@ -91,24 +89,23 @@ public class ListServlet extends HttpServlet {
             "                INNER JOIN\n" +
             "            stars s ON sm.starId = s.id\n" +
             "        WHERE\n" +
-            "            sm.movieId = gfm.id\n" +
-            "        LIMIT 3) AS stars,\n" +
+            "            sm.movieId = gfm.id), ',', 3) AS stars,\n" +
             "    r.rating\n" +
             "FROM\n" +
             "    genredFilteredMovies gfm\n" +
             "        JOIN\n" +
             "    ratings r ON gfm.id = r.movieId\n" +
             "GROUP BY gfm.id , gfm.title , gfm.year , gfm.director , r.rating\n" +
-            "ORDER BY ?\n" +
+            "ORDER BY %s\n" +
             "LIMIT ?\n" +
             "OFFSET ?;";
-    private static final String TITLE_QUERY =
+    private static String TITLE_QUERY =
             "SELECT \n" +
             "    m.id,\n" +
             "    m.title,\n" +
             "    m.year,\n" +
             "    m.director,\n" +
-            "    (SELECT \n" +
+            "    SUBSTRING_INDEX((SELECT \n" +
             "            GROUP_CONCAT(g.name\n" +
             "                    ORDER BY g.name DESC)\n" +
             "        FROM\n" +
@@ -116,9 +113,8 @@ public class ListServlet extends HttpServlet {
             "                INNER JOIN\n" +
             "            genres g ON gm.genreId = g.id\n" +
             "        WHERE\n" +
-            "            gm.movieId = m.id\n" +
-            "        LIMIT 3) AS genres,\n" +
-            "    (SELECT \n" +
+            "            gm.movieId = m.id), ',', 3) AS genres,\n" +
+            "    SUBSTRING_INDEX((SELECT \n" +
             "            GROUP_CONCAT(CONCAT(s.id, ':', s.name)\n" +
             "                    ORDER BY s.name DESC , s.id)\n" +
             "        FROM\n" +
@@ -126,16 +122,15 @@ public class ListServlet extends HttpServlet {
             "                INNER JOIN\n" +
             "            stars s ON sm.starId = s.id\n" +
             "        WHERE\n" +
-            "            sm.movieId = m.id\n" +
-            "        LIMIT 3) AS stars,\n" +
+            "            sm.movieId = m.id), ',', 3) AS stars,\n" +
             "    r.rating\n" +
             "FROM\n" +
             "    movies m\n" +
             "        JOIN\n" +
             "    ratings r ON m.id = r.movieId\n" +
-            "WHERE UPPER(m.title) LIKE ?" +
+            "WHERE UPPER(m.title) LIKE ?\n" +
             "GROUP BY m.id , m.title , m.year , m.director , r.rating\n" +
-            "ORDER BY ?\n" +
+            "ORDER BY %s\n" +
             "LIMIT ?\n" +
             "OFFSET ?;";
     private DataSource dataSource;
@@ -147,12 +142,9 @@ public class ListServlet extends HttpServlet {
         }
     }
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
-
         try (Connection conn = dataSource.getConnection()) {
-
             String title = request.getParameter("title");
             String year = request.getParameter("year");
             String director = request.getParameter("director");
@@ -161,6 +153,8 @@ public class ListServlet extends HttpServlet {
             String genre = request.getParameter("genre");
 
             String prefix = request.getParameter("prefix");
+            System.out.println("debug 1");
+            System.out.println(prefix);
 
             String limit = request.getParameter("limit");
             String sort = request.getParameter("sort");
@@ -203,10 +197,9 @@ public class ListServlet extends HttpServlet {
 
             // TODO: Store queries in User object to allow for list.html requests that have parameters page or limit and
             //  sort
-
             PreparedStatement statement;
             if (title != null || year != null || director != null || star != null) {
-                statement = conn.prepareStatement(SEARCH_QUERY);
+                statement = conn.prepareStatement(String.format(SEARCH_QUERY, sort));
                 statement.setString(1, title);
                 statement.setString(2, title + "%");
                 statement.setString(3, year);
@@ -214,24 +207,22 @@ public class ListServlet extends HttpServlet {
                 statement.setString(5, director);
                 statement.setString(6, director + "%");
                 statement.setString(7, "%" + star + "%");
-                statement.setString(8, sort);
-                statement.setString(9, limit);
-                statement.setString(10, offset);
+                statement.setInt(8, Integer.parseInt(limit));
+                statement.setInt(9, Integer.parseInt(offset));
             }
             else if (genre != null) {
-                statement = conn.prepareStatement(GENRE_QUERY);
+                statement = conn.prepareStatement(String.format(GENRE_QUERY, sort));
                 statement.setString(1, genre);
-                statement.setString(2, sort);
-                statement.setString(3, limit);
-                statement.setString(4, offset);
+                statement.setInt(2, Integer.parseInt(limit));
+                statement.setInt(3, Integer.parseInt(offset));
             }
             else {
-                statement = conn.prepareStatement(TITLE_QUERY);
+                statement = conn.prepareStatement(String.format(TITLE_QUERY, sort));
                 statement.setString(1, prefix + "%");
-                statement.setString(2, sort);
-                statement.setString(3, limit);
-                statement.setString(4, offset);
+                statement.setInt(2, Integer.parseInt(limit));
+                statement.setInt(3, Integer.parseInt(offset));
             }
+            System.out.println(statement);
             ResultSet rs = statement.executeQuery();
             JsonArray jsonArray = new JsonArray();
 
