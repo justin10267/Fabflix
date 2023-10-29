@@ -50,6 +50,11 @@
 <div class="content-wrapper">
     <div id="movie_info"></div>
     <div id="star_info"></div>
+    <!-- Price and Add to Cart -->
+    <div class="movie-actions">
+        <span id="moviePrice">Price: $0.00</span>
+        <button class="addToCart" data-movieid="YOUR_MOVIE_ID_HERE">Add to Shopping Cart</button>
+    </div>
 </div>
 <!-- Load jQuery and Bootstrap JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -60,7 +65,7 @@
 <!-- The path is relative to single-star.html, since these two files are in the same directory -->
 <!-- Note the url does not contain a "/" in the beginning, which means the url is relative to current path
      otherwise the url is relative to the root path-->
-<script src="single-movie.js"></script>
+<script src="single-movie.js" defer></script>
 </body>
 
 </html>

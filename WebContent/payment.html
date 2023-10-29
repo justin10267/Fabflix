@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Add your own styles if needed -->
+</head>
+
+<body>
+
+<h2>Payment Details</h2>
+
+<p id="totalPrice">Total Price: $0.00</p>
+
+<form id="paymentForm">
+    <div>
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName" required>
+    </div>
+    <div>
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" name="lastName" required>
+    </div>
+    <div>
+        <label for="cardNumber">Credit Card Number:</label>
+        <input type="text" id="cardNumber" name="cardNumber" required>
+    </div>
+    <div>
+        <label for="expDate">Expiration Date:</label>
+        <input type="date" id="expDate" name="expDate" required>
+    </div>
+    <button type="submit">Place Order</button>
+</form>
+
+<!-- Link to the JavaScript file -->
+<script src="payment.js"></script>
+
+</body>
+</html>

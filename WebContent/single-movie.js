@@ -35,29 +35,23 @@ function getParameterByName(target) {
  * Handles the data returned by the API, read the jsonObject and populate data into html elements
  * @param resultData jsonObject
  */
-
 function handleResult(resultData) {
-
     console.log("handleResult: populating movie info from resultData");
+
     document.querySelector("h1").textContent = resultData[0]["movie_title"];
-    // populate the star info h3
-    // find the empty h3 body by id "star_info"
+    const movieId = resultData[0]["movie_id"];
     let movieInfoElement = jQuery("#movie_info");
     movieInfoElement.empty();
 
-    // append two html <p> created to the h3 body, which will refresh the page
     movieInfoElement.append(
         "<p>Release Year: " + resultData[0]["movie_year"] + "</p>" +
         "<p>Director: " + resultData[0]["movie_director"] + "</p>" +
         "<p>Genres: " + resultData[0]["movie_genres"] + "</p>" +
         "<p>Rating: " + resultData[0]["movie_rating"] + "</p>"
-        //"<p>Stars: " + "</p>"
     );
 
     console.log("handleResult: populating star table from resultData");
 
-    // Populate the star table
-    // Find the empty table body by id "star_table_body"
     let starInfoElement = jQuery("#star_info");
 
     const stars = resultData[0]["movie_stars"].split(",");
@@ -65,7 +59,42 @@ function handleResult(resultData) {
         const star_info = stars[i].split(":");
         starInfoElement.append("<p>" + '<a href="single-star.html?id=' + star_info[0] + '">' + star_info[1] + '</a>')
     }
+
+    // Adding price to the movie
+    let price = (Math.random() * (20 - 5) + 5).toFixed(2);
+    document.getElementById("moviePrice").textContent = "Price: $" + price;
+
+    document.querySelectorAll('.addToCart').forEach(button => {
+        button.addEventListener('click', function(event) {
+            const movieId = event.target.getAttribute('data-movieid');
+            addToCart(movieId);
+        });
+    });
 }
+
+function addToCart(movieId) {
+    console.log("addToCart function called with movieId:", movieId);
+    fetch('/cart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ movieId: movieId })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Movie successfully added to the cart!");
+            } else {
+                alert("Failed to add movie to the cart. Please try again.");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("An error occurred. Please try again.");
+        });
+}
+
 
 /**
  * Once this .js is loaded, following scripts will be executed by the browser\
