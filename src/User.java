@@ -1,3 +1,4 @@
+import java.sql.PreparedStatement;
 import java.util.HashMap;
 
 /**
@@ -5,28 +6,13 @@ import java.util.HashMap;
  * You can add more attributes such as the user's shopping cart items.
  */
 public class User {
-
-    /*
-    member variable, sort, maps a number to the type of sort
-    1: title asc, rating asc
-    2: title asc, rating desc
-    3: title desc, rating asc
-    4: title desc, rating desc
-    5: rating asc, title asc
-    6: rating asc, title desc
-    7: rating desc, title asc
-    8: rating desc, title desc
-     */
-
-    /*
-    member variable, limit, represents the user imposed limit of number of results on a page
-    limit can be the values
-    {10, 25, 50, 100}
-     */
-
     private final String username;
     private String limit;
     private String sort;
+    private String previousQueryType;
+    private HashMap<String, String> previousSearchParameters;
+    private String previousGenre;
+    private String previousPrefix;
 
     private static HashMap<String, String> sortMap = new HashMap<String, String>();
     static {
@@ -44,6 +30,7 @@ public class User {
         this.username = username;
         this.limit = "25";
         this.sort = "1";
+        this.previousSearchParameters = new HashMap<String, String>();
     }
 
     public String getUsername() {
@@ -58,6 +45,20 @@ public class User {
         return sort;
     }
 
+    public String getPreviousQueryType() { return previousQueryType; }
+
+    public String getPreviousTitle() { return previousSearchParameters.get("title"); }
+
+    public String getPreviousYear() { return previousSearchParameters.get("year"); }
+
+    public String getPreviousDirector() { return previousSearchParameters.get("director"); }
+
+    public String getPreviousStars() { return previousSearchParameters.get("stars"); }
+
+    public String getPreviousGenre() { return previousGenre; }
+
+    public String getPreviousPrefix() { return previousPrefix; }
+
     public void setLimit(String limit) {
         this.limit = limit;
     }
@@ -65,6 +66,20 @@ public class User {
     public void setSort(String sort) {
         this.sort = sort;
     }
+
+    public void setPreviousQueryType(String queryType) { this.previousQueryType = queryType; };
+
+    public void setPreviousSearchParameters(String title, String year, String director, String stars) {
+        previousSearchParameters.clear();
+        previousSearchParameters.put("title", title);
+        previousSearchParameters.put("year", year);
+        previousSearchParameters.put("director", director);
+        previousSearchParameters.put("stars", stars);
+    }
+
+    public void setPreviousGenre(String genre) { previousGenre = genre; }
+
+    public void setPreviousPrefix(String prefix) { previousPrefix = prefix; }
 
     public static String getSortQuery(String sortNumber) { return sortMap.get(sortNumber); }
 }

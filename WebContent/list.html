@@ -25,12 +25,34 @@
 
 <h1>Results</h1>
 
-<!-- Id "movie_table" is useful for jQuery to find the html element with id, class here is mapping to Bootstrap defined class CSS -->
+<label for="moviesPerPage">Movies Per Page:</label>
+<div class="dropdown">
+    <select id="moviesPerPage" class="form-control">
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+    </select>
+</div>
+<label for="sortOrder">Sort By:</label>
+<div class="dropdown">
+    <select id="sortOrder" class="form-control">
+        <option value="1">Title ↑, Rating ↑</option>↓
+        <option value="2">Title ↑, Rating ↓</option>
+        <option value="3">Title ↓, Rating ↑</option>
+        <option value="4">Title ↓, Rating ↓</option>
+        <option value="5">Rating ↑, Title ↑</option>
+        <option value="6">Rating ↑, Title ↓</option>
+        <option value="7">Rating ↓, Title ↑</option>
+        <option value="8">Rating ↓, Title ↓</option>
+    </select>
+</div>
+<button id="updateButton" class="btn btn-primary">Update</button>
+
+
 <table id=result_table class="table table-striped">
-    <!-- Create a table header -->
     <thead>
     <tr>
-        <!-- Titles of each column-->
         <th>Title</th>
         <th>Release Year</th>
         <th>Director</th>

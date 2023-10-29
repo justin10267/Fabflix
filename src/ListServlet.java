@@ -148,7 +148,7 @@ public class ListServlet extends HttpServlet {
             String title = request.getParameter("title");
             String year = request.getParameter("year");
             String director = request.getParameter("director");
-            String star = request.getParameter("star");
+            String stars = request.getParameter("stars");
 
             String genre = request.getParameter("genre");
 
@@ -161,27 +161,23 @@ public class ListServlet extends HttpServlet {
 
             String page = request.getParameter("page");
 
+            User sessionUser = (User)(request.getSession().getAttribute("user"));
+
             if (page == null) {
                 page = "1";
             }
 
-            if (limit == null) {
-                limit = ((User)request.getSession().getAttribute("user")).getLimit();
+            if (limit == null || sort == null) {
+                limit = sessionUser.getLimit();
+                sort = sessionUser.getSort();
             }
             else {
-                ((User)request.getSession().getAttribute("user")).setLimit(limit);
-            }
-
-            if (sort == null) {
-                sort = ((User)request.getSession().getAttribute("user")).getSort();
-            }
-            else {
-                ((User)request.getSession().getAttribute("user")).setSort(sort);
+                sessionUser.setLimit(limit);
+                sessionUser.setSort(sort);
             }
 
             // convert sort number into a sort query string
             sort = User.getSortQuery(sort);
-
             // formula for offset used in query for pages
             // assume limit is 50
             // offset = (page - 1) * limit
@@ -198,7 +194,7 @@ public class ListServlet extends HttpServlet {
             // TODO: Store queries in User object to allow for list.html requests that have parameters page or limit and
             //  sort
             PreparedStatement statement;
-            if (title != null || year != null || director != null || star != null) {
+            if (title != null || year != null || director != null || stars != null) {
                 statement = conn.prepareStatement(String.format(SEARCH_QUERY, sort));
                 statement.setString(1, title);
                 statement.setString(2, title + "%");
@@ -206,21 +202,59 @@ public class ListServlet extends HttpServlet {
                 statement.setString(4, year + "%");
                 statement.setString(5, director);
                 statement.setString(6, director + "%");
-                statement.setString(7, "%" + star + "%");
+                statement.setString(7, "%" + stars + "%");
                 statement.setInt(8, Integer.parseInt(limit));
                 statement.setInt(9, Integer.parseInt(offset));
+
+                sessionUser.setPreviousQueryType("search");
+                sessionUser.setPreviousSearchParameters(title, year, director, stars);
             }
             else if (genre != null) {
                 statement = conn.prepareStatement(String.format(GENRE_QUERY, sort));
                 statement.setString(1, genre);
                 statement.setInt(2, Integer.parseInt(limit));
                 statement.setInt(3, Integer.parseInt(offset));
+
+                sessionUser.setPreviousQueryType("genre");
+                sessionUser.setPreviousGenre(genre);
             }
-            else {
+            else if (prefix != null) {
                 statement = conn.prepareStatement(String.format(TITLE_QUERY, sort));
                 statement.setString(1, prefix + "%");
                 statement.setInt(2, Integer.parseInt(limit));
                 statement.setInt(3, Integer.parseInt(offset));
+
+                sessionUser.setPreviousQueryType("prefix");
+                sessionUser.setPreviousPrefix(prefix);
+            }
+            else {
+                System.out.println("Debug 1");
+                String queryType = sessionUser.getPreviousQueryType();
+                if (queryType.equals("search")) {
+                    statement = conn.prepareStatement(String.format(SEARCH_QUERY, sort));
+                    statement.setString(1, sessionUser.getPreviousTitle());
+                    statement.setString(2, sessionUser.getPreviousTitle() + "%");
+                    statement.setString(3, sessionUser.getPreviousYear());
+                    statement.setString(4, sessionUser.getPreviousYear() + "%");
+                    statement.setString(5, sessionUser.getPreviousDirector());
+                    statement.setString(6, sessionUser.getPreviousDirector() + "%");
+                    statement.setString(7, "%" + sessionUser.getPreviousStars() + "%");
+                    statement.setInt(8, Integer.parseInt(limit));
+                    statement.setInt(9, Integer.parseInt(offset));
+                }
+                else if (queryType.equals("genre")) {
+                    System.out.println("Debug 2");
+                    statement = conn.prepareStatement(String.format(GENRE_QUERY, sort));
+                    statement.setString(1, sessionUser.getPreviousGenre());
+                    statement.setInt(2, Integer.parseInt(limit));
+                    statement.setInt(3, Integer.parseInt(offset));
+                }
+                else {
+                    statement = conn.prepareStatement(String.format(TITLE_QUERY, sort));
+                    statement.setString(1, sessionUser.getPreviousPrefix() + "%");
+                    statement.setInt(2, Integer.parseInt(limit));
+                    statement.setInt(3, Integer.parseInt(offset));
+                }
             }
             System.out.println(statement);
             ResultSet rs = statement.executeQuery();
