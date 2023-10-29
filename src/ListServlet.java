@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -19,6 +20,46 @@ import java.sql.Statement;
 @WebServlet(name = "ListServlet", urlPatterns = "/api/list")
 public class ListServlet extends HttpServlet {
     private static final long serialVersionUID = 3L;
+    private static final String SEARCH_QUERY =
+            "SELECT \n" +
+            "    m.id,\n" +
+            "    m.title,\n" +
+            "    m.year,\n" +
+            "    m.director,\n" +
+            "    (SELECT \n" +
+            "            GROUP_CONCAT(g.name\n" +
+            "                    ORDER BY g.name DESC)\n" +
+            "        FROM\n" +
+            "            genres_in_movies gm\n" +
+            "                INNER JOIN\n" +
+            "            genres g ON gm.genreId = g.id\n" +
+            "        WHERE\n" +
+            "            gm.movieId = m.id\n" +
+            "        LIMIT 3) AS genres,\n" +
+            "    (SELECT \n" +
+            "            GROUP_CONCAT(CONCAT(s.id, ':', s.name)\n" +
+            "                    ORDER BY s.name DESC , s.id)\n" +
+            "        FROM\n" +
+            "            stars_in_movies sm\n" +
+            "                INNER JOIN\n" +
+            "            stars s ON sm.starId = s.id\n" +
+            "        WHERE\n" +
+            "            sm.movieId = m.id\n" +
+            "        LIMIT 3) AS stars,\n" +
+            "    r.rating\n" +
+            "FROM\n" +
+            "    movies m\n" +
+            "        JOIN\n" +
+            "    ratings r ON m.id = r.movieId\n" +
+            "WHERE \n" +
+            "(SOUNDEX(title) = SOUNDEX(?) OR title LIKE ?)\n" +
+            "AND (SOUNDEX(year) = SOUNDEX(?) OR year LIKE ?)\n" +
+            "AND (SOUNDEX(director) = SOUNDEX(?) OR director LIKE ?)\n" +
+            "GROUP BY m.id , m.title , m.year , m.director , r.rating\n" +
+            "HAVING stars LIKE ?" +
+            "ORDER BY ?\n" +
+            "LIMIT ?\n" +
+            "OFFSET ?;";
     private static final String GENRE_QUERY =
             "WITH\n" +
             "\tgenredFilteredMovies AS \n" +
@@ -92,12 +133,11 @@ public class ListServlet extends HttpServlet {
             "    movies m\n" +
             "        JOIN\n" +
             "    ratings r ON m.id = r.movieId\n" +
-            "WHERE UPPER(m.title) LIKE '?%'\n" +
+            "WHERE UPPER(m.title) LIKE ?" +
             "GROUP BY m.id , m.title , m.year , m.director , r.rating\n" +
             "ORDER BY ?\n" +
             "LIMIT ?\n" +
             "OFFSET ?;";
-    private static final String SEARCH_QUERY = "";
     private DataSource dataSource;
     public void init(ServletConfig config) {
         try {
@@ -111,8 +151,7 @@ public class ListServlet extends HttpServlet {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
-        try (Connection conn = dataSource.getConnection();
-             Statement statement = conn.createStatement()) {
+        try (Connection conn = dataSource.getConnection()) {
 
             String title = request.getParameter("title");
             String year = request.getParameter("year");
@@ -128,13 +167,10 @@ public class ListServlet extends HttpServlet {
 
             String page = request.getParameter("page");
 
-
-            // if there is no page, assume we are on page 1
             if (page == null) {
                 page = "1";
             }
 
-            // if there is no limit, we take from the session
             if (limit == null) {
                 limit = ((User)request.getSession().getAttribute("user")).getLimit();
             }
@@ -142,7 +178,6 @@ public class ListServlet extends HttpServlet {
                 ((User)request.getSession().getAttribute("user")).setLimit(limit);
             }
 
-            // if there is no sort, we take from the session
             if (sort == null) {
                 sort = ((User)request.getSession().getAttribute("user")).getSort();
             }
@@ -151,7 +186,6 @@ public class ListServlet extends HttpServlet {
             }
 
             // convert sort number into a sort query string
-
             sort = User.getSortQuery(sort);
 
             // formula for offset used in query for pages
@@ -167,30 +201,40 @@ public class ListServlet extends HttpServlet {
                 // the fourth is a query that reloads the previous user query with an updated limit and sort
                 // the fifth is a query that reloads the previous user query with an updated page
 
-            // TODO: Please write queries for search, browse by genre, and browse by title. Each query should use limit
-            //  and offset
-
             // TODO: Store queries in User object to allow for list.html requests that have parameters page or limit and
             //  sort
 
-            String query;
-
+            PreparedStatement statement;
             if (title != null || year != null || director != null || star != null) {
-                query = "";
+                statement = conn.prepareStatement(SEARCH_QUERY);
+                statement.setString(1, title);
+                statement.setString(2, title + "%");
+                statement.setString(3, year);
+                statement.setString(4, year + "%");
+                statement.setString(5, director);
+                statement.setString(6, director + "%");
+                statement.setString(7, "%" + star + "%");
+                statement.setString(8, sort);
+                statement.setString(9, limit);
+                statement.setString(10, offset);
             }
             else if (genre != null) {
-                query = "";
+                statement = conn.prepareStatement(GENRE_QUERY);
+                statement.setString(1, genre);
+                statement.setString(2, sort);
+                statement.setString(3, limit);
+                statement.setString(4, offset);
             }
             else {
-                query = "";
+                statement = conn.prepareStatement(TITLE_QUERY);
+                statement.setString(1, prefix + "%");
+                statement.setString(2, sort);
+                statement.setString(3, limit);
+                statement.setString(4, offset);
             }
-
-            // Perform the query
-            ResultSet rs = statement.executeQuery(query);
-
+            ResultSet rs = statement.executeQuery();
             JsonArray jsonArray = new JsonArray();
 
-            // Iterate through each row of rs
             while (rs.next()) {
                 String movie_id = rs.getString("id");
                 String movie_title = rs.getString("title");
@@ -200,7 +244,6 @@ public class ListServlet extends HttpServlet {
                 String movie_stars = rs.getString("stars");
                 String movie_rating = rs.getString("rating");
 
-                // Create a JsonObject based on the data we retrieve from rs
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("movie_id", movie_id);
                 jsonObject.addProperty("movie_title", movie_title);
@@ -214,29 +257,17 @@ public class ListServlet extends HttpServlet {
             }
             rs.close();
             statement.close();
-
-            // Log to localhost log
             request.getServletContext().log("getting " + jsonArray.size() + " results");
-
-            // Write JSON string to output
             out.write(jsonArray.toString());
-            // Set response status to 200 (OK)
             response.setStatus(200);
 
         } catch (Exception e) {
-
-            // Write error message JSON object to output
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("errorMessage", e.getMessage());
             out.write(jsonObject.toString());
-
-            // Set response status to 500 (Internal Server Error)
             response.setStatus(500);
         } finally {
             out.close();
         }
-
-        // Always remember to close db connection after usage. Here it's done by try-with-resources
-
     }
 }
