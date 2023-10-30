@@ -58,6 +58,25 @@ function loadCartItems() {
     });
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    // Handle the "Results" link click event
+    const resultsLink = document.querySelector('a[href="./list.html"]');
+    resultsLink.addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent the default link behavior
+
+        // Retrieve the recentResultUrl from session storage
+        const recentResultUrl = sessionStorage.getItem("recentResultUrl");
+
+        if (recentResultUrl) {
+            // Navigate to the "Results" page with the recentResultUrl
+            window.location.href = recentResultUrl;
+        } else {
+            // Fallback to the default URL if recentResultUrl is not set
+            window.location.href = "/Fabflix_war/list.html";
+        }
+    });
+});
+
 function increaseQuantity(id) {
     modifyItemQuantity(id, 'increase');
 }
