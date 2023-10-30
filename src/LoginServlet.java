@@ -44,30 +44,59 @@ public class LoginServlet extends HttpServlet {
 
         try (Connection conn = dataSource.getConnection()) {
             // Construct a query with parameter represented by "?"
-            String query = "SELECT *\n" +
+            String accountExistsQuery = "SELECT *\n" +
                     "FROM customers\n" +
                     "WHERE ? = email and ? = password";
 
-            PreparedStatement statement = conn.prepareStatement(query);
+            String usernameExistsQuery = "SELECT *\n" +
+                    "FROM customers\n" +
+                    "WHERE ? = email";
 
-            statement.setString(1, username);
-            statement.setString(2, password);
+            String passwordExistsQuery = "SELECT *\n" +
+                    "FROM customers\n" +
+                    "WHERE ? = password";
 
-            // Perform the query
-            ResultSet rs = statement.executeQuery();
+            PreparedStatement accountExistsStatement = conn.prepareStatement(accountExistsQuery);
+            PreparedStatement usernameExistsStatement = conn.prepareStatement(usernameExistsQuery);
+            PreparedStatement passwordExistsStatement = conn.prepareStatement(passwordExistsQuery);
 
-            if (!rs.next()) {
+            accountExistsStatement.setString(1, username);
+            accountExistsStatement.setString(2, password);
+            usernameExistsStatement.setString(1, username);
+            passwordExistsStatement.setString(1, password);
+
+            ResultSet accountRS = accountExistsStatement.executeQuery();
+            ResultSet usernameRS = usernameExistsStatement.executeQuery();
+            ResultSet passwordRS = passwordExistsStatement.executeQuery();
+
+            boolean usernameExists = usernameRS.next();
+            boolean passwordExists = passwordRS.next();
+            boolean accountExists = accountRS.next();
+
+            if (usernameExists && !passwordExists) {
+                System.out.println("Incorrect Username");
+                responseJsonObject.addProperty("status", "fail");
+                request.getServletContext().log("Login failed");
+                responseJsonObject.addProperty("message", "Incorrect Username");
+            }
+            else if (passwordExists && !usernameExists) {
+                System.out.println("Incorrect Password");
+                responseJsonObject.addProperty("status", "fail");
+                request.getServletContext().log("Login failed");
+                responseJsonObject.addProperty("message", "Incorrect Password");
+            }
+            else if (!accountExists) {
                 System.out.println("ResultSet in empty in Java");
                 // Login fail
                 responseJsonObject.addProperty("status", "fail");
                 // Log to localhost log
                 request.getServletContext().log("Login failed");
                 // sample error messages. in practice, it is not a good idea to tell user which one is incorrect/not exist.
-                responseJsonObject.addProperty("message", "Login failed");
+                responseJsonObject.addProperty("message", "Account does not Exist");
             }
             else {
-                System.out.println(rs.getString("firstName") + " " + rs.getString("lastName"));
-                request.getSession().setAttribute("user", new User(rs.getString("id")));
+                System.out.println(accountRS.getString("firstName") + " " + accountRS.getString("lastName"));
+                request.getSession().setAttribute("user", new User(accountRS.getString("id")));
                 responseJsonObject.addProperty("status", "success");
                 responseJsonObject.addProperty("message", "success");
             }

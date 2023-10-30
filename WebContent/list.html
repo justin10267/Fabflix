@@ -10,8 +10,9 @@
 <nav class="navbar navbar-dark bg-dark">
     <a class="navbar-brand" href="./main.html">Fabflix</a>
     <a class="navbar-brand" href="./main.html">Main</a>
+    <a class="navbar-brand" href="./list.html">Results</a>
     <a class="navbar-brand" href="./movie-list.html">Top 20</a>
-
+    <a class="navbar-brand" href="./cart.html">Shopping Cart</a>
     <div class="ml-auto">
         <form class="form-inline" action="/Fabflix_war/list.html" method="GET">
             <input class="form-control mr-sm-2" type="text" placeholder="Title" name="title">
@@ -29,7 +30,7 @@
 <div class="dropdown">
     <select id="moviesPerPage" class="form-control">
         <option value="10">10</option>
-        <option value="25">25</option>
+        <option value="25" selected>25</option>
         <option value="50">50</option>
         <option value="100">100</option>
     </select>
@@ -63,6 +64,9 @@
     </thead>
     <tbody id=result_body_table></tbody>
 </table>
+
+<button id="previousPageButton" class="btn btn-primary">Previous Page</button>
+<button id="nextPageButton" class="btn btn-primary">Next Page</button>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
