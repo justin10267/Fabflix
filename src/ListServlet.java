@@ -176,26 +176,14 @@ public class ListServlet extends HttpServlet {
                 sessionUser.setSort(sort);
             }
 
-            // convert sort number into a sort query string
             sort = User.getSortQuery(sort);
-            // formula for offset used in query for pages
-            // assume limit is 50
-            // offset = (page - 1) * limit
-
             String offset = Integer.toString((Integer.parseInt(page) - 1 ) * Integer.parseInt(limit));
 
-            // five kinds of queries we need
-                // the first is a search query which will include the parameters title, year, director, star
-                // the second is browsing query for genre which will include a genre parameter
-                // the third is a browsing query for title which will include a title parameter
-                // the fourth is a query that reloads the previous user query with an updated limit and sort
-                // the fifth is a query that reloads the previous user query with an updated page
-
-            // TODO: Store queries in User object to allow for list.html requests that have parameters page or limit and
-            //  sort
             PreparedStatement statement;
+            PreparedStatement nextPageStatement;
             if (title != null || year != null || director != null || stars != null) {
                 statement = conn.prepareStatement(String.format(SEARCH_QUERY, sort));
+                nextPageStatement = conn.prepareStatement(String.format(SEARCH_QUERY, sort));
                 statement.setString(1, title);
                 statement.setString(2, title + "%");
                 statement.setString(3, year);
@@ -206,6 +194,16 @@ public class ListServlet extends HttpServlet {
                 statement.setInt(8, Integer.parseInt(limit));
                 statement.setInt(9, Integer.parseInt(offset));
 
+                nextPageStatement.setString(1, title);
+                nextPageStatement.setString(2, title + "%");
+                nextPageStatement.setString(3, year);
+                nextPageStatement.setString(4, year + "%");
+                nextPageStatement.setString(5, director);
+                nextPageStatement.setString(6, director + "%");
+                nextPageStatement.setString(7, "%" + stars + "%");
+                nextPageStatement.setInt(8, Integer.parseInt(limit));
+                nextPageStatement.setInt(9, Integer.parseInt(offset + 1));
+
                 sessionUser.setPreviousQueryType("search");
                 sessionUser.setPreviousSearchParameters(title, year, director, stars);
             }
@@ -214,6 +212,11 @@ public class ListServlet extends HttpServlet {
                 statement.setString(1, genre);
                 statement.setInt(2, Integer.parseInt(limit));
                 statement.setInt(3, Integer.parseInt(offset));
+
+                nextPageStatement = conn.prepareStatement(String.format(GENRE_QUERY, sort));
+                nextPageStatement.setString(1, genre);
+                nextPageStatement.setInt(2, Integer.parseInt(limit));
+                nextPageStatement.setInt(3, Integer.parseInt(offset + 1));
 
                 sessionUser.setPreviousQueryType("genre");
                 sessionUser.setPreviousGenre(genre);
@@ -224,11 +227,15 @@ public class ListServlet extends HttpServlet {
                 statement.setInt(2, Integer.parseInt(limit));
                 statement.setInt(3, Integer.parseInt(offset));
 
+                nextPageStatement = conn.prepareStatement(String.format(TITLE_QUERY, sort));
+                nextPageStatement.setString(1, prefix + "%");
+                nextPageStatement.setInt(2, Integer.parseInt(limit));
+                nextPageStatement.setInt(3, Integer.parseInt(offset + 1));
+
                 sessionUser.setPreviousQueryType("prefix");
                 sessionUser.setPreviousPrefix(prefix);
             }
             else {
-                System.out.println("Debug 1");
                 String queryType = sessionUser.getPreviousQueryType();
                 if (queryType.equals("search")) {
                     statement = conn.prepareStatement(String.format(SEARCH_QUERY, sort));
@@ -241,26 +248,48 @@ public class ListServlet extends HttpServlet {
                     statement.setString(7, "%" + sessionUser.getPreviousStars() + "%");
                     statement.setInt(8, Integer.parseInt(limit));
                     statement.setInt(9, Integer.parseInt(offset));
+
+                    nextPageStatement = conn.prepareStatement(String.format(SEARCH_QUERY, sort));
+                    nextPageStatement.setString(1, sessionUser.getPreviousTitle());
+                    nextPageStatement.setString(2, sessionUser.getPreviousTitle() + "%");
+                    nextPageStatement.setString(3, sessionUser.getPreviousYear());
+                    nextPageStatement.setString(4, sessionUser.getPreviousYear() + "%");
+                    nextPageStatement.setString(5, sessionUser.getPreviousDirector());
+                    nextPageStatement.setString(6, sessionUser.getPreviousDirector() + "%");
+                    nextPageStatement.setString(7, "%" + sessionUser.getPreviousStars() + "%");
+                    nextPageStatement.setInt(8, Integer.parseInt(limit));
+                    nextPageStatement.setInt(9, Integer.parseInt(offset));
                 }
                 else if (queryType.equals("genre")) {
-                    System.out.println("Debug 2");
                     statement = conn.prepareStatement(String.format(GENRE_QUERY, sort));
                     statement.setString(1, sessionUser.getPreviousGenre());
                     statement.setInt(2, Integer.parseInt(limit));
                     statement.setInt(3, Integer.parseInt(offset));
+
+                    nextPageStatement = conn.prepareStatement(String.format(GENRE_QUERY, sort));
+                    nextPageStatement.setString(1, sessionUser.getPreviousGenre());
+                    nextPageStatement.setInt(2, Integer.parseInt(limit));
+                    nextPageStatement.setInt(3, Integer.parseInt(offset));
                 }
                 else {
                     statement = conn.prepareStatement(String.format(TITLE_QUERY, sort));
                     statement.setString(1, sessionUser.getPreviousPrefix() + "%");
                     statement.setInt(2, Integer.parseInt(limit));
                     statement.setInt(3, Integer.parseInt(offset));
+
+                    nextPageStatement = conn.prepareStatement(String.format(TITLE_QUERY, sort));
+                    nextPageStatement.setString(1, sessionUser.getPreviousPrefix() + "%");
+                    nextPageStatement.setInt(2, Integer.parseInt(limit));
+                    nextPageStatement.setInt(3, Integer.parseInt(offset));
                 }
             }
             System.out.println(statement);
             ResultSet rs = statement.executeQuery();
-            JsonArray jsonArray = new JsonArray();
 
+            JsonArray jsonArray = new JsonArray();
+            int size = 0;
             while (rs.next()) {
+                size += 1;
                 String movie_id = rs.getString("id");
                 String movie_title = rs.getString("title");
                 String movie_year = rs.getString("year");
@@ -280,10 +309,29 @@ public class ListServlet extends HttpServlet {
 
                 jsonArray.add(jsonObject);
             }
+            boolean isLastPage = false;
+            if (size < Integer.parseInt(limit)) {
+                isLastPage = true;
+            }
+            else {
+                ResultSet nextPageRS = nextPageStatement.executeQuery();
+                int nextPageSize = 0;
+                while (nextPageRS.next()) {
+                    nextPageSize += 1;
+                }
+                isLastPage = nextPageSize == 0;
+                nextPageRS.close();
+            }
+
+            JsonObject jsonResponse = new JsonObject();
+            jsonResponse.addProperty("isLastPage", isLastPage);
+            jsonResponse.addProperty("pageNum", page);
+            jsonResponse.add("data", jsonArray);
             rs.close();
+            nextPageStatement.close();
             statement.close();
             request.getServletContext().log("getting " + jsonArray.size() + " results");
-            out.write(jsonArray.toString());
+            out.write(jsonResponse.toString());
             response.setStatus(200);
 
         } catch (Exception e) {
