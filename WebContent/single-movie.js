@@ -1,20 +1,3 @@
-/**
- * This example is following frontend and backend separation.
- *
- * Before this .js is loaded, the html skeleton is created.
- *
- * This .js performs three steps:
- *      1. Get parameter from request URL so it know which id to look for
- *      2. Use jQuery to talk to backend API to get the json data.
- *      3. Populate the data to correct html elements.
- */
-
-
-/**
- * Retrieve parameter from request URL, matching by parameter name
- * @param target String
- * @returns {*}
- */
 function getParameterByName(target) {
     // Get request URL
     let url = window.location.href;
@@ -30,11 +13,6 @@ function getParameterByName(target) {
     // Return the decoded parameter value
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
-
-/**
- * Handles the data returned by the API, read the jsonObject and populate data into html elements
- * @param resultData jsonObject
- */
 
 function handleResult(resultData) {
     console.log("handleResult: populating movie info from resultData");
@@ -61,8 +39,25 @@ function handleResult(resultData) {
         starInfoElement.append("<p>" + '<a href="single-star.html?id=' + star_info[0] + '">' + star_info[1] + '</a>')
     }
     jQuery("#addToCartButton").click(() => addToCart(movieId, resultData[0]["movie_title"]));
-
 }
+document.addEventListener("DOMContentLoaded", function () {
+    // Handle the "Results" link click event
+    const resultsLink = document.querySelector('a[href="./list.html"]');
+    resultsLink.addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent the default link behavior
+
+        // Retrieve the recentResultUrl from session storage
+        const recentResultUrl = sessionStorage.getItem("recentResultUrl");
+
+        if (recentResultUrl) {
+            // Navigate to the "Results" page with the recentResultUrl
+            window.location.href = recentResultUrl;
+        } else {
+            // Fallback to the default URL if recentResultUrl is not set
+            window.location.href = "/Fabflix_war/list.html";
+        }
+    });
+});
 function addToCart(movieId, movieTitle) {
     console.log("Adding movie to cart: " + movieTitle);
     jQuery.ajax({
@@ -81,17 +76,12 @@ function addToCart(movieId, movieTitle) {
         }
     });
 }
-/**
- * Once this .js is loaded, following scripts will be executed by the browser\
- */
 
-// Get id from URL
+
 let movieId = getParameterByName('id');
-
-// Makes the HTTP GET request and registers on success callback function handleResult
 jQuery.ajax({
-    dataType: "json",  // Setting return data type
-    method: "GET",// Setting request method
-    url: "api/single-movie?id=" + movieId, // Setting request url, which is mapped by StarsServlet in Stars.java
-    success: (resultData) => handleResult(resultData) // Setting callback function to handle data returned successfully by the SingleMovieServlet
+    dataType: "json",
+    method: "GET",
+    url: "api/single-movie?id=" + movieId,
+    success: (resultData) => handleResult(resultData)
 });

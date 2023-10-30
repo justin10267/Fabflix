@@ -10,7 +10,6 @@ function getParameterByName(target) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 function handleMovieResult(resultData) {
-    console.log("handleMovieResult: populating movie table from resultData");
     console.log(resultData);
     sessionStorage.setItem("currentPage", resultData["pageNum"]);
     sessionStorage.setItem("isLastPage", resultData["isLastPage"]);
@@ -42,7 +41,6 @@ function handleMovieResult(resultData) {
 
     let currentPage = parseInt(resultData["pageNum"]);
     let isLastPage = resultData["isLastPage"] === true;
-    console.log("Result Data: ", resultData, "isLastPage: ", isLastPage);
     const nextButton = document.getElementById("nextPageButton");
     nextButton.disabled = isLastPage;
     const previousButton = document.getElementById("previousPageButton");
@@ -67,7 +65,6 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         currentPage = parseInt(currentPage);
     }
-    console.log(currentPage);
     document.getElementById("previousPageButton").addEventListener("click", function () {
         console.log("previous clicked");
         const newPage = currentPage - 1;
@@ -80,6 +77,23 @@ document.addEventListener("DOMContentLoaded", function () {
         const newPage = currentPage + 1;
         sessionStorage.setItem("currentPage", newPage.toString());
         window.location.href = `/Fabflix_war/list.html?page=${newPage}`;
+    });
+
+    // Handle the "Results" link click event
+    const resultsLink = document.querySelector('a[href="./list.html"]');
+    resultsLink.addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent the default link behavior
+
+        // Retrieve the recentResultUrl from session storage
+        const recentResultUrl = sessionStorage.getItem("recentResultUrl");
+
+        if (recentResultUrl) {
+            // Navigate to the "Results" page with the recentResultUrl
+            window.location.href = recentResultUrl;
+        } else {
+            // Fallback to the default URL if recentResultUrl is not set
+            window.location.href = "/Fabflix_war/list.html";
+        }
     });
 })
 
@@ -115,6 +129,7 @@ let apiUrl;
 if (url.searchParams.has('genre')) {
     let genre = getParameterByName('genre');
     apiUrl = `api/list?genre=${genre}`;
+    sessionStorage.setItem("recentResultUrl", `list.html?genre=${genre}`);
 }
 if (url.searchParams.has('title')) {
     let title = getParameterByName('title');
@@ -122,19 +137,23 @@ if (url.searchParams.has('title')) {
     let director = getParameterByName('director');
     let stars = getParameterByName('stars');
     apiUrl = `api/list?title=${title}&year=${year}&director=${director}&stars=${stars}`;
+    sessionStorage.setItem("recentResultUrl", `list.html?title=${title}&year=${year}&director=${director}&stars=${stars}`);
 }
 if (url.searchParams.has('prefix')) {
     let prefix = getParameterByName('prefix');
     apiUrl = `api/list?prefix=${prefix}`;
+    sessionStorage.setItem("recentResultUrl", `list.html?prefix=${prefix}`);
 }
 if (url.searchParams.has('limit') || url.searchParams.has('sort')) {
     let limit = getParameterByName('limit');
     let sort = getParameterByName('sort');
     apiUrl = `api/list?limit=${limit}&sort=${sort}`;
+    sessionStorage.setItem("recentResultUrl", `list.html?limit=${limit}&sort=${sort}`);
 }
 if (url.searchParams.has('page')) {
     let page = getParameterByName('page');
     apiUrl = `api/list?page=${page}`;
+    sessionStorage.setItem("recentResultUrl", `list.html?page=${page}`);
 }
 
 console.log(apiUrl);

@@ -1,20 +1,3 @@
-/**
- * This example is following frontend and backend separation.
- *
- * Before this .js is loaded, the html skeleton is created.
- *
- * This .js performs three steps:
- *      1. Get parameter from request URL so it know which id to look for
- *      2. Use jQuery to talk to backend API to get the json data.
- *      3. Populate the data to correct html elements.
- */
-
-
-/**
- * Retrieve parameter from request URL, matching by parameter name
- * @param target String
- * @returns {*}
- */
 function getParameterByName(target) {
     // Get request URL
     let url = window.location.href;
@@ -30,32 +13,14 @@ function getParameterByName(target) {
     // Return the decoded parameter value
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
-
-/**
- * Handles the data returned by the API, read the jsonObject and populate data into html elements
- * @param resultData jsonObject
- */
-
 function handleResult(resultData) {
-
     console.log("handleResult: populating star info from resultData");
-
-
-    // populate the star info h3
-    // find the empty h3 body by id "star_info"
     let starInfoElement = jQuery("#star_info");
-
-    // append two html <p> created to the h3 body, which will refresh the page
     starInfoElement.append("<p>" + resultData[0]["star_name"] + "</p>");
     starInfoElement.append("<p>Date of Birth: " + resultData[0]["star_dob"] + "</p>");
 
     console.log("handleResult: populating movie table from resultData");
-
-    // Populate the star table
-    // Find the empty table body by id "movie_table_body"
     let movieTableBodyElement = jQuery("#movie_table_body");
-
-    // Concatenate the html tags with resultData jsonObject to create table rows
     for (let i = 0; i < Math.min(10, resultData.length); i++) {
         let rowHTML = "";
         rowHTML += "<tr>";
@@ -63,17 +28,27 @@ function handleResult(resultData) {
         rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_director"] + "</th>";
         rowHTML += "</tr>";
-
-        // Append the row created to the table body, which will refresh the page
         movieTableBodyElement.append(rowHTML);
     }
 }
+document.addEventListener("DOMContentLoaded", function () {
+    // Handle the "Results" link click event
+    const resultsLink = document.querySelector('a[href="./list.html"]');
+    resultsLink.addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent the default link behavior
 
-/**
- * Once this .js is loaded, following scripts will be executed by the browser\
- */
+        // Retrieve the recentResultUrl from session storage
+        const recentResultUrl = sessionStorage.getItem("recentResultUrl");
 
-// Get id from URL
+        if (recentResultUrl) {
+            // Navigate to the "Results" page with the recentResultUrl
+            window.location.href = recentResultUrl;
+        } else {
+            // Fallback to the default URL if recentResultUrl is not set
+            window.location.href = "/Fabflix_war/list.html";
+        }
+    });
+});
 let starId = getParameterByName('id');
 
 // Makes the HTTP GET request and registers on success callback function handleResult
