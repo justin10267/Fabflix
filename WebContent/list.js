@@ -43,7 +43,9 @@ function handleMovieResult(resultData) {
         }
         rowHTML += "</th>"
         rowHTML += "<th>" + movieData[i]["movie_rating"] + "</th>";
+        rowHTML += `<th><button class="addToCart" data-movie-id="${movieData[i]['movie_id']}" data-movie-title="${movieData[i]['movie_title']}">Add to Cart</button></th>`;
         rowHTML += "</tr>";
+
 
         resultTableBodyElement.append(rowHTML);
     }
@@ -68,6 +70,31 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.href = url;
     });
 
+    document.body.addEventListener("click", function(event) {
+        if (event.target.classList.contains("addToCart")) {
+            const movieId = event.target.getAttribute("data-movie-id");
+            const movieTitle = event.target.getAttribute("data-movie-title");
+            addToCart(movieId, movieTitle);
+        }
+    });
+    function addToCart(movieId, movieTitle) {
+        console.log("Adding movie to cart: " + movieTitle);
+        jQuery.ajax({
+            dataType: "json",
+            method: "POST",
+            url: "api/cart",
+            data: {
+                "action": "add",
+                "title": movieTitle
+            },
+            success: (response) => {
+                alert("Added to cart!");
+            },
+            error: (error) => {
+                alert("Failed to add to cart!");
+            }
+        });
+    }
     let currentPage = sessionStorage.getItem("currentPage");
     if (currentPage === null) {
         currentPage = 1;
