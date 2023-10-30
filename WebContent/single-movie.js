@@ -35,6 +35,7 @@ function getParameterByName(target) {
  * Handles the data returned by the API, read the jsonObject and populate data into html elements
  * @param resultData jsonObject
  */
+
 function handleResult(resultData) {
     console.log("handleResult: populating movie info from resultData");
 
@@ -59,43 +60,27 @@ function handleResult(resultData) {
         const star_info = stars[i].split(":");
         starInfoElement.append("<p>" + '<a href="single-star.html?id=' + star_info[0] + '">' + star_info[1] + '</a>')
     }
+    jQuery("#addToCartButton").click(() => addToCart(movieId, resultData[0]["movie_title"]));
 
-    // Adding price to the movie
-    let price = (Math.random() * (20 - 5) + 5).toFixed(2);
-    document.getElementById("moviePrice").textContent = "Price: $" + price;
-
-    document.querySelectorAll('.addToCart').forEach(button => {
-        button.addEventListener('click', function(event) {
-            const movieId = event.target.getAttribute('data-movieid');
-            addToCart(movieId);
-        });
+}
+function addToCart(movieId, movieTitle) {
+    console.log("Adding movie to cart: " + movieTitle);
+    jQuery.ajax({
+        dataType: "json",
+        method: "POST",
+        url: "api/cart",
+        data: {
+            "action": "add",
+            "title": movieTitle
+        },
+        success: (response) => {
+            alert("Added to cart!");
+        },
+        error: (error) => {
+            alert("Failed to add to cart!");
+        }
     });
 }
-
-function addToCart(movieId) {
-    console.log("addToCart function called with movieId:", movieId);
-    fetch('/cart', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ movieId: movieId })
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert("Movie successfully added to the cart!");
-            } else {
-                alert("Failed to add movie to the cart. Please try again.");
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert("An error occurred. Please try again.");
-        });
-}
-
-
 /**
  * Once this .js is loaded, following scripts will be executed by the browser\
  */

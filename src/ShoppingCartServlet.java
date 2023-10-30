@@ -1,135 +1,144 @@
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import jakarta.servlet.ServletConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 @WebServlet(name = "ShoppingCartServlet", urlPatterns = "/api/cart")
 public class ShoppingCartServlet extends HttpServlet {
-    private static final long serialVersionUID = 4L;
-    private DataSource dataSource;
 
-    public void init(ServletConfig config) {
-        try {
-            dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/moviedb");
-        } catch (NamingException e) {
-            e.printStackTrace();
+    public class MovieItem {
+        private String title;
+        private int quantity;
+        private double price;
+
+        public MovieItem(String title, double price) {
+            this.title = title;
+            this.price = price;
+            this.quantity = 1; // default
+        }
+
+        public double getTotalPrice() {
+            return this.price * this.quantity;
         }
     }
 
-    // For GET request (Fetching cart data)
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
-        PrintWriter out = response.getWriter();
+        response.setCharacterEncoding("UTF-8");
 
+        JsonObject responseObject = new JsonObject();
         HttpSession session = request.getSession();
-        HashMap<String, Integer> cart = (HashMap<String, Integer>) session.getAttribute("cart");
+        User loggedInUser = (User) session.getAttribute("user");
+        if (loggedInUser == null) {
+            responseObject.addProperty("status", "failure");
+            responseObject.addProperty("message", "User not logged in");
+            response.getWriter().write(responseObject.toString());
+            return;
+        }
 
-        if (cart == null) {
+        String userId = loggedInUser.getUsername();
+        String cartKey = "cart_" + userId;
+
+        HashMap<String, MovieItem> cart;
+        if (session.getAttribute(cartKey) instanceof HashMap) {
+            cart = (HashMap<String, MovieItem>) session.getAttribute(cartKey);
+        } else {
             cart = new HashMap<>();
         }
 
-        try (Connection conn = dataSource.getConnection()) {
-            JsonArray jsonArray = new JsonArray();
+        double totalPrice = cart.values().stream().mapToDouble(MovieItem::getTotalPrice).sum();
+        JsonArray itemsArray = new JsonArray();
 
-            for (String movieId : cart.keySet()) {
-                String query = "SELECT \n" +
-                        "    id as movie_id,\n" +
-                        "    title,\n" +
-                        "    ROUND(5 + (RAND() * 20), 2) as price   -- This generates a random price between $5 to $25 with 2 decimal points.\n" +
-                        "FROM \n" +
-                        "    movies\n" +
-                        "WHERE \n" +
-                        "    id = ?;  -- This is the movieId placeholder\n";
-                PreparedStatement ps = conn.prepareStatement(query);
-                ps.setString(1, movieId);
-
-                ResultSet rs = ps.executeQuery();
-                float totalPrice = 0.0f;
-                while (rs.next()) {
-                    JsonObject jsonObject = new JsonObject();
-                    jsonObject.addProperty("movie_id", rs.getString("movie_id"));
-                    jsonObject.addProperty("movie_title", rs.getString("title"));
-                    float price = rs.getFloat("price");
-                    jsonObject.addProperty("price", price);
-                    int quantity = cart.get(movieId);
-                    jsonObject.addProperty("quantity", quantity);
-                    jsonObject.addProperty("total_for_movie", price * quantity);
-
-                    totalPrice += (price * quantity);
-
-                    jsonArray.add(jsonObject);
-                }
-
-                rs.close();
-                ps.close();
-
-                JsonObject totalObject = new JsonObject();
-                totalObject.addProperty("total_price", totalPrice);
-                jsonArray.add(totalObject);
-            }
-
-            out.write(jsonArray.toString());
-            response.setStatus(200);
-
-        } catch (Exception e) {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("errorMessage", e.getMessage());
-            out.write(jsonObject.toString());
-            response.setStatus(500);
-        } finally {
-            out.close();
+        for (MovieItem item : cart.values()) {
+            JsonObject itemObject = new JsonObject();
+            itemObject.addProperty("title", item.title);
+            itemObject.addProperty("price", item.price);
+            itemObject.addProperty("quantity", item.quantity);
+            itemsArray.add(itemObject);
         }
+
+        responseObject.add("items", itemsArray);
+        responseObject.addProperty("totalPrice", totalPrice);
+
+        response.getWriter().write(responseObject.toString());
     }
 
-    // For POST request (Adding/Removing from cart)
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String action = request.getParameter("action");
-        String movieId = request.getParameter("movieId");
-
-        HttpSession session = request.getSession();
-        HashMap<String, Integer> cart = (HashMap<String, Integer>) session.getAttribute("cart");
-
-        if (cart == null) {
-            cart = new HashMap<>();
-        }
-
-        if ("add".equals(action)) {
-            cart.put(movieId, cart.getOrDefault(movieId, 0) + 1);
-        } else if ("remove".equals(action)) {
-            int currentQty = cart.getOrDefault(movieId, 0);
-            if (currentQty > 1) {
-                cart.put(movieId, currentQty - 1);
-            } else {
-                cart.remove(movieId);
-            }
-        }
-
-        session.setAttribute("cart", cart);
-
-        // Send a JSON response
-        JsonObject jsonResponse = new JsonObject();
-
-        if ("add".equals(action)) {
-            jsonResponse.addProperty("message", "Movie added to cart.");
-        } else if ("remove".equals(action)) {
-            jsonResponse.addProperty("message", "Movie removed from cart.");
-        }
-
         response.setContentType("application/json");
-        response.getWriter().write(jsonResponse.toString());
-        response.setStatus(200);
+        response.setCharacterEncoding("UTF-8");
+
+        JsonObject responseObject = new JsonObject();
+        HttpSession session = request.getSession();
+        User loggedInUser = (User) session.getAttribute("user");
+        if (loggedInUser == null) {
+            responseObject.addProperty("status", "failure");
+            responseObject.addProperty("message", "User not logged in");
+            response.getWriter().write(responseObject.toString());
+            return;
+        }
+        String userId = loggedInUser.getUsername();
+        String cartKey = "cart_" + userId;
+
+        try {
+            String action = request.getParameter("action");
+            String title = request.getParameter("title");
+
+            if(action == null || title == null) {
+                throw new IllegalArgumentException("Missing required parameters.");
+            }
+
+            HashMap<String, MovieItem> cart;
+            if (session.getAttribute(cartKey) instanceof HashMap) {
+                cart = (HashMap<String, MovieItem>) session.getAttribute(cartKey);
+            } else {
+                cart = new HashMap<>();
+            }
+
+            switch (action) {
+                case "add":
+                    if (!cart.containsKey(title)) {
+                        Random rand = new Random();
+                        double randomPrice = 10 + (50 - 10) * rand.nextDouble(); // random price between 10 and 50
+                        cart.put(title, new MovieItem(title, randomPrice));
+                    } else {
+                        MovieItem existingItem = cart.get(title);
+                        existingItem.quantity += 1;
+                    }
+                    break;
+                case "increase":
+                    if (cart.containsKey(title)) {
+                        MovieItem item = cart.get(title);
+                        item.quantity += 1;
+                    }
+                    break;
+                case "decrease":
+                    if (cart.containsKey(title)) {
+                        MovieItem item = cart.get(title);
+                        item.quantity -= 1;
+                        if (item.quantity <= 0) {
+                            cart.remove(title);
+                        }
+                    }
+                    break;
+                case "delete":
+                    cart.remove(title);
+                    break;
+            }
+
+            session.setAttribute(cartKey, cart);
+            responseObject.addProperty("status", "success");
+        } catch (Exception e) {
+            responseObject.addProperty("status", "failure");
+            responseObject.addProperty("message", e.getMessage());
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+
+        response.getWriter().write(responseObject.toString());
     }
 }

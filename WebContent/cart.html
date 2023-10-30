@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,15 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart</title>
-    <!-- Optional: Include Bootstrap or other CSS libraries -->
-    <link rel="stylesheet" href="path_to_your_stylesheet.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-<!-- Redirect to main page -->
-<a class="navbar-brand" href="./main.html">Fabflix</a>
-<h2>Your Shopping Cart</h2>
+<a class="navbar-brand" href="./main.html">Main</a>
+<h1>Shopping Cart</h1>
 
-<table>
+<table id="cartTable">
     <thead>
     <tr>
         <th>Movie Title</th>
@@ -24,57 +21,14 @@
         <th>Actions</th>
     </tr>
     </thead>
-    <tbody id="cartContent">
-    <!-- Cart items will be populated here by JavaScript -->
+    <tbody>
+    <!-- Items will be populated here by JavaScript -->
     </tbody>
 </table>
 
-<p id="totalPrice">Total Price: $0.00</p>
+<button id="proceedToPayment">Proceed to Payment</button>
 
-<button onclick="proceedToPayment()">Proceed to Payment</button>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="cart.js"></script>
 
 </body>
-=======
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping Cart</title>
-</head>
-<body>
-<!-- Redirect to main page -->
-<a class="navbar-brand" href="./main.html">Fabflix</a>
-<h2>Your Shopping Cart</h2>
-
-<table>
-    <thead>
-    <tr>
-        <th>Movie Title/n</th>
-        <th>Quantity/n</th>
-        <th>Price</th>
-        <th>Total</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody id="cartContent">
-    <!-- Cart items will be populated here by JavaScript -->
-    </tbody>
-</table>
-
-<p id="totalPrice">Total Price: $0.00</p>
-
-<button onclick="proceedToPayment()">Proceed to Payment</button>
-
-<!-- Link to the JavaScript file -->
-
-<!-- Link to the JavaScript file -->
-<script src="cart.js"></script>
-
-</body>
->>>>>>> 83fc3c7 (Front end modify, project 1)
 </html>
