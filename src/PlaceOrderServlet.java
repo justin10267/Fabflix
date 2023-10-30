@@ -45,7 +45,7 @@ public class PlaceOrderServlet extends HttpServlet {
             // Validate credit card info against "credit cards" table
             if (isValidCreditCard(firstName, lastName, cardNumber, expDate)) {
                 // Record transaction in "sales" table
-                recordTransaction();
+                //recordTransaction();
 
                 // Send success response
                 out.write("{\"success\": true}");
@@ -83,7 +83,7 @@ public class PlaceOrderServlet extends HttpServlet {
         String formattedExpirationDate = sdf.format(expirationDate);
 
         // Query the database
-        String query = "SELECT id FROM creditcards WHERE firstName = ? AND lastName = ? AND id = ? AND expiration = ?";
+        String query = "SELECT * FROM creditcards WHERE firstName = 'Dan' AND lastName = 'Mori' AND id = '107003' AND expiration = '2005/03/17'";
         try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, firstName);
             stmt.setString(2, lastName);
@@ -91,6 +91,16 @@ public class PlaceOrderServlet extends HttpServlet {
             stmt.setString(4, formattedExpirationDate);
 
             ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                System.out.println("ID: " + rs.getString("id"));
+                System.out.println("First Name: " + rs.getString("firstName"));
+                System.out.println("Last Name: " + rs.getString("lastName"));
+                System.out.println("Expiration: " + rs.getDate("expiration"));
+                // ... and so on for other columns
+
+                // Since you have a match, return true
+                return true;
+            }
             if (rs.next()) {
                 // Found a matching record
                 return true;

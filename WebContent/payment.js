@@ -29,7 +29,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
                 return response.text(); // Getting raw text in case of non-JSON response
             })
-
+            .then(text => {
+                console.log('Raw response:', text);  // Log the raw response
+                try {
+                    return JSON.parse(text);  // Convert the raw response to a JSON object
+                } catch (error) {
+                    throw new SyntaxError("Invalid JSON format");
+                }
+            })
             .then(data => {
                 if (data.success) {
                     // Handle successful payment
