@@ -8,12 +8,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
 
 // Declaring a WebServlet called SingleMovieServlet, which maps to url "/api/single-movie"
 @WebServlet(name = "SingleMovieServlet", urlPatterns = "/api/single-movie")
@@ -146,4 +149,80 @@ public class SingleMovieServlet extends HttpServlet {
 
     }
 
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws  IOException {
+        HttpSession session = request.getSession();
+
+        // Extract movie details from request
+        String movieId = request.getParameter("movieId");
+        String movieTitle = request.getParameter("movieTitle");
+        double moviePrice = Double.parseDouble(request.getParameter("moviePrice"));
+
+        // Logic to add movie to cart in session
+        HashMap<String, MovieItem> cart = (HashMap<String, MovieItem>) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new HashMap<>();
+        }
+        if (cart.containsKey(movieId)) {
+            MovieItem existingItem = cart.get(movieId);
+            existingItem.setQuantity(existingItem.getQuantity() + 1);
+        } else {
+            MovieItem newItem = new MovieItem(movieId, movieTitle, moviePrice, 1);
+            cart.put(movieId, newItem);
+        }
+        session.setAttribute("cart", cart);
+
+        // Send a response back
+        response.getWriter().write("Movie added to cart");
+    }
+
+    public static class MovieItem {
+        private String id;
+        private String title;
+        private double price;
+        private int quantity;
+
+        public MovieItem(String id, String title, double price, int quantity) {
+            this.id = id;
+            this.title = title;
+            this.price = price;
+            this.quantity = quantity;
+        }
+
+        // Getters
+        public String getId() {
+            return id;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public double getPrice() {
+            return price;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        // Setters
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public void setPrice(double price) {
+            this.price = price;
+        }
+
+        public void setQuantity(int quantity) {
+            this.quantity = quantity;
+        }
+    }
 }
+
+
