@@ -16,7 +16,6 @@ public class ShoppingCartServlet extends HttpServlet {
         private String title;
         private int quantity;
         private double price;
-
         public MovieItem(String title, double price) {
             this.title = title;
             this.price = price;
@@ -88,6 +87,7 @@ public class ShoppingCartServlet extends HttpServlet {
         try {
             String action = request.getParameter("action");
             String title = request.getParameter("title");
+            String price = request.getParameter("price");
 
             if(action == null || title == null) {
                 throw new IllegalArgumentException("Missing required parameters.");
@@ -99,13 +99,14 @@ public class ShoppingCartServlet extends HttpServlet {
             } else {
                 cart = new HashMap<>();
             }
+            System.out.println(action);
+            System.out.println(title);
+            System.out.println(price);
 
             switch (action) {
                 case "add":
                     if (!cart.containsKey(title)) {
-                        Random rand = new Random();
-                        double randomPrice = 10 + (50 - 10) * rand.nextDouble(); // random price between 10 and 50
-                        cart.put(title, new MovieItem(title, randomPrice));
+                        cart.put(title, new MovieItem(title, Double.parseDouble(price)));
                     } else {
                         MovieItem existingItem = cart.get(title);
                         existingItem.quantity += 1;

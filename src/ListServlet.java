@@ -27,6 +27,7 @@ public class ListServlet extends HttpServlet {
             "    m.title,\n" +
             "    m.year,\n" +
             "    m.director,\n" +
+            "    m.price,\n" +
             "    SUBSTRING_INDEX((SELECT \n" +
             "            GROUP_CONCAT(g.name\n" +
             "                    ORDER BY g.name DESC)\n" +
@@ -63,7 +64,7 @@ public class ListServlet extends HttpServlet {
             "WITH\n" +
             "\tgenredFilteredMovies AS \n" +
             "\t(\n" +
-            "\t\tSELECT m.id, m.title, m.year, m.director, g.name as genre\n" +
+            "\t\tSELECT m.id, m.title, m.year, m.director, m.price, g.name as genre\n" +
             "\t\tFROM movies as m JOIN genres_in_movies as gm ON m.id = gm.movieId JOIN genres as g ON gm.genreId = g.id\n" +
             "\t\tWHERE g.name = ?\n" +
             "    )\n" +
@@ -72,6 +73,7 @@ public class ListServlet extends HttpServlet {
             "    gfm.title,\n" +
             "    gfm.year,\n" +
             "    gfm.director,\n" +
+            "    gfm.price,\n" +
             "    SUBSTRING_INDEX((SELECT \n" +
             "            GROUP_CONCAT(g.name\n" +
             "                    ORDER BY g.name DESC)\n" +
@@ -105,6 +107,7 @@ public class ListServlet extends HttpServlet {
             "    m.title,\n" +
             "    m.year,\n" +
             "    m.director,\n" +
+            "    m.price,\n" +
             "    SUBSTRING_INDEX((SELECT \n" +
             "            GROUP_CONCAT(g.name\n" +
             "                    ORDER BY g.name DESC)\n" +
@@ -139,6 +142,7 @@ public class ListServlet extends HttpServlet {
             "    m.title,\n" +
             "    m.year,\n" +
             "    m.director,\n" +
+            "    m.price,\n" +
             "    SUBSTRING_INDEX((SELECT \n" +
             "            GROUP_CONCAT(g.name\n" +
             "                    ORDER BY g.name DESC)\n" +
@@ -356,6 +360,7 @@ public class ListServlet extends HttpServlet {
                 String movie_title = rs.getString("title");
                 String movie_year = rs.getString("year");
                 String movie_director = rs.getString("director");
+                String movie_price = rs.getString("price");
                 String movie_genres = rs.getString("genres");
                 String movie_stars = rs.getString("stars");
                 String movie_rating = rs.getString("rating");
@@ -365,6 +370,7 @@ public class ListServlet extends HttpServlet {
                 jsonObject.addProperty("movie_title", movie_title);
                 jsonObject.addProperty("movie_year", movie_year);
                 jsonObject.addProperty("movie_director", movie_director);
+                jsonObject.addProperty("movie_price", movie_price);
                 jsonObject.addProperty("movie_genres", movie_genres);
                 jsonObject.addProperty("movie_stars", movie_stars);
                 jsonObject.addProperty("movie_rating", movie_rating);

@@ -1,3 +1,4 @@
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -22,15 +23,11 @@ public class PlaceOrderServlet extends HttpServlet {
 
     private DataSource dataSource;
 
-    public void init() throws ServletException {
+    public void init(ServletConfig config) {
         try {
-            // Obtain our environment naming context
-            InitialContext initialContext = new InitialContext();
-            Context envContext = (Context) initialContext.lookup("java:/comp/env");
-            // Look up our data source by the name we gave it when we created it
-            dataSource = (DataSource) envContext.lookup("jdbc/moviedb");
+            dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/moviedb");
         } catch (NamingException e) {
-            throw new ServletException(e);
+            e.printStackTrace();
         }
     }
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -64,11 +61,16 @@ public class PlaceOrderServlet extends HttpServlet {
     }
 
     private boolean isValidCreditCard(String firstName, String lastName, String cardNumber, String expDate) {
+        System.out.println("Debug 1");
+        System.out.println(firstName);
+        System.out.println(lastName);
+        System.out.println(cardNumber);
+        System.out.println(expDate);
         // Check if the date string is in the correct format
         if (expDate == null || !expDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
             return false;
         }
-
+        System.out.println("Debug 2");
         // Convert the string to a java.sql.Date object
         java.sql.Date expirationDate;
         try {
@@ -77,7 +79,7 @@ public class PlaceOrderServlet extends HttpServlet {
             // The date string format is invalid
             return false;
         }
-
+        System.out.println("Debug 3");
         // Convert the date format to match your database format
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         String formattedExpirationDate = sdf.format(expirationDate);
