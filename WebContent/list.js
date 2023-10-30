@@ -22,7 +22,16 @@ function handleMovieResult(resultData) {
         rowHTML += "<th>" + '<a href="single-movie.html?id=' + movieData[i]['movie_id'] + '">' + movieData[i]['movie_title'] + '</a>' + "</th>"
         rowHTML += "<th>" + movieData[i]["movie_year"] + "</th>";
         rowHTML += "<th>" + movieData[i]["movie_director"] + "</th>";
-        rowHTML += "<th>" + movieData[i]["movie_genres"].split(",").join(", ") + "</th>";
+        const genres = movieData[i]["movie_genres"].split(",");
+        rowHTML += "<th>";
+        for (let j = 0; j < genres.length; j++) {
+            const genre = genres[j].trim();
+            rowHTML += '<a href="list.html?genre=' + encodeURIComponent(genre) + '">' + genre + '</a>';
+            if (j !== genres.length - 1) {
+                rowHTML += ", ";
+            }
+        }
+        rowHTML += "</th>";
         let stars = movieData[i]["movie_stars"].split(",");
         rowHTML += "<th>"
         for (let i = 0; i < stars.length; i++) {

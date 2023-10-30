@@ -13,7 +13,19 @@ function handleMovieResult(resultData) {
         rowHTML += "<th>" + '<a href="single-movie.html?id=' + resultData[i]['movie_id'] + '">' + resultData[i]['movie_title'] + '</a>' + "</th>"
         rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_director"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_genres"].split(",").join(", ") + "</th>";
+
+        // Split genres and create hyperlinks
+        const genres = resultData[i]["movie_genres"].split(",");
+        rowHTML += "<th>";
+        for (let j = 0; j < genres.length; j++) {
+            const genre = genres[j].trim();
+            rowHTML += '<a href="list.html?genre=' + encodeURIComponent(genre) + '">' + genre + '</a>';
+            if (j !== genres.length - 1) {
+                rowHTML += ", ";
+            }
+        }
+        rowHTML += "</th>";
+
         const stars = resultData[i]["movie_stars"].split(",");
         rowHTML += "<th>"
         for (let i = 0; i < stars.length; i++) {

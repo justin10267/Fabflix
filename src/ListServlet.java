@@ -51,11 +51,11 @@ public class ListServlet extends HttpServlet {
             "        JOIN\n" +
             "    ratings r ON m.id = r.movieId\n" +
             "WHERE \n" +
-            "(SOUNDEX(title) = SOUNDEX(?) OR title LIKE ?)\n" +
-            "AND (SOUNDEX(year) = SOUNDEX(?) OR year LIKE ?)\n" +
-            "AND (SOUNDEX(director) = SOUNDEX(?) OR director LIKE ?)\n" +
+            "(SOUNDEX(UPPER(title)) = SOUNDEX(?) OR UPPER(title) LIKE ?)\n" +
+            "AND year LIKE ?\n" +
+            "AND (SOUNDEX(UPPER(director)) = SOUNDEX(?) OR UPPER(director) LIKE ?)\n" +
             "GROUP BY m.id , m.title , m.year , m.director , r.rating\n" +
-            "HAVING stars LIKE ?" +
+            "HAVING UPPER(stars) LIKE ?" +
             "ORDER BY %s\n" +
             "LIMIT ?\n" +
             "OFFSET ?;";
@@ -133,6 +133,40 @@ public class ListServlet extends HttpServlet {
             "ORDER BY %s\n" +
             "LIMIT ?\n" +
             "OFFSET ?;";
+    private static String SPECIAL_TITLE_QUERY =
+            "SELECT \n" +
+            "    m.id,\n" +
+            "    m.title,\n" +
+            "    m.year,\n" +
+            "    m.director,\n" +
+            "    SUBSTRING_INDEX((SELECT \n" +
+            "            GROUP_CONCAT(g.name\n" +
+            "                    ORDER BY g.name DESC)\n" +
+            "        FROM\n" +
+            "            genres_in_movies gm\n" +
+            "                INNER JOIN\n" +
+            "            genres g ON gm.genreId = g.id\n" +
+            "        WHERE\n" +
+            "            gm.movieId = m.id), ',', 3) AS genres,\n" +
+            "    SUBSTRING_INDEX((SELECT \n" +
+            "            GROUP_CONCAT(CONCAT(s.id, ':', s.name)\n" +
+            "                    ORDER BY s.name DESC , s.id)\n" +
+            "        FROM\n" +
+            "            stars_in_movies sm\n" +
+            "                INNER JOIN\n" +
+            "            stars s ON sm.starId = s.id\n" +
+            "        WHERE\n" +
+            "            sm.movieId = m.id), ',', 3) AS stars,\n" +
+            "    r.rating\n" +
+            "FROM\n" +
+            "    movies m\n" +
+            "        JOIN\n" +
+            "    ratings r ON m.id = r.movieId\n" +
+            "WHERE m.title REGEXP '^[^a-zA-Z0-9]'\n" +
+            "GROUP BY m.id , m.title , m.year , m.director , r.rating\n" +
+            "ORDER BY %s\n" +
+            "LIMIT ?\n" +
+            "OFFSET ?;";
     private DataSource dataSource;
     public void init(ServletConfig config) {
         try {
@@ -149,24 +183,15 @@ public class ListServlet extends HttpServlet {
             String year = request.getParameter("year");
             String director = request.getParameter("director");
             String stars = request.getParameter("stars");
-
             String genre = request.getParameter("genre");
-
             String prefix = request.getParameter("prefix");
-            System.out.println("debug 1");
-            System.out.println(prefix);
-
             String limit = request.getParameter("limit");
             String sort = request.getParameter("sort");
-
             String page = request.getParameter("page");
-
             User sessionUser = (User)(request.getSession().getAttribute("user"));
-
             if (page == null) {
                 page = "1";
             }
-
             if (limit == null || sort == null) {
                 limit = sessionUser.getLimit();
                 sort = sessionUser.getSort();
@@ -175,34 +200,39 @@ public class ListServlet extends HttpServlet {
                 sessionUser.setLimit(limit);
                 sessionUser.setSort(sort);
             }
-
             sort = User.getSortQuery(sort);
             String offset = Integer.toString((Integer.parseInt(page) - 1 ) * Integer.parseInt(limit));
-
             PreparedStatement statement;
             PreparedStatement nextPageStatement;
             if (title != null || year != null || director != null || stars != null) {
                 statement = conn.prepareStatement(String.format(SEARCH_QUERY, sort));
                 nextPageStatement = conn.prepareStatement(String.format(SEARCH_QUERY, sort));
+                if (title != null) {
+                    title = title.toUpperCase();
+                }
+                if (director != null) {
+                    director = director.toUpperCase();
+                }
+                if (stars != null) {
+                    stars = stars.toUpperCase();
+                }
                 statement.setString(1, title);
-                statement.setString(2, title + "%");
-                statement.setString(3, year);
-                statement.setString(4, year + "%");
-                statement.setString(5, director);
-                statement.setString(6, director + "%");
-                statement.setString(7, "%" + stars + "%");
-                statement.setInt(8, Integer.parseInt(limit));
-                statement.setInt(9, Integer.parseInt(offset));
+                statement.setString(2, "%" + title + "%");
+                statement.setString(3, year + "%");
+                statement.setString(4, director);
+                statement.setString(5, "%" + director + "%");
+                statement.setString(6, "%" + stars + "%");
+                statement.setInt(7, Integer.parseInt(limit));
+                statement.setInt(8, Integer.parseInt(offset));
 
                 nextPageStatement.setString(1, title);
-                nextPageStatement.setString(2, title + "%");
-                nextPageStatement.setString(3, year);
-                nextPageStatement.setString(4, year + "%");
-                nextPageStatement.setString(5, director);
-                nextPageStatement.setString(6, director + "%");
-                nextPageStatement.setString(7, "%" + stars + "%");
-                nextPageStatement.setInt(8, Integer.parseInt(limit));
-                nextPageStatement.setInt(9, Integer.parseInt(offset + 1));
+                nextPageStatement.setString(2, "%" + title + "%");
+                nextPageStatement.setString(3, year + "%");
+                nextPageStatement.setString(4, director);
+                nextPageStatement.setString(5, "%" + director + "%");
+                nextPageStatement.setString(6, "%" + stars + "%");
+                nextPageStatement.setInt(7, Integer.parseInt(limit));
+                nextPageStatement.setInt(8, Integer.parseInt(offset + 1));
 
                 sessionUser.setPreviousQueryType("search");
                 sessionUser.setPreviousSearchParameters(title, year, director, stars);
@@ -222,15 +252,26 @@ public class ListServlet extends HttpServlet {
                 sessionUser.setPreviousGenre(genre);
             }
             else if (prefix != null) {
-                statement = conn.prepareStatement(String.format(TITLE_QUERY, sort));
-                statement.setString(1, prefix + "%");
-                statement.setInt(2, Integer.parseInt(limit));
-                statement.setInt(3, Integer.parseInt(offset));
+                if (prefix.equals(" *")) {
+                    statement = conn.prepareStatement(String.format(SPECIAL_TITLE_QUERY, sort));
+                    nextPageStatement = conn.prepareStatement(String.format(SPECIAL_TITLE_QUERY, sort));
+                    statement.setInt(1, Integer.parseInt(limit));
+                    statement.setInt(2, Integer.parseInt(offset));
 
-                nextPageStatement = conn.prepareStatement(String.format(TITLE_QUERY, sort));
-                nextPageStatement.setString(1, prefix + "%");
-                nextPageStatement.setInt(2, Integer.parseInt(limit));
-                nextPageStatement.setInt(3, Integer.parseInt(offset + 1));
+                    nextPageStatement.setInt(1, Integer.parseInt(limit));
+                    nextPageStatement.setInt(2, Integer.parseInt(offset + 1));
+                }
+                else {
+                    statement = conn.prepareStatement(String.format(TITLE_QUERY, sort));
+                    nextPageStatement = conn.prepareStatement(String.format(TITLE_QUERY, sort));
+                    statement.setString(1, prefix + "%");
+                    statement.setInt(2, Integer.parseInt(limit));
+                    statement.setInt(3, Integer.parseInt(offset));
+
+                    nextPageStatement.setString(1, prefix + "%");
+                    nextPageStatement.setInt(2, Integer.parseInt(limit));
+                    nextPageStatement.setInt(3, Integer.parseInt(offset + 1));
+                }
 
                 sessionUser.setPreviousQueryType("prefix");
                 sessionUser.setPreviousPrefix(prefix);
@@ -239,26 +280,36 @@ public class ListServlet extends HttpServlet {
                 String queryType = sessionUser.getPreviousQueryType();
                 if (queryType.equals("search")) {
                     statement = conn.prepareStatement(String.format(SEARCH_QUERY, sort));
-                    statement.setString(1, sessionUser.getPreviousTitle());
-                    statement.setString(2, sessionUser.getPreviousTitle() + "%");
-                    statement.setString(3, sessionUser.getPreviousYear());
-                    statement.setString(4, sessionUser.getPreviousYear() + "%");
-                    statement.setString(5, sessionUser.getPreviousDirector());
-                    statement.setString(6, sessionUser.getPreviousDirector() + "%");
-                    statement.setString(7, "%" + sessionUser.getPreviousStars() + "%");
-                    statement.setInt(8, Integer.parseInt(limit));
-                    statement.setInt(9, Integer.parseInt(offset));
+                    String previousTitle = null;
+                    String previousDirector = null;
+                    String previousStars = null;
+                    if (sessionUser.getPreviousTitle() != null) {
+                        previousTitle = sessionUser.getPreviousTitle().toUpperCase();
+                    }
+                    if (sessionUser.getPreviousDirector() != null) {
+                        previousDirector = sessionUser.getPreviousDirector().toUpperCase();
+                    }
+                    if (sessionUser.getPreviousStars() != null) {
+                        previousStars = sessionUser.getPreviousStars().toUpperCase();
+                    }
+                    statement.setString(1, previousTitle);
+                    statement.setString(2, "%" + previousTitle + "%");
+                    statement.setString(3, sessionUser.getPreviousYear() + "%");
+                    statement.setString(4, previousDirector);
+                    statement.setString(5, "%" + previousDirector + "%");
+                    statement.setString(6, "%" + previousStars + "%");
+                    statement.setInt(7, Integer.parseInt(limit));
+                    statement.setInt(8, Integer.parseInt(offset));
 
                     nextPageStatement = conn.prepareStatement(String.format(SEARCH_QUERY, sort));
-                    nextPageStatement.setString(1, sessionUser.getPreviousTitle());
-                    nextPageStatement.setString(2, sessionUser.getPreviousTitle() + "%");
-                    nextPageStatement.setString(3, sessionUser.getPreviousYear());
-                    nextPageStatement.setString(4, sessionUser.getPreviousYear() + "%");
-                    nextPageStatement.setString(5, sessionUser.getPreviousDirector());
-                    nextPageStatement.setString(6, sessionUser.getPreviousDirector() + "%");
-                    nextPageStatement.setString(7, "%" + sessionUser.getPreviousStars() + "%");
-                    nextPageStatement.setInt(8, Integer.parseInt(limit));
-                    nextPageStatement.setInt(9, Integer.parseInt(offset));
+                    nextPageStatement.setString(1, previousTitle);
+                    nextPageStatement.setString(2, "%" + previousTitle + "%");
+                    nextPageStatement.setString(3, sessionUser.getPreviousYear() + "%");
+                    nextPageStatement.setString(4, previousDirector);
+                    nextPageStatement.setString(5, "%" + previousDirector + "%");
+                    nextPageStatement.setString(6, "%" + previousStars + "%");
+                    nextPageStatement.setInt(7, Integer.parseInt(limit));
+                    nextPageStatement.setInt(8, Integer.parseInt(offset + 1));
                 }
                 else if (queryType.equals("genre")) {
                     statement = conn.prepareStatement(String.format(GENRE_QUERY, sort));
@@ -269,18 +320,29 @@ public class ListServlet extends HttpServlet {
                     nextPageStatement = conn.prepareStatement(String.format(GENRE_QUERY, sort));
                     nextPageStatement.setString(1, sessionUser.getPreviousGenre());
                     nextPageStatement.setInt(2, Integer.parseInt(limit));
-                    nextPageStatement.setInt(3, Integer.parseInt(offset));
+                    nextPageStatement.setInt(3, Integer.parseInt(offset + 1));
                 }
                 else {
-                    statement = conn.prepareStatement(String.format(TITLE_QUERY, sort));
-                    statement.setString(1, sessionUser.getPreviousPrefix() + "%");
-                    statement.setInt(2, Integer.parseInt(limit));
-                    statement.setInt(3, Integer.parseInt(offset));
+                    if (sessionUser.getPreviousPrefix().equals(" *")) {
+                        statement = conn.prepareStatement(String.format(SPECIAL_TITLE_QUERY, sort));
+                        nextPageStatement = conn.prepareStatement(String.format(SPECIAL_TITLE_QUERY, sort));
+                        statement.setInt(1, Integer.parseInt(limit));
+                        statement.setInt(2, Integer.parseInt(offset));
 
-                    nextPageStatement = conn.prepareStatement(String.format(TITLE_QUERY, sort));
-                    nextPageStatement.setString(1, sessionUser.getPreviousPrefix() + "%");
-                    nextPageStatement.setInt(2, Integer.parseInt(limit));
-                    nextPageStatement.setInt(3, Integer.parseInt(offset));
+                        nextPageStatement.setInt(1, Integer.parseInt(limit));
+                        nextPageStatement.setInt(2, Integer.parseInt(offset + 1));
+                    }
+                    else {
+                        statement = conn.prepareStatement(String.format(TITLE_QUERY, sort));
+                        nextPageStatement = conn.prepareStatement(String.format(TITLE_QUERY, sort));
+                        statement.setString(1, sessionUser.getPreviousPrefix() + "%");
+                        statement.setInt(2, Integer.parseInt(limit));
+                        statement.setInt(3, Integer.parseInt(offset));
+
+                        nextPageStatement.setString(1, sessionUser.getPreviousPrefix() + "%");
+                        nextPageStatement.setInt(2, Integer.parseInt(limit));
+                        nextPageStatement.setInt(3, Integer.parseInt(offset + 1));
+                    }
                 }
             }
             System.out.println(statement);
