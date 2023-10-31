@@ -1,9 +1,11 @@
+import com.google.gson.JsonObject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -16,11 +18,20 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 
 
 @WebServlet(name = "PlaceOrderServlet", urlPatterns = "/api/placeOrder")
 public class PlaceOrderServlet extends HttpServlet {
-
+    private static final String INSERT_QUERY =
+            "INSERT INTO moviedb.sales (customerId, movieId, saleDate)\n" +
+            "VALUES (?, ?, ?);";
+    private static final String CREDIT_CARD_QUERY =
+            "SELECT *\n" +
+            "FROM creditcards\n" +
+            "WHERE firstName = ? AND lastName = ? AND id = ? AND expiration = ?;";
     private DataSource dataSource;
 
     public void init(ServletConfig config) {
@@ -37,85 +48,89 @@ public class PlaceOrderServlet extends HttpServlet {
         String lastName = request.getParameter("lastName");
         String cardNumber = request.getParameter("cardNumber");
         String expDate = request.getParameter("expDate");
-
-        try (PrintWriter out = response.getWriter()) { // Using try-with-resources to ensure PrintWriter is closed
-            // Validate credit card info against "credit cards" table
-            if (isValidCreditCard(firstName, lastName, cardNumber, expDate)) {
-                // Record transaction in "sales" table
-                //recordTransaction();
-
-                // Send success response
-                out.write("{\"success\": true}");
-            } else {
-                // Send error response
-                out.write("{\"success\": false, \"message\": \"Invalid payment details. Please try again.\"}");
+        JsonObject responseJsonObject = new JsonObject();
+        PrintWriter out = response.getWriter();
+        if (isValidCreditCard(firstName, lastName, cardNumber, expDate)) {
+            System.out.println("debug 1");
+            HttpSession session = request.getSession();
+            User loggedInUser = (User) session.getAttribute("user");
+            String userId = loggedInUser.getUsername();
+            String cartKey = "cart_" + userId;
+            HashMap<String, ShoppingCartServlet.MovieItem> cart = (HashMap<String, ShoppingCartServlet.MovieItem>)
+                    session.getAttribute(cartKey);
+            LocalDate purchaseDate = LocalDate.now();
+            System.out.println(purchaseDate);
+            for (String movie: cart.keySet()) {
+                System.out.println(cart.get(movie));
+                recordTransaction(cart.get(movie), userId, purchaseDate, responseJsonObject);
             }
-        } catch (Exception e) {
-            // If an error occurs, log it and return a generic error message to the user.
-            e.printStackTrace(); // Log the error (You might want to use a logger instead)
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            try (PrintWriter out = response.getWriter()) {
-                out.write("{\"success\": false, \"message\": \"An error occurred. Please try again later.\"}");
-            }
+            responseJsonObject.addProperty("status", "success");
+            responseJsonObject.addProperty("message", "success");
+            cart.clear();
+            session.setAttribute("cartKey", cart);
         }
+        else {
+            responseJsonObject.addProperty("status", "fail");
+            responseJsonObject.addProperty("message", "transaction failed");
+        }
+        out.write(responseJsonObject.toString());
     }
 
     private boolean isValidCreditCard(String firstName, String lastName, String cardNumber, String expDate) {
-        System.out.println("Debug 1");
-        System.out.println(firstName);
-        System.out.println(lastName);
-        System.out.println(cardNumber);
-        System.out.println(expDate);
-        // Check if the date string is in the correct format
         if (expDate == null || !expDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
             return false;
         }
-        System.out.println("Debug 2");
-        // Convert the string to a java.sql.Date object
         java.sql.Date expirationDate;
         try {
             expirationDate = java.sql.Date.valueOf(expDate);
         } catch (IllegalArgumentException e) {
-            // The date string format is invalid
             return false;
         }
-        System.out.println("Debug 3");
-        // Convert the date format to match your database format
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         String formattedExpirationDate = sdf.format(expirationDate);
-
-        // Query the database
-        String query = "SELECT * FROM creditcards WHERE firstName = 'Dan' AND lastName = 'Mori' AND id = '107003' AND expiration = '2005/03/17'";
-        try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(CREDIT_CARD_QUERY)) {
             stmt.setString(1, firstName);
             stmt.setString(2, lastName);
             stmt.setString(3, cardNumber);
             stmt.setString(4, formattedExpirationDate);
-
+            System.out.println(stmt);
             ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                System.out.println("ID: " + rs.getString("id"));
-                System.out.println("First Name: " + rs.getString("firstName"));
-                System.out.println("Last Name: " + rs.getString("lastName"));
-                System.out.println("Expiration: " + rs.getDate("expiration"));
-                // ... and so on for other columns
-
-                // Since you have a match, return true
-                return true;
-            }
-            if (rs.next()) {
-                // Found a matching record
-                return true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            boolean valid = rs.next();
+            System.out.println(valid);
+            rs.close();
+            return valid;
         }
-
-        return false;
+        catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    private void recordTransaction() {
-        // Implement logic to record the transaction in the "sales" table
-        // Placeholder for now
+    private void recordTransaction(ShoppingCartServlet.MovieItem movieItem, String userId, LocalDate purchaseDate,
+                                   JsonObject responseJsonObject) {
+        try (Connection conn = dataSource.getConnection()) {
+            for (int i=0; i<movieItem.getQuantity(); i++) {
+                System.out.println("debug 2");
+                PreparedStatement preparedStatement = conn.prepareStatement(INSERT_QUERY);
+                preparedStatement.setString(1, userId);
+                preparedStatement.setString(2, movieItem.getId());
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                String formattedPurchaseDate = purchaseDate.format(formatter);
+                preparedStatement.setString(3, formattedPurchaseDate);
+                System.out.println(preparedStatement);
+                int rowsAffected = preparedStatement.executeUpdate();
+                if (rowsAffected <= 0) {
+                    responseJsonObject.addProperty("status", "fail");
+                    responseJsonObject.addProperty("message", "transaction failed");
+                    return;
+                }
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            responseJsonObject.addProperty("status", "fail");
+            responseJsonObject.addProperty("message", "transaction failed");
+        }
     }
 }

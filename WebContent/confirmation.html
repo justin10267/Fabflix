@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Result List</title>
+    <title>Confirmation</title>
 </head>
 <body>
 <nav class="navbar navbar-dark bg-dark">
@@ -24,55 +24,25 @@
     </div>
 </nav>
 
-<h1>Results</h1>
+<h1>Confirmation</h1>
 
-<label for="moviesPerPage">Movies Per Page:</label>
-<div class="dropdown">
-    <select id="moviesPerPage" class="form-control">
-        <option value="10">10</option>
-        <option value="25" selected>25</option>
-        <option value="50">50</option>
-        <option value="100">100</option>
-    </select>
-</div>
-<label for="sortOrder">Sort By:</label>
-<div class="dropdown">
-    <select id="sortOrder" class="form-control">
-        <option value="1">Title ↑, Rating ↑</option>↓
-        <option value="2">Title ↑, Rating ↓</option>
-        <option value="3">Title ↓, Rating ↑</option>
-        <option value="4">Title ↓, Rating ↓</option>
-        <option value="5">Rating ↑, Title ↑</option>
-        <option value="6">Rating ↑, Title ↓</option>
-        <option value="7">Rating ↓, Title ↑</option>
-        <option value="8">Rating ↓, Title ↓</option>
-    </select>
-</div>
-<button id="updateButton" class="btn btn-primary">Update</button>
-
-
-<table id=result_table class="table table-striped">
+<table id=confirmation_table class="table table-striped">
     <thead>
     <tr>
+        <th>Sale ID</th>
         <th>Title</th>
-        <th>Release Year</th>
-        <th>Director</th>
-        <th>Genres</th>
-        <th>Stars</th>
-        <th>Ratings</th>
-        <th>Action</th> <!-- New column for Add to Cart button -->
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Total</th>
     </tr>
     </thead>
-    <tbody id=result_body_table></tbody>
+    <tbody id=confirmation_body_table></tbody>
 </table>
-
-<button id="previousPageButton" class="btn btn-primary">Previous Page</button>
-<button id="nextPageButton" class="btn btn-primary">Next Page</button>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
-<script src="list.js"></script>
+<script src="confirmation.js"></script>
 </body>
 </html>

@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const movieId = event.target.getAttribute("data-movie-id");
             const movieTitle = event.target.getAttribute("data-movie-title");
             const moviePrice = event.target.getAttribute("data-movie-price");
-            console.log(moviePrice)
+            console.log(movieId);
             addToCart(movieId, movieTitle, moviePrice);
         }
     });
@@ -87,6 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
             url: "api/cart",
             data: {
                 "action": "add",
+                "id": movieId,
                 "title": movieTitle,
                 "price": moviePrice
             },

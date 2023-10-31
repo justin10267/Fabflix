@@ -16,14 +16,24 @@ public class ShoppingCartServlet extends HttpServlet {
         private String title;
         private int quantity;
         private double price;
-        public MovieItem(String title, double price) {
+        private String id;
+        public MovieItem(String id, String title, double price) {
+            this.id = id;
             this.title = title;
             this.price = price;
             this.quantity = 1; // default
         }
-
+        public String getId() { return this.id; }
+        public String getTitle() { return this.title; }
+        public int getQuantity() { return this.quantity; }
+        public double getPrice() { return this.price; }
         public double getTotalPrice() {
             return this.price * this.quantity;
+        }
+        @Override
+        public String toString() {
+            return "MovieItem{" + "id='" + this.id + '\'' + "title='" + this.title + '\'' + ", quantity=" +
+                    this.quantity + ", price=" + this.price + '}';
         }
     }
 
@@ -56,6 +66,7 @@ public class ShoppingCartServlet extends HttpServlet {
 
         for (MovieItem item : cart.values()) {
             JsonObject itemObject = new JsonObject();
+            itemObject.addProperty("id", item.id);
             itemObject.addProperty("title", item.title);
             itemObject.addProperty("price", item.price);
             itemObject.addProperty("quantity", item.quantity);
@@ -86,6 +97,7 @@ public class ShoppingCartServlet extends HttpServlet {
 
         try {
             String action = request.getParameter("action");
+            String id = request.getParameter("id");
             String title = request.getParameter("title");
             String price = request.getParameter("price");
 
@@ -100,13 +112,14 @@ public class ShoppingCartServlet extends HttpServlet {
                 cart = new HashMap<>();
             }
             System.out.println(action);
+            System.out.println(id);
             System.out.println(title);
             System.out.println(price);
 
             switch (action) {
                 case "add":
                     if (!cart.containsKey(title)) {
-                        cart.put(title, new MovieItem(title, Double.parseDouble(price)));
+                        cart.put(title, new MovieItem(id, title, Double.parseDouble(price)));
                     } else {
                         MovieItem existingItem = cart.get(title);
                         existingItem.quantity += 1;
