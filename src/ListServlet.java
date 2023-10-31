@@ -236,7 +236,7 @@ public class ListServlet extends HttpServlet {
                 nextPageStatement.setString(5, "%" + director + "%");
                 nextPageStatement.setString(6, "%" + stars + "%");
                 nextPageStatement.setInt(7, Integer.parseInt(limit));
-                nextPageStatement.setInt(8, Integer.parseInt(offset + 1));
+                nextPageStatement.setInt(8, Integer.parseInt(offset) + 1);
 
                 sessionUser.setPreviousQueryType("search");
                 sessionUser.setPreviousSearchParameters(title, year, director, stars);
@@ -250,7 +250,7 @@ public class ListServlet extends HttpServlet {
                 nextPageStatement = conn.prepareStatement(String.format(GENRE_QUERY, sort));
                 nextPageStatement.setString(1, genre);
                 nextPageStatement.setInt(2, Integer.parseInt(limit));
-                nextPageStatement.setInt(3, Integer.parseInt(offset + 1));
+                nextPageStatement.setInt(3, Integer.parseInt(offset) + 1);
 
                 sessionUser.setPreviousQueryType("genre");
                 sessionUser.setPreviousGenre(genre);
@@ -263,7 +263,7 @@ public class ListServlet extends HttpServlet {
                     statement.setInt(2, Integer.parseInt(offset));
 
                     nextPageStatement.setInt(1, Integer.parseInt(limit));
-                    nextPageStatement.setInt(2, Integer.parseInt(offset + 1));
+                    nextPageStatement.setInt(2, Integer.parseInt(offset) + 1);
                 }
                 else {
                     statement = conn.prepareStatement(String.format(TITLE_QUERY, sort));
@@ -274,7 +274,7 @@ public class ListServlet extends HttpServlet {
 
                     nextPageStatement.setString(1, prefix + "%");
                     nextPageStatement.setInt(2, Integer.parseInt(limit));
-                    nextPageStatement.setInt(3, Integer.parseInt(offset + 1));
+                    nextPageStatement.setInt(3, Integer.parseInt(offset) + 1);
                 }
 
                 sessionUser.setPreviousQueryType("prefix");
@@ -313,7 +313,7 @@ public class ListServlet extends HttpServlet {
                     nextPageStatement.setString(5, "%" + previousDirector + "%");
                     nextPageStatement.setString(6, "%" + previousStars + "%");
                     nextPageStatement.setInt(7, Integer.parseInt(limit));
-                    nextPageStatement.setInt(8, Integer.parseInt(offset + 1));
+                    nextPageStatement.setInt(8, Integer.parseInt(offset) + 1);
                 }
                 else if (queryType.equals("genre")) {
                     statement = conn.prepareStatement(String.format(GENRE_QUERY, sort));
@@ -324,7 +324,7 @@ public class ListServlet extends HttpServlet {
                     nextPageStatement = conn.prepareStatement(String.format(GENRE_QUERY, sort));
                     nextPageStatement.setString(1, sessionUser.getPreviousGenre());
                     nextPageStatement.setInt(2, Integer.parseInt(limit));
-                    nextPageStatement.setInt(3, Integer.parseInt(offset + 1));
+                    nextPageStatement.setInt(3, Integer.parseInt(offset) + 1);
                 }
                 else {
                     if (sessionUser.getPreviousPrefix().equals(" *")) {
@@ -334,7 +334,7 @@ public class ListServlet extends HttpServlet {
                         statement.setInt(2, Integer.parseInt(offset));
 
                         nextPageStatement.setInt(1, Integer.parseInt(limit));
-                        nextPageStatement.setInt(2, Integer.parseInt(offset + 1));
+                        nextPageStatement.setInt(2, Integer.parseInt(offset) + 1);
                     }
                     else {
                         statement = conn.prepareStatement(String.format(TITLE_QUERY, sort));
@@ -345,7 +345,7 @@ public class ListServlet extends HttpServlet {
 
                         nextPageStatement.setString(1, sessionUser.getPreviousPrefix() + "%");
                         nextPageStatement.setInt(2, Integer.parseInt(limit));
-                        nextPageStatement.setInt(3, Integer.parseInt(offset + 1));
+                        nextPageStatement.setInt(3, Integer.parseInt(offset) + 1);
                     }
                 }
             }
@@ -377,6 +377,8 @@ public class ListServlet extends HttpServlet {
 
                 jsonArray.add(jsonObject);
             }
+            System.out.println("Size: " + size);
+
             boolean isLastPage = false;
             if (size < Integer.parseInt(limit)) {
                 isLastPage = true;
@@ -389,6 +391,11 @@ public class ListServlet extends HttpServlet {
                 }
                 isLastPage = nextPageSize == 0;
                 nextPageRS.close();
+                System.out.println(nextPageStatement);
+                System.out.println("NextPageSize: " + nextPageSize);
+                System.out.println("page: " + page);
+                System.out.println("limit: " + limit);
+                System.out.println("offset: " + offset);
             }
 
             JsonObject jsonResponse = new JsonObject();
