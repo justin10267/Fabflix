@@ -109,14 +109,14 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("previous clicked");
         const newPage = currentPage - 1;
         sessionStorage.setItem("currentPage", newPage.toString());
-        window.location.href = `/Fabflix_war/list.html?page=${newPage}`;
+        window.location.href = `./list.html?page=${newPage}`;
     });
 
     document.getElementById("nextPageButton").addEventListener("click", function () {
         console.log("next clicked");
         const newPage = currentPage + 1;
         sessionStorage.setItem("currentPage", newPage.toString());
-        window.location.href = `/Fabflix_war/list.html?page=${newPage}`;
+        window.location.href = `./list.html?page=${newPage}`;
     });
 
     // Handle the "Results" link click event
@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
             window.location.href = recentResultUrl;
         } else {
             // Fallback to the default URL if recentResultUrl is not set
-            window.location.href = "/Fabflix_war/list.html";
+            window.location.href = "./list.html";
         }
     });
 })

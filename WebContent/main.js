@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
             window.location.href = recentResultUrl;
         } else {
             // Fallback to the default URL if recentResultUrl is not set
-            window.location.href = "/Fabflix_war/list.html";
+            window.location.href = "./list.html";
         }
     });
 });
