@@ -2,20 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="resultPage.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-    <title>Shopping Cart</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Confirmation</title>
 </head>
 <body>
 <nav class="navbar navbar-dark bg-dark">
     <a class="navbar-brand" href="./main.html">Fabflix</a>
-
+    <a class="navbar-brand" href="./main.html">Main</a>
     <a class="navbar-brand" href="./list.html">Results</a>
     <a class="navbar-brand" href="./movie-list.html">Top 20</a>
-
+    <a class="navbar-brand" href="./cart.html">Shopping Cart</a>
     <div class="ml-auto">
         <form class="form-inline" action="./list.html" method="GET">
             <input class="form-control mr-sm-2" type="text" placeholder="Title" name="title">
@@ -26,26 +23,26 @@
         </form>
     </div>
 </nav>
-<h1>Shopping Cart</h1>
 
-<table id="cartTable">
+<h1>Confirmation</h1>
+
+<table id=confirmation_table class="table table-striped">
     <thead>
     <tr>
-        <th>Movie Title</th>
+        <th>Sale ID</th>
+        <th>Title</th>
         <th>Quantity</th>
         <th>Price</th>
         <th>Total</th>
-        <th>Actions</th>
     </tr>
     </thead>
-    <tbody>
-    <!-- Items will be populated here by JavaScript -->
-    </tbody>
+    <tbody id=confirmation_body_table></tbody>
 </table>
 
-<button id="proceedToPayment">Proceed to Payment</button>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
-<script src="cart.js"></script>
-
+<script src="confirmation.js"></script>
 </body>
 </html>

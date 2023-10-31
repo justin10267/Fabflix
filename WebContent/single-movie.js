@@ -38,7 +38,16 @@ function handleResult(resultData) {
         const star_info = stars[i].split(":");
         starInfoElement.append("<p>" + '<a href="single-star.html?id=' + star_info[0] + '">' + star_info[1] + '</a>')
     }
-    jQuery("#addToCartButton").click(() => addToCart(movieId, resultData[0]["movie_title"]));
+
+    let moviePriceElement = document.getElementById("moviePrice");
+    const moviePrice = parseFloat(resultData[0]["movie_price"]);
+    if (!isNaN(moviePrice)) {
+        moviePriceElement.textContent = "Price: $" + moviePrice.toFixed(2);
+    } else {
+        console.error("Invalid movie price: " + resultData[0]["movie_price"]);
+    }
+
+    jQuery("#addToCartButton").click(() => addToCart(movieId, resultData[0]["movie_title"], resultData[0]["movie_price"]));
 }
 document.addEventListener("DOMContentLoaded", function () {
     // Handle the "Results" link click event
@@ -58,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
-function addToCart(movieId, movieTitle) {
+function addToCart(movieId, movieTitle, moviePrice) {
     console.log("Adding movie to cart: " + movieTitle);
     jQuery.ajax({
         dataType: "json",
@@ -66,7 +75,9 @@ function addToCart(movieId, movieTitle) {
         url: "api/cart",
         data: {
             "action": "add",
-            "title": movieTitle
+            "id": movieId,
+            "title": movieTitle,
+            "price": moviePrice
         },
         success: (response) => {
             alert("Added to cart!");
@@ -76,7 +87,6 @@ function addToCart(movieId, movieTitle) {
         }
     });
 }
-
 
 let movieId = getParameterByName('id');
 jQuery.ajax({

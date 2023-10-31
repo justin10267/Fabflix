@@ -1,53 +1,51 @@
-document.addEventListener("DOMContentLoaded", function() {
-    // Fetch total cart value and display on page load
-    fetch("/Fabflix_war/api/cart")
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("totalPrice").innerText = "Total Price: $" + data.totalPrice.toFixed(2);
-        })
-        .catch(error => {
-            console.error('Error fetching cart data:', error);
-        });
-
-    const paymentForm = document.getElementById("paymentForm");
-
-    paymentForm.addEventListener("submit", function(event) {
-        event.preventDefault();
-
-        const formData = new FormData(paymentForm);
-
-        // Define requestOptions here
-        const requestOptions = {
-            method: 'POST',
-            body: formData
-        };
-
-        fetch('/Fabflix_war/api/placeOrder', requestOptions)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.text(); // Getting raw text in case of non-JSON response
-            })
-            .then(text => {
-                console.log('Raw response:', text);  // Log the raw response
-                try {
-                    return JSON.parse(text);  // Convert the raw response to a JSON object
-                } catch (error) {
-                    throw new SyntaxError("Invalid JSON format");
-                }
-            })
-            .then(data => {
-                if (data.success) {
-                    // Handle successful payment
-                    alert("Payment Successful!");
-                } else {
-                    // Handle payment failure, maybe show the message from data.message
-                    alert(data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error during payment:', error);
-            });
-    });
+let payment_form = $("#paymentForm");
+$.ajax({
+    url: "./api/cart",
+    method: "GET",
+    dataType: "json",
+    success: function(data) {
+        document.getElementById("totalPrice").innerText = "Total Price: $" + data.totalPrice.toFixed(2);
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+        console.error('Error fetching cart data:', errorThrown);
+    }
 });
+
+function openSuccessModal() {
+    let modal = document.getElementById("successModal");
+    modal.style.display = "block";
+}
+function closeSuccessModal() {
+    let modal = document.getElementById("successModal");
+    modal.style.display = "none";
+}
+
+function handlePaymentResult(resultDataJson) {
+    console.log("handle payment response");
+    console.log(resultDataJson);
+    console.log(resultDataJson.status);
+
+    if (resultDataJson.status === "success") {
+        window.location.replace("confirmation.html");
+
+    } else {
+        console.log("show error message");
+        console.log(resultDataJson.message);
+        $("#payment_error_message").text(resultDataJson.message);
+    }
+}
+
+function submitPaymentForm(formSubmitEvent) {
+    console.log("submit payment form");
+    formSubmitEvent.preventDefault();
+
+    $.ajax({
+        url: "api/placeOrder",
+        method: "POST",
+        data: payment_form.serialize(),
+        dataType: "json",
+        success: handlePaymentResult
+    });
+}
+
+payment_form.submit(submitPaymentForm);

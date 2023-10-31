@@ -43,7 +43,7 @@ function handleMovieResult(resultData) {
         }
         rowHTML += "</th>"
         rowHTML += "<th>" + movieData[i]["movie_rating"] + "</th>";
-        rowHTML += `<th><button class="addToCart" data-movie-id="${movieData[i]['movie_id']}" data-movie-title="${movieData[i]['movie_title']}">Add to Cart</button></th>`;
+        rowHTML += `<th><button class="addToCart" data-movie-id="${movieData[i]['movie_id']}" data-movie-title="${movieData[i]['movie_title']}" data-movie-price="${movieData[i]['movie_price']}">Add to Cart</button></th>`;
         rowHTML += "</tr>";
 
 
@@ -74,10 +74,12 @@ document.addEventListener("DOMContentLoaded", function () {
         if (event.target.classList.contains("addToCart")) {
             const movieId = event.target.getAttribute("data-movie-id");
             const movieTitle = event.target.getAttribute("data-movie-title");
-            addToCart(movieId, movieTitle);
+            const moviePrice = event.target.getAttribute("data-movie-price");
+            console.log(movieId);
+            addToCart(movieId, movieTitle, moviePrice);
         }
     });
-    function addToCart(movieId, movieTitle) {
+    function addToCart(movieId, movieTitle, moviePrice) {
         console.log("Adding movie to cart: " + movieTitle);
         jQuery.ajax({
             dataType: "json",
@@ -85,7 +87,9 @@ document.addEventListener("DOMContentLoaded", function () {
             url: "api/cart",
             data: {
                 "action": "add",
-                "title": movieTitle
+                "id": movieId,
+                "title": movieTitle,
+                "price": moviePrice
             },
             success: (response) => {
                 alert("Added to cart!");

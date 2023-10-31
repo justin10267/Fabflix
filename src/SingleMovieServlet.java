@@ -62,6 +62,7 @@ public class SingleMovieServlet extends HttpServlet {
                     "    m.title,\n" +
                     "    m.year,\n" +
                     "    m.director,\n" +
+                    "    m.price,\n" +
                     "    (SELECT \n" +
                     "            GROUP_CONCAT(g.name ORDER BY g.name ASC)\n" +
                     "        FROM\n" +
@@ -113,6 +114,7 @@ public class SingleMovieServlet extends HttpServlet {
                 String movie_title = rs.getString("title");
                 String movie_year = rs.getString("year");
                 String movie_director = rs.getString("director");
+                String movie_price = rs.getString("price");
                 String movie_genres = rs.getString("genres");
                 String movie_stars = rs.getString("stars");
                 String movie_rating = rs.getString("rating");
@@ -123,6 +125,7 @@ public class SingleMovieServlet extends HttpServlet {
                 jsonObject.addProperty("movie_title", movie_title);
                 jsonObject.addProperty("movie_year", movie_year);
                 jsonObject.addProperty("movie_director", movie_director);
+                jsonObject.addProperty("movie_price", movie_price);
                 jsonObject.addProperty("movie_genres", movie_genres);
                 jsonObject.addProperty("movie_stars", movie_stars);
                 jsonObject.addProperty("movie_rating", movie_rating);

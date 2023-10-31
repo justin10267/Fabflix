@@ -80,6 +80,5 @@ public class User {
     public void setPreviousGenre(String genre) { previousGenre = genre; }
 
     public void setPreviousPrefix(String prefix) { previousPrefix = prefix; }
-
     public static String getSortQuery(String sortNumber) { return sortMap.get(sortNumber); }
 }
