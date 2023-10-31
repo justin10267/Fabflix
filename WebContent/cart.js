@@ -24,7 +24,7 @@ $(document).ready(function() {
 
 function loadCartItems() {
     $.ajax({
-        url: '/Fabflix_war/api/cart',
+        url: 'api/cart',
         method: 'GET',
         dataType: 'json',
         success: function(data) {
@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
             window.location.href = recentResultUrl;
         } else {
             // Fallback to the default URL if recentResultUrl is not set
-            window.location.href = "/Fabflix_war/list.html";
+            window.location.href = "./list.html";
         }
     });
 });
@@ -87,7 +87,7 @@ function decreaseQuantity(id) {
 
 function deleteItem(id) {
     $.ajax({
-        url: '/Fabflix_war/api/cart',
+        url: '/api/cart',
         method: 'POST',
         data: {
             title: id,
@@ -101,7 +101,7 @@ function deleteItem(id) {
 
 function modifyItemQuantity(id, action) {
     $.ajax({
-        url: '/Fabflix_war/api/cart',
+        url: '/api/cart',
         method: 'POST',
         data: `title=${id}&action=${action}`,  // modify data format
         success: function() {
