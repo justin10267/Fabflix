@@ -182,6 +182,7 @@ label {
     border-spacing: 0 10px; /* 10px vertical spacing */
     font-family: 'Arial', sans-serif; /* Modern font */
 
+
 }
 
 .table th {
@@ -237,4 +238,10 @@ label {
 
 .table tr:last-child td:last-child {
     border-bottom-right-radius: 10px; /* Adjust as needed */
+}
+.btn[disabled],
+.btn.disabled {
+    background-color: #cccccc;  /* Gray background */
+    cursor: not-allowed;       /* Show a 'no action' cursor */
+    pointer-events: none;      /* Make it non-clickable */
 }
