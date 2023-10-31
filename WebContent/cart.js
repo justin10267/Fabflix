@@ -87,7 +87,7 @@ function decreaseQuantity(id) {
 
 function deleteItem(id) {
     $.ajax({
-        url: '/api/cart',
+        url: 'api/cart',
         method: 'POST',
         data: {
             title: id,
@@ -101,7 +101,7 @@ function deleteItem(id) {
 
 function modifyItemQuantity(id, action) {
     $.ajax({
-        url: '/api/cart',
+        url: 'api/cart',
         method: 'POST',
         data: `title=${id}&action=${action}`,  // modify data format
         success: function() {
