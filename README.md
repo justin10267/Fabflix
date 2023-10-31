@@ -23,4 +23,4 @@ This substring matching occurs in the SEARCH_QUERY in the ListServlet.
 
 ### Demo video URL
 https://youtu.be/34alaFpLQOQ (Project 1)
-(Project 2)
+https://youtu.be/Ud1ASciy0-g (Project 2)
