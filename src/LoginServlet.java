@@ -77,13 +77,13 @@ public class LoginServlet extends HttpServlet {
                 System.out.println("Incorrect Password");
                 responseJsonObject.addProperty("status", "fail");
                 request.getServletContext().log("Login failed");
-                responseJsonObject.addProperty("message", "Incorrect Username");
+                responseJsonObject.addProperty("message", "Incorrect Password");
             }
             else if (passwordExists && !usernameExists) {
                 System.out.println("Incorrect Username");
                 responseJsonObject.addProperty("status", "fail");
                 request.getServletContext().log("Login failed");
-                responseJsonObject.addProperty("message", "Incorrect Password");
+                responseJsonObject.addProperty("message", "Incorrect Username");
             }
             else if (!accountExists) {
                 System.out.println("ResultSet in empty in Java");
