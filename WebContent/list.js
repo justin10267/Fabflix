@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
         sessionStorage.setItem("preferredLimit", selectedMoviesPerPage);
         sessionStorage.setItem("preferredSort", selectedSortOrder);
         sessionStorage.setItem("currentPage", "1");
-        const url = `/Fabflix_war/list.html?limit=${selectedMoviesPerPage}&sort=${selectedSortOrder}`;
+        const url = `./list.html?limit=${selectedMoviesPerPage}&sort=${selectedSortOrder}`;
         window.location.href = url;
     });
 
