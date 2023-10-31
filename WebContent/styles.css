@@ -2,91 +2,119 @@ body {
     font-family: 'Roboto', sans-serif;
     background-color: #121212;
     color: #FFFFFF;
+    margin: 0;
+    padding: 0;
 }
 
 .navbar {
     border-bottom: 1px solid #333;
+    padding: 15px 30px;
+    justify-content: center;
 }
 
-.table {
-    background-color: #232323;
+.navbar .navbar-brand {
+    margin: 0 15px;
 }
 
-.table th, .table td {
-    border-color: #333;
+.navbar .ml-auto {
+    margin-left: 20px;
 }
 
-/* Fabflix logo styling */
-.fabflix-logo {
-    font-family: 'Open Sans', sans-serif;
-    text-transform:uppercase;
-    font-size: 48px; /* Increase Font Size */
-    background: -webkit-linear-gradient(left, #f46b45, #eea849); /* Gradient Color */
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+.navbar a.navbar-brand[href="./main.html"] {
+    font-size: 27px;
+    color: #FF4500;
+    font-weight: bold;
 }
+
+.form-inline {
+    margin-top: 10px;
+}
+
+.form-inline input {
+    height: 36px;
+    font-size: 16px;
+    padding: 0 15px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+    margin-bottom: 0;
+}
+
 h1 {
     font-family: 'Open Sans', sans-serif;
-    font-size: 3rem; /* Increase font size */
-    font-weight: 700; /* Make it bold */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Slight shadow for cinematic effect */
-    margin-bottom: 20px; /* Increase spacing between the title and the table */
+    font-size: 3rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+    text-align: center;
 }
-/* hyperlink styles */
+
 a {
-    color: #FFA726; /* Changed from blue to a more subtle orange. Adjust color as needed. */
-    text-decoration: none; /* Removes the underline */
+    color: #FFA726;
+    text-decoration: none;
 }
 
-a:hover {
-    color: #FF7043; /* Slightly darker orange on hover */
-    text-decoration: underline; /* Underline on hover for clarity */
+ul#genre_list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    list-style-type: none;
+    padding: 0;
+    gap: 20px;
 }
 
-/* Table enhancements */
-.table {
-    border-collapse: separate;
-    border-spacing: 0 15px; /* Spacing between rows */
+ul#genre_list li {
+    background-color: #e0e0e0;
+    padding: 15px 25px;
+    border-radius: 15px;
+    font-size: 16px;
+    transition: transform 0.2s;
 }
 
-.table th, .table td {
-    padding: 10px 20px;
-    background-color: rgba(30, 30, 30, 0.8); /* Semi-transparent background for rows */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Slight box-shadow for depth */
+ul#genre_list li:hover {
+    transform: scale(1.05);
+    cursor: pointer;
 }
 
-.table th {
-    background-color: rgba(44, 44, 44, 0.6); /* Semi-transparent darker header */
+#prefix_list {
+    background-color: transparent;
+    padding: 20px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
-.table td {
-    background-color: rgba(41, 41, 41, 0.6);
+#prefix_list li {
+    list-style-type: none;
+    margin: 0 15px;
+    padding: 0;
+    transition: color 0.3s;
 }
 
-/* Row hover effect */
-.table tbody tr:hover td {
-    background-color: #292929;
+#prefix_list li:hover {
+    color: #555;
+    cursor: pointer;
 }
-#movie_table {
-    background: url('https://images4.alphacoders.com/132/1323682.png') no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
-    padding: 20px; /* Add some padding around the table for better visuals */
-    border-radius: 10px; /* Rounded corners for a modern look */
-    color: white; /* Making text white for better contrast against the image */
+
+#prefix_list a {
+    text-decoration: none;
+    color: #FFA500;
+    font-size: 24px;
+    font-weight: bold;
 }
-.table-container {
-    background-color: rgba(255, 255, 255, 0.7);
+
+.content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
     padding: 20px;
-    border-radius: 10px;
 }
 
-.table-container tr:hover {
-    background-color: rgba(240, 240, 240, 0.8);
-}
-
-.table-container tr, .table-container td, .table-container th {
-    color: #333;
+.styled-header {
+    font-size: 34px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-shadow: 2px 2px 4px #000000;
+    letter-spacing: 1.5px;
+    text-align: center;
 }

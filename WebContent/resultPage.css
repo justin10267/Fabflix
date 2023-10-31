@@ -1,0 +1,240 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #121212;
+    color: #FFFFFF;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    border-bottom: 1px solid #333;
+    padding: 15px 30px; /* Added padding for space */
+    justify-content: center; /* Center-aligned navbar content */
+}
+
+.navbar .navbar-brand {
+    margin: 0 15px; /* Space between navbar items */
+}
+
+.navbar .ml-auto {
+    margin-left: 20px; /* Space between navbar items and the form */
+}
+
+.form-inline input {
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Lightened border */
+    border-radius: 4px; /* Slight rounded edges */
+    margin-bottom: 0; /* Remove margin to align with the button */
+}
+
+h1 {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+    text-align: center; /* Centered headers */
+}
+
+a {
+    color: #FFA726;
+    text-decoration: none;
+}
+
+
+.content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* this will take the full viewport height */
+    padding: 20px; /* some padding around edges */
+}
+
+.styled-header {
+    font-size: 34px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-shadow: 2px 2px 4px #000000;
+    letter-spacing: 1.5px;
+    text-align: center; /* this will horizontally center the text */
+}
+.navbar a.navbar-brand[href="./main.html"] {
+    font-size: 27px; /* or whatever size you prefer */
+    color: #FF4500; /* a distinguishable color, adjust as needed */
+    font-weight: bold;
+}
+.form-inline {
+    margin-top: 10px; /* adjust the value as needed */
+}
+.form-inline input[type="text"] {
+    height: 36px; /* Adjust the height as needed */
+    font-size: 16px; /* Increase the font size */
+    padding: 0 15px; /* Adjust the padding for the larger size */
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Lightened border */
+    border-radius: 4px; /* Slight rounded edges */
+    margin-bottom: 0; /* Remove margin to align with the button */
+}
+
+/* Style the search button to match the shopping cart style */
+.form-inline input[type="submit"] {
+    background-color: #FFA726; /* Orange background to match shopping cart */
+    border: none; /* No border */
+    color: #FFFFFF; /* White color for the icon */
+    font-size: 18px; /* Adjust the icon size */
+    cursor: pointer; /* Hand cursor */
+    transition: background-color 0.3s; /* Smooth color transition */
+    border-radius: 4px; /* Slight rounded edges */
+    padding: 8px 12px; /* Padding around the icon */
+}
+
+.form-inline input[type="submit"]:hover {
+    background-color: #FF8A00; /* Darker shade of orange on hover */
+}
+.search-button {
+    background-color: #FFA726; /* Orange background to match shopping cart */
+    border: none; /* No border */
+    color: #FFFFFF; /* White color for the icon */
+    font-size: 18px; /* Adjust the icon size */
+    cursor: pointer; /* Hand cursor */
+    transition: background-color 0.3s; /* Smooth color transition */
+    border-radius: 4px; /* Slight rounded edges */
+    padding: 8px 12px; /* Padding around the icon */
+}
+
+.search-button:hover {
+    background-color: #FF8A00; /* Darker shade of orange on hover */
+}
+label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+/* Styling the select dropdowns */
+.form-control {
+    display: inline-block;
+    width: auto;
+    margin-right: 20px;
+    background-color: #f8f9fa; /* Light grey */
+    border: 1px solid #ced4da; /* Grey border */
+    border-radius: 4px; /* Slight rounded edges */
+    font-size: 16px; /* Font size */
+    padding: 6px 12px; /* Padding */
+    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition */
+}
+
+.form-control:focus {
+    border-color: #FFA726; /* Orange on focus to match your search button */
+    box-shadow: 0 0 0 0.2rem rgba(255, 167, 38, 0.25); /* Light orange shadow */
+}
+
+/* Styling the update button */
+#updateButton {
+    margin-top: 20px;
+}
+.btn-custom-update {
+    background-color: #FFA726; /* Orange */
+    border: none;
+    color: #FFFFFF; /* White text */
+    border-radius: 4px; /* Slight rounded edges */
+    padding: 8px 15px; /* Padding */
+    font-weight: bold; /* Bold text */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth color and transform transition */
+    cursor: pointer; /* Hand cursor */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Hover effect for the button */
+.btn-custom-update:hover {
+    background-color: #FF8A00; /* Darker shade of orange on hover */
+    transform: scale(1.05); /* Slightly increase the size on hover for a popping effect */
+}
+
+/* Active state (when the button is clicked) */
+.btn-custom-update:active {
+    transform: scale(0.95); /* Slightly reduce the size when the button is clicked */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Increase shadow when clicked */
+}
+.btn-custom-nav {
+    background-color: #343a40; /* Dark Grey to keep it in line with the dark navbar */
+    border: 2px solid #FFA726; /* Orange border for distinction */
+    color: #FFFFFF; /* White text */
+    border-radius: 4px; /* Slight rounded edges */
+    padding: 8px 20px; /* Padding */
+    font-weight: bold; /* Bold text */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth color and transform transition */
+    cursor: pointer; /* Hand cursor */
+    margin: 0 5px; /* Small margin between the buttons */
+}
+
+/* Hover effect for the navigation buttons */
+.btn-custom-nav:hover {
+    background-color: #FFA726; /* Orange to match the theme on hover */
+    color: #343a40; /* Dark Grey text on hover for contrast */
+    transform: scale(1.05); /* Slightly increase the size on hover */
+}
+
+/* Active state (when the button is clicked) */
+.btn-custom-nav:active {
+    transform: scale(0.95); /* Slightly reduce the size when the button is clicked */
+}
+.table {
+    width: 100%;
+    border-collapse: separate; /* Use separate to apply spacing between rows */
+    border-spacing: 0 10px; /* 10px vertical spacing */
+    font-family: 'Arial', sans-serif; /* Modern font */
+
+}
+
+.table th {
+    background-color: #2c3e50; /* Deep blue shade for headers */
+    color: white;
+    padding: 15px;
+    text-align: left;
+}
+
+.table td {
+    padding: 15px;
+    background-color: white;
+    border: 1px solid #eaeaea; /* Subtle border color */
+}
+
+/* Zebra Striping */
+.table tr:nth-child(even) td {
+    background-color: #f7f9fc; /* Light shade of blue for even rows */
+}
+
+/* Hover effect */
+.table tr:hover td {
+    background-color: #e0e7ff; /* Subtle blue shade for hover */
+    cursor: pointer;
+}
+
+/* Add shadow for modern look */
+.table tr td {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border-radius: 5px; /* Rounded borders for modern look */
+}
+
+/* Remove shadows and borders for headers */
+.table th {
+    box-shadow: none;
+    border: none;
+}
+.table {
+    border-radius: 25px; /* Adjust as needed */
+    overflow: hidden;    /* Ensures the table content respects the rounded corners */
+}
+.table tr:first-child td:first-child {
+    border-top-left-radius: 10px; /* Adjust as needed */
+}
+
+.table tr:first-child td:last-child {
+    border-top-right-radius: 10px; /* Adjust as needed */
+}
+
+.table tr:last-child td:first-child {
+    border-bottom-left-radius: 10px; /* Adjust as needed */
+}
+
+.table tr:last-child td:last-child {
+    border-bottom-right-radius: 10px; /* Adjust as needed */
+}

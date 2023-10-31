@@ -1,0 +1,151 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #121212;
+    color: #FFFFFF;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    border-bottom: 1px solid #333;
+    padding: 15px 30px; /* Added padding for space */
+    justify-content: center; /* Center-aligned navbar content */
+}
+
+.navbar .navbar-brand {
+    margin: 0 15px; /* Space between navbar items */
+}
+
+.navbar .ml-auto {
+    margin-left: 20px; /* Space between navbar items and the form */
+}
+
+.form-inline input {
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Lightened border */
+    border-radius: 4px; /* Slight rounded edges */
+    margin-bottom: 0; /* Remove margin to align with the button */
+}
+
+h1 {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+    text-align: center; /* Centered headers */
+}
+
+a {
+    color: #FFA726;
+    text-decoration: none;
+}
+
+ul#genre_list {
+    display: flex;
+    flex-wrap: wrap; /* Allows the genres to wrap to the next line if there's not enough space */
+    justify-content: center; /* Centers genres horizontally */
+    list-style-type: none; /* Removes bullet points */
+    padding: 0; /* Removes default padding */
+    gap: 20px; /* Creates a gap between genres */
+}
+
+ul#genre_list li {
+    background-color: #e0e0e0; /* Placeholder color - change to suit your design */
+    padding: 15px 25px; /* Padding around each genre */
+    border-radius: 15px; /* Rounded corners for each genre */
+    font-size: 16px; /* Adjust text size if needed */
+    transition: transform 0.2s; /* Smoothens the hover effect */
+}
+
+ul#genre_list li:hover {
+    transform: scale(1.05); /* Slightly enlarges the genre box on hover */
+    cursor: pointer; /* Changes the cursor to indicate the genre is clickable */
+}
+#prefix_list {
+    background-color: transparent;  /* Removing the background color */
+    padding: 20px 0;
+    display: flex;  /* Using flexbox to layout items horizontally */
+    flex-wrap: wrap;  /* If the screen width is too small, they will wrap to the next line */
+    justify-content: center;  /* Centering the list items horizontally */
+}
+
+#prefix_list li {
+    list-style-type: none;  /* Remove bullet points */
+    margin: 0 15px;  /* Adjusting horizontal space between each letter */
+    padding: 0;  /* Removing the padding */
+    transition: color 0.3s;  /* Smoothing the color change on hover */
+}
+
+#prefix_list li:hover {
+    color: #555;  /* Darker shade for hover */
+    cursor: pointer;  /* Hand cursor for better UX */
+}
+
+#prefix_list a {
+    text-decoration: none;  /* Remove underlines from links */
+    color: #FFA500;  /* Your yellow-orangish color */
+    font-size: 24px;  /* Adjust font size */
+    font-weight: bold;  /* Bold font for better visibility */
+}
+.content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* this will take the full viewport height */
+    padding: 20px; /* some padding around edges */
+}
+
+.styled-header {
+    font-size: 34px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-shadow: 2px 2px 4px #000000;
+    letter-spacing: 1.5px;
+    text-align: center; /* this will horizontally center the text */
+}
+.navbar a.navbar-brand[href="./main.html"] {
+    font-size: 27px; /* or whatever size you prefer */
+    color: #FF4500; /* a distinguishable color, adjust as needed */
+    font-weight: bold;
+}
+.form-inline {
+    margin-top: 10px; /* adjust the value as needed */
+}
+.form-inline input[type="text"] {
+    height: 36px; /* Adjust the height as needed */
+    font-size: 16px; /* Increase the font size */
+    padding: 0 15px; /* Adjust the padding for the larger size */
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Lightened border */
+    border-radius: 4px; /* Slight rounded edges */
+    margin-bottom: 0; /* Remove margin to align with the button */
+}
+
+/* Style the search button to match the shopping cart style */
+.form-inline input[type="submit"] {
+    background-color: #FFA726; /* Orange background to match shopping cart */
+    border: none; /* No border */
+    color: #FFFFFF; /* White color for the icon */
+    font-size: 18px; /* Adjust the icon size */
+    cursor: pointer; /* Hand cursor */
+    transition: background-color 0.3s; /* Smooth color transition */
+    border-radius: 4px; /* Slight rounded edges */
+    padding: 8px 12px; /* Padding around the icon */
+}
+
+.form-inline input[type="submit"]:hover {
+    background-color: #FF8A00; /* Darker shade of orange on hover */
+}
+.search-button {
+    background-color: #FFA726; /* Orange background to match shopping cart */
+    border: none; /* No border */
+    color: #FFFFFF; /* White color for the icon */
+    font-size: 18px; /* Adjust the icon size */
+    cursor: pointer; /* Hand cursor */
+    transition: background-color 0.3s; /* Smooth color transition */
+    border-radius: 4px; /* Slight rounded edges */
+    padding: 8px 12px; /* Padding around the icon */
+}
+
+.search-button:hover {
+    background-color: #FF8A00; /* Darker shade of orange on hover */
+}
