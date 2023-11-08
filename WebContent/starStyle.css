@@ -34,6 +34,11 @@ h1 {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     margin-bottom: 20px;
 }
+a {
+    color: #FFA726;
+    text-decoration: none;
+}
+
 
 /* Styling for the table */
 .table {
@@ -106,11 +111,16 @@ h1 {
     background-color: rgba(41, 41, 41, 0.6);
 }
 #star_info {
-    color: #FFA726;
+    color: #FFA500;
     font-family: 'Open Sans', sans-serif;
     font-size: 3rem;
     font-weight: 700;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     margin-bottom: 20px;
     text-align: center;
+}
+.navbar a.navbar-brand[href="./main.html"] {
+    font-size: 27px; /* or whatever size you prefer */
+    color: #FF4500; /* a distinguishable color, adjust as needed */
+    font-weight: bold;
 }

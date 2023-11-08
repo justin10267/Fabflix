@@ -19,17 +19,17 @@ h1 {
 }
 /* Top Navbar */
 .navbar {
-    background-color: #232323;
     border-bottom: 1px solid #333;
+    padding: 15px 30px; /* Added padding for space */
+    justify-content: center; /* Center-aligned navbar content */
 }
 
 .navbar-brand {
-    color: #FFA726;
-    transition: color 0.2s;
+    margin: 0 15px; /* Space between navbar items */
 }
 
-.navbar-brand:hover {
-    color: #FF7043;
+.navbar .ml-auto {
+    margin-left: 20px; /* Space between navbar items and the form */
 }
 
 /* Secondary Navigation */
@@ -39,11 +39,15 @@ h1 {
     padding: 10px 0;
 }
 
-.topnav a {
+
+a {
     color: #FFA726;
-    padding: 10px 15px;
     text-decoration: none;
-    display: inline-block;
+}
+.navbar a.navbar-brand[href="./main.html"] {
+    font-size: 27px; /* or whatever size you prefer */
+    color: #FF4500; /* a distinguishable color, adjust as needed */
+    font-weight: bold;
 }
 
 .topnav a.active, .topnav a:hover {

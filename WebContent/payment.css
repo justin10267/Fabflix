@@ -1,0 +1,78 @@
+/* Add this to your styles.css or include it within a <style> tag in payment.html */
+
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #121212;
+    color: #FFFFFF;
+    margin: 0;
+    padding: 20px; /* You can adjust this as per your design */
+}
+
+h2 {
+    text-align: center;
+    color: #FFA726; /* Main theme color */
+}
+
+#totalPrice {
+    font-weight: bold;
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Form Styles */
+#paymentForm {
+    max-width: 500px;
+    margin: 0 auto;
+    background: #1e1e1e; /* Slightly lighter than body background */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#paymentForm div {
+    margin-bottom: 15px;
+}
+
+#paymentForm label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#paymentForm input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border: none;
+    background-color: #333333;
+    color: #FFFFFF;
+}
+
+#paymentForm button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #FFA726;
+    color: #FFFFFF;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#paymentForm button:hover {
+    background-color: #FF8A00;
+}
+
+/* Message Styles */
+#payment_error_message,
+#payment_success_message {
+    text-align: center;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+
