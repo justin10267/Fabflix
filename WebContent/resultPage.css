@@ -245,3 +245,88 @@ label {
     cursor: not-allowed;       /* Show a 'no action' cursor */
     pointer-events: none;      /* Make it non-clickable */
 }
+#proceedToPayment {
+    padding: 10px 20px; /* Adjust the padding to control the button size */
+    background: linear-gradient(to bottom, #4CAF50 0%, #388E3C 100%); /* Green gradient effect */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    color: white; /* Text color */
+    font-size: 16px; /* Text size */
+    font-weight: bold; /* Font weight */
+    text-transform: uppercase; /* Uppercase text */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+    margin-top: 20px; /* Adds space above the button */
+}
+
+#proceedToPayment:hover {
+    background: linear-gradient(to bottom, #43A047 0%, #2E7D32 100%); /* Slightly lighter green on hover */
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2); /* Larger shadow on hover */
+}
+#cartTable {
+    width: 100%; /* Full width */
+    border-collapse: collapse; /* No space between borders */
+    margin: 20px 0; /* Add some margin around the table */
+    font-size: 0.9em; /* Slightly smaller font size for the table */
+    min-width: 400px; /* Minimum width */
+    border-radius: 5px 5px 0 0;
+    overflow: hidden; /* Ensures the content respects the rounded corners */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); /* Subtle shadow around the table */
+}
+
+#cartTable thead tr {
+    background-color: #009879; /* A green shade for header row */
+    color: #ffffff; /* White color for header text */
+    text-align: left; /* Align text to the left */
+    font-weight: bold; /* Bold font for headers */
+}
+
+#cartTable th,
+#cartTable td {
+    padding: 12px 15px; /* Spacing within cells */
+}
+
+#cartTable tbody tr {
+    border-bottom: 1px solid #dddddd; /* Light border for rows */
+}
+
+#cartTable tbody tr:nth-of-type(even) {
+    background-color: #009879; /* Light background for even rows */
+}
+
+#cartTable tbody tr:last-of-type {
+    border-bottom: 2px solid #009879; /* Green bottom border for the last row */
+}
+
+#cartTable tbody tr.active-row {
+    font-weight: bold; /* Bold font for active row */
+    color: #009879; /* Green color to highlight the active row */
+}
+button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #FF4500;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #E55347;
+}
+
+/* Increment and decrement buttons */
+button.increase, button.decrease {
+    font-size: 1em;
+}
+
+/* Delete button */
+button.delete {
+    background-color: #FF4500;
+}
+
+button.delete:hover {
+    background-color: #E55347;
+}
