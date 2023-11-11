@@ -27,7 +27,7 @@ public class UpdateSecurePasswordEmployees {
             String email = rs.getString("email");
             String password = rs.getString("password");
             String encryptedPassword = passwordEncryptor.encryptPassword(password);
-            String updateQuery = String.format("UPDATE employees SET password='%s' WHERE email=%s;", encryptedPassword,
+            String updateQuery = String.format("UPDATE employees SET password='%s' WHERE email='%s';", encryptedPassword,
                     email);
             updateQueryList.add(updateQuery);
         }
@@ -35,6 +35,7 @@ public class UpdateSecurePasswordEmployees {
         System.out.println("updating password");
         int count = 0;
         for (String updateQuery : updateQueryList) {
+            System.out.println(updateQuery);
             int updateResult = statement.executeUpdate(updateQuery);
             count += updateResult;
         }

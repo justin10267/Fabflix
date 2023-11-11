@@ -62,7 +62,7 @@ public class DomMains243Parser {
     }
 
     private void parseXmlFile() throws FileNotFoundException {
-        InputStream inputStream = new FileInputStream("mains243.xml");
+        InputStream inputStream = new FileInputStream("./XMLDataAndParser/mains243.xml");
         InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.ISO_8859_1);
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();

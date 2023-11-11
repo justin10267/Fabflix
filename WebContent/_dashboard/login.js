@@ -1,9 +1,5 @@
 let login_form = $("#login_form");
 
-/**
- * Handle the data returned by LoginServlet
- * @param resultDataJson
- */
 function handleLoginResult(resultDataJson) {
     console.log("handle login response");
     console.log(resultDataJson);
@@ -19,11 +15,11 @@ function handleLoginResult(resultDataJson) {
 }
 
 function submitLoginForm(formSubmitEvent) {
-    console.log("submit customer login form");
+    console.log("submit employee login form");
     formSubmitEvent.preventDefault();
 
     $.ajax(
-        "api/login", {
+        "api/dashboardlogin", {
             method: "POST",
             data: login_form.serialize(),
             success: handleLoginResult
@@ -32,4 +28,3 @@ function submitLoginForm(formSubmitEvent) {
 }
 
 login_form.submit(submitLoginForm);
-

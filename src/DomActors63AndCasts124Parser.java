@@ -25,7 +25,7 @@ public class DomActors63AndCasts124Parser {
     }
 
     private void parseActors63XmlFile() throws FileNotFoundException {
-        InputStream inputStream = new FileInputStream("actors63.xml");
+        InputStream inputStream = new FileInputStream("./XMLDataAndParser/actors63.xml");
         InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.ISO_8859_1);
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -61,7 +61,7 @@ public class DomActors63AndCasts124Parser {
     }
 
     private void parseCast124XmlFile() throws FileNotFoundException {
-        InputStream inputStream = new FileInputStream("casts124.xml");
+        InputStream inputStream = new FileInputStream("./XMLDataAndParser/casts124.xml");
         InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.ISO_8859_1);
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
