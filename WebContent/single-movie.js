@@ -22,10 +22,21 @@ function handleResult(resultData) {
     let movieInfoElement = jQuery("#movie_info");
     movieInfoElement.empty();
 
+    let genreLine = "";
+    const genres = resultData[0]["movie_genres"].split(",");
+    for (let i = 0; i < genres.length; i++) {
+        if (i === genres.length - 1) {
+            genreLine += '<a href="./list.html?genre=' + genres[i] + '">' + genres[i] + '</a>';
+        }
+        else {
+            genreLine += '<a href="./list.html?genre=' + genres[i] + '">' + genres[i] + '</a>' + ",";
+        }
+    }
+
     movieInfoElement.append(
         "<p>Release Year: " + resultData[0]["movie_year"] + "</p>" +
         "<p>Director: " + resultData[0]["movie_director"] + "</p>" +
-        "<p>Genres: " + resultData[0]["movie_genres"] + "</p>" +
+        "<p>Genres: " + genreLine + "</p>" +
         "<p>Rating: " + resultData[0]["movie_rating"] + "</p>"
     );
 

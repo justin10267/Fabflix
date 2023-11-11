@@ -5,24 +5,53 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.jasypt.util.password.StrongPasswordEncryptor;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
 public class LoginServlet extends HttpServlet {
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
-
-    // Create a dataSource which registered in web.xml
     private DataSource dataSource;
+
+    private static String verifyCredentials(String email, String password, Connection connection) {
+        String query = "SELECT * from customers where email=?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, email);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                String encryptedPassword = rs.getString("password");
+                boolean success = new StrongPasswordEncryptor().checkPassword(password, encryptedPassword);
+                if (success) {
+                    String userId = rs.getString("id");
+                    String firstName = rs.getString("firstName");
+                    String lastName = rs.getString("lastName");
+                    rs.close();
+                    preparedStatement.close();
+
+                    return userId + "," + firstName + "," + lastName;
+                } else {
+                    rs.close();
+                    preparedStatement.close();
+                    return "Incorrect Password";
+                }
+            } else {
+                rs.close();
+                preparedStatement.close();
+                return "Incorrect Username";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error";
+        }
+    }
 
     public void init(ServletConfig config) {
         try {
@@ -31,87 +60,57 @@ public class LoginServlet extends HttpServlet {
             e.printStackTrace();
         }
     }
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
+        String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+        JsonObject responseJsonObject = new JsonObject();
+        System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
+        try {
+            RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+        } catch (Exception e) {
+            System.out.println("Recaptcha Failed");
+            responseJsonObject.addProperty("status", "fail");
+            request.getServletContext().log("Recaptcha Failed");
+            responseJsonObject.addProperty("message", "Recaptcha Verification Error: Please do Recaptcha");
+            System.out.println(responseJsonObject);
+            out.write(responseJsonObject.toString());
+            out.close();
+        }
+
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        PrintWriter out = response.getWriter();
-        JsonObject responseJsonObject = new JsonObject();
-
-
-        /* This example only allows username/password to be test/test
-        /  in the real project, you should talk to the database to verify username/password
-        */
 
         try (Connection conn = dataSource.getConnection()) {
-            // Construct a query with parameter represented by "?"
-            String accountExistsQuery = "SELECT *\n" +
-                    "FROM customers\n" +
-                    "WHERE ? = email and ? = password";
+            String result = verifyCredentials(username, password, conn);
 
-            String usernameExistsQuery = "SELECT *\n" +
-                    "FROM customers\n" +
-                    "WHERE ? = email";
-
-            String passwordExistsQuery = "SELECT *\n" +
-                    "FROM customers\n" +
-                    "WHERE ? = password";
-
-            PreparedStatement accountExistsStatement = conn.prepareStatement(accountExistsQuery);
-            PreparedStatement usernameExistsStatement = conn.prepareStatement(usernameExistsQuery);
-            PreparedStatement passwordExistsStatement = conn.prepareStatement(passwordExistsQuery);
-
-            accountExistsStatement.setString(1, username);
-            accountExistsStatement.setString(2, password);
-            usernameExistsStatement.setString(1, username);
-            passwordExistsStatement.setString(1, password);
-
-            ResultSet accountRS = accountExistsStatement.executeQuery();
-            ResultSet usernameRS = usernameExistsStatement.executeQuery();
-            ResultSet passwordRS = passwordExistsStatement.executeQuery();
-
-            boolean usernameExists = usernameRS.next();
-            boolean passwordExists = passwordRS.next();
-            boolean accountExists = accountRS.next();
-
-            if (usernameExists && !passwordExists) {
-                System.out.println("Incorrect Password");
+            if (result.equals("Incorrect Password") || result.equals("Incorrect Username") || result.equals("Error")) {
+                System.out.println(result);
                 responseJsonObject.addProperty("status", "fail");
                 request.getServletContext().log("Login failed");
-                responseJsonObject.addProperty("message", "Incorrect Password");
-            }
-            else if (passwordExists && !usernameExists) {
-                System.out.println("Incorrect Username");
-                responseJsonObject.addProperty("status", "fail");
-                request.getServletContext().log("Login failed");
-                responseJsonObject.addProperty("message", "Incorrect Username");
-            }
-            else if (!accountExists) {
-                System.out.println("ResultSet in empty in Java");
-                // Login fail
-                responseJsonObject.addProperty("status", "fail");
-                // Log to localhost log
-                request.getServletContext().log("Login failed");
-                // sample error messages. in practice, it is not a good idea to tell user which one is incorrect/not exist.
-                responseJsonObject.addProperty("message", "Account does not Exist");
+                responseJsonObject.addProperty("message", result);
             }
             else {
-                System.out.println(accountRS.getString("firstName") + " " + accountRS.getString("lastName"));
-                request.getSession().setAttribute("user", new User(accountRS.getString("id")));
+                String[] userInformation = result.split(",");
+                System.out.println(userInformation[1] + " " + userInformation[2]);
+                request.getSession().setAttribute("user", new User(userInformation[0]));
                 responseJsonObject.addProperty("status", "success");
                 responseJsonObject.addProperty("message", "success");
             }
 
         } catch (Exception e) {
-            // Write error message JSON object to output
             responseJsonObject.addProperty("errorMessage", e.getMessage());
-
-            // Log error to localhost log
             request.getServletContext().log("Error:", e);
-            // Set response status to 500 (Internal Server Error)
             response.setStatus(500);
         } finally {
+            System.out.println(responseJsonObject);
             out.write(responseJsonObject.toString());
+            response.setStatus(200);
             out.close();
         }
+    }
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        doGet(request, response);
     }
 }
