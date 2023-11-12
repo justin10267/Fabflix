@@ -1,0 +1,86 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #121212; /* Dark background for the body */
+    color: #FFFFFF; /* Light color for the text */
+    margin: 0;
+    padding: 0;
+}
+
+/* Navigation bar with horizontal layout */
+.navbar {
+    background-color: #333; /* Dark background for the navbar */
+    padding: 0.5rem 1rem; /* Padding around the navbar */
+}
+
+/* Ensure the list is displayed horizontally */
+.navbar-nav {
+    list-style: none; /* Remove bullet points */
+    display: flex; /* Display nav items in a row */
+    padding-left: 0; /* Remove padding */
+    margin-bottom: 0; /* Remove margin */
+}
+
+.nav-item {
+    padding: 0.5rem 1rem; /* Spacing around each nav item */
+}
+
+/* Orange color for navbar links */
+.nav-link {
+    color: #FFA726;
+    text-decoration: none; /* Remove underline */
+}
+
+.nav-link:hover {
+    color: #FFD580; /* Lighter orange color on hover */
+}
+
+/* Main heading styles */
+h1 {
+    text-align: center;
+    color: #FFA726; /* Orange color for the main heading */
+    font-family: 'Cursive', 'Arial', sans-serif; /* You can choose a fancy font that you prefer */
+    font-size: 3rem; /* Larger font size for the heading */
+    margin: 20px 0; /* Spacing above and below the heading */
+}
+
+/* Styles for the table container */
+.table-container {
+    text-align: center; /* Center-align the table name and the table itself */
+    margin-bottom: 30px; /* Space below each table container */
+}
+
+/* Styles for the table name */
+.table-name {
+    color: #FFF; /* White text color for table name */
+    font-size: 1.5rem; /* Size of the table name */
+    margin-bottom: 10px; /* Space between table name and table */
+}
+
+/* Adjusting table styles */
+.table {
+    margin-left: auto;
+    margin-right: auto; /* Centering table */
+}
+
+.table thead th {
+    background-color: #ff8c00; /* Orange background for headers */
+    /* Other styles remain the same */
+}
+.table tbody tr:nth-child(odd) {
+    background-color: #000000; /* Darker color for odd rows */
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #333; /* Less dark color for even rows */
+}
+
+/* Ensuring that the orange header remains consistent */
+.table thead th {
+    background-color: #ff8c00; /* Keep the orange background for headers */
+    /* Other header styles remain the same */
+}
+
+/* Optional: If you want to add a hover effect to rows */
+.table tbody tr:hover {
+    background-color: #3e3e3e; /* Slightly lighter color on hover */
+}
