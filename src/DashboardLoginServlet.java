@@ -58,20 +58,20 @@ public class DashboardLoginServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
-//        String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+        String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
         JsonObject responseJsonObject = new JsonObject();
-//        System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
-//        try {
-//            RecaptchaVerifyUtils.verify(gRecaptchaResponse);
-//        } catch (Exception e) {
-//            System.out.println("Recaptcha Failed");
-//            responseJsonObject.addProperty("status", "fail");
-//            request.getServletContext().log("Recaptcha Failed");
-//            responseJsonObject.addProperty("message", "Recaptcha Verification Error: Please do Recaptcha");
-//            System.out.println(responseJsonObject);
-//            out.write(responseJsonObject.toString());
-//            out.close();
-//        }
+        System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
+        try {
+            RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+        } catch (Exception e) {
+            System.out.println("Recaptcha Failed");
+            responseJsonObject.addProperty("status", "fail");
+            request.getServletContext().log("Recaptcha Failed");
+            responseJsonObject.addProperty("message", "Recaptcha Verification Error: Please do Recaptcha");
+            System.out.println(responseJsonObject);
+            out.write(responseJsonObject.toString());
+            out.close();
+        }
 
         String username = request.getParameter("username");
         String password = request.getParameter("password");
