@@ -1,3 +1,4 @@
+USE moviedb;
 ALTER TABLE movies
 ADD COLUMN price DECIMAL(5, 2);
 

@@ -71,25 +71,25 @@ public class DomParser {
         parseStarsDocument();
         parseCast124XmlFile();
         parseCastDocument();
-//        printMovieData();
-//        printStarData();
+        printMovieData();
+        printStarData();
 //        insertMoviesIntoDatabase();
 //        insertStarsIntoDatabase();
 //        System.out.println((chunkMovies(new ArrayList<>(movieByFid.values()), 1000)).get(0));
 //        System.out.println(chunkStars(new ArrayList<>(starsByName.values()), 500).size());
 //        runInsertWithThreads();
-        Thread moviesThread = new Thread(() -> insertMoviesIntoDatabase());
-        Thread starsThread = new Thread(() -> insertStarsIntoDatabase());
-
-        moviesThread.start();
-        starsThread.start();
-
-        try {
-            moviesThread.join();
-            starsThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        Thread moviesThread = new Thread(() -> insertMoviesIntoDatabase());
+//        Thread starsThread = new Thread(() -> insertStarsIntoDatabase());
+//
+//        moviesThread.start();
+//        starsThread.start();
+//
+//        try {
+//            moviesThread.join();
+//            starsThread.join();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 
 //    public void runInsertWithThreads() throws FileNotFoundException {

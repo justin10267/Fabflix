@@ -1,3 +1,4 @@
+USE moviedb;
 create table employees(
 email varchar(50) primary key,
 password varchar(20) not null,

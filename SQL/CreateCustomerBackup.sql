@@ -1,3 +1,4 @@
+USE moviedb;
 create table customers_backup(
 id integer auto_increment primary key,
 firstName varchar(50) not null,

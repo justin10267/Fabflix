@@ -1,3 +1,4 @@
+USE moviedb;
 CREATE TABLE highestStarId (id INT);
 
 INSERT INTO highestStarId (id)
