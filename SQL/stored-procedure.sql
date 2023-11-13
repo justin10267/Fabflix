@@ -89,3 +89,91 @@ BEGIN
 END //
 
 DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE add_movie_parser(
+    IN movieTitle VARCHAR(100),
+    IN movieYear INT,
+    IN movieDirector VARCHAR(100)
+)
+BEGIN
+    DECLARE movieExists INT;
+    DECLARE newMovieId VARCHAR(10);
+    
+    SELECT COUNT(*) INTO movieExists
+    FROM movies
+    WHERE title = movieTitle AND year = movieYear AND director = movieDirector;
+
+    IF movieExists = 0 THEN
+        SELECT CONCAT('tt', id + 1) INTO newMovieId
+        FROM highestMovieId;
+        INSERT INTO movies (id, title, year, director, price) VALUES (newMovieId, movieTitle, movieYear, movieDirector, 1 + FLOOR(RAND() * 10));
+        
+        UPDATE highestMovieId SET id = id + 1;
+        
+		SELECT CONCAT("Success! Movie Id: ", newMovieId) as message;
+	ELSE
+		SELECT "Error! Movie Already Exists." as message;
+    END IF;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE link_genre_to_movie_parser(
+    IN genreName VARCHAR(32),
+    IN movieTitle VARCHAR(100),
+    IN movieYear INT,
+    IN movieDirector VARCHAR(100)
+)
+BEGIN
+    DECLARE genreIdVar INT;
+    DECLARE movieIdVar VARCHAR(10);
+    
+    CALL add_genre(genreName);
+    SELECT id INTO genreIdVar FROM genres WHERE name = genreName;
+    SELECT id INTO movieIdVar FROM movies WHERE title = movieTitle AND year = movieYear AND director = movieDirector;
+    INSERT INTO genres_in_movies (genreId, movieId) VALUES (genreIdVar, movieIdVar);
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE add_star_parser(IN starName VARCHAR(100), IN starBirthYear INT, OUT formattedStarId VARCHAR(10))
+BEGIN
+    DECLARE newStarId INT;
+    DECLARE tempId VARCHAR(10);
+    UPDATE highestStarId SET id = id + 1;
+    SELECT id INTO newStarId FROM highestStarId;
+    SET tempId = CONCAT('nm', newStarId);
+    INSERT INTO stars (id, name, birthYear) VALUES (tempId, starName, starBirthYear);
+    SET formattedStarId = tempId;
+    SELECT CONCAT("Success! Star Id: ", tempId) as message;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE link_star_to_movie_parser(
+    IN starName VARCHAR(100),
+    IN starBirthYear INT,
+    IN movieTitle VARCHAR(100),
+    IN movieYear INT,
+    IN movieDirector VARCHAR(100)
+)
+BEGIN
+    DECLARE starIdVar VARCHAR(10);
+    DECLARE movieIdVar VARCHAR(10);
+    DECLARE starExists INT;
+    
+    CALL add_star_parser(starName, starBirthYear, starIdVar);
+    SELECT id INTO movieIdVar FROM movies WHERE title = movieTitle AND year = movieYear AND director = movieDirector;
+    
+    INSERT INTO stars_in_movies (starId, movieId) VALUES (starIdVar, movieIdVar);
+END //
+
+DELIMITER ;

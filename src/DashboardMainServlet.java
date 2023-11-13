@@ -43,7 +43,6 @@ public class DashboardMainServlet extends HttpServlet {
                 if (tableName.equals("sys_config")) {
                     continue;
                 }
-                System.out.println(tableName);
                 JsonObject tableObject = new JsonObject();
                 tableObject.addProperty("tableName", tableName);
 
