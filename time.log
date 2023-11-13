@@ -1,0 +1,20 @@
+Sequential Parsing Time: 740 ms
+Sequential Database Insertions Time: 42932 ms
+Threaded Database Insertions Time: 40342 ms
+Sequential Parsing Time: 725 ms
+Sequential Database Insertions Time: 1694 ms
+Threaded Database Insertions Time: 1134 ms
+Sequential Parsing Time: 734 ms
+Sequential Database Insertions Time: 378 ms
+Threaded Database Insertions Time: 55 ms
+Sequential Parsing Time: 734 ms
+Sequential Parsing Time: 721 ms
+Sequential Parsing Time: 961 ms
+Time with threads: 2389.628 milliseconds
+Time without threads: 1708.4474 milliseconds
+Time with threads: 2381.2645 milliseconds
+Time without threads: 1891.0928 milliseconds
+Time without threads: 850.3492 milliseconds
+Time without threads: 17501.9735 milliseconds
+Time without threads: 3922.7124 milliseconds
+Time without threads: 508908.8908 milliseconds

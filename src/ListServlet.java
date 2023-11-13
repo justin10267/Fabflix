@@ -49,7 +49,7 @@ public class ListServlet extends HttpServlet {
             "    r.rating\n" +
             "FROM\n" +
             "    movies m\n" +
-            "        JOIN\n" +
+            "        LEFT JOIN\n" +
             "    ratings r ON m.id = r.movieId\n" +
             "WHERE \n" +
             "(SOUNDEX(UPPER(title)) = SOUNDEX(?) OR UPPER(title) LIKE ?)\n" +
@@ -95,7 +95,7 @@ public class ListServlet extends HttpServlet {
             "    r.rating\n" +
             "FROM\n" +
             "    genredFilteredMovies gfm\n" +
-            "        JOIN\n" +
+            "        LEFT JOIN\n" +
             "    ratings r ON gfm.id = r.movieId\n" +
             "GROUP BY gfm.id , gfm.title , gfm.year , gfm.director , r.rating\n" +
             "ORDER BY %s\n" +
@@ -129,7 +129,7 @@ public class ListServlet extends HttpServlet {
             "    r.rating\n" +
             "FROM\n" +
             "    movies m\n" +
-            "        JOIN\n" +
+            "        LEFT JOIN\n" +
             "    ratings r ON m.id = r.movieId\n" +
             "WHERE UPPER(m.title) LIKE ?\n" +
             "GROUP BY m.id , m.title , m.year , m.director , r.rating\n" +
@@ -164,7 +164,7 @@ public class ListServlet extends HttpServlet {
             "    r.rating\n" +
             "FROM\n" +
             "    movies m\n" +
-            "        JOIN\n" +
+            "        LEFT JOIN\n" +
             "    ratings r ON m.id = r.movieId\n" +
             "WHERE m.title REGEXP '^[^a-zA-Z0-9]'\n" +
             "GROUP BY m.id , m.title , m.year , m.director , r.rating\n" +

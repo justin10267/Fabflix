@@ -16,6 +16,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.*;
+import java.util.concurrent.*;
 
 public class DomParser {
     private DataSource dataSource;
@@ -65,8 +66,62 @@ public class DomParser {
         parseStarsDocument();
         parseCast124XmlFile();
         parseCastDocument();
+        printMovieData();
+//        printStarData();
         insertMoviesIntoDatabase();
         insertStarsIntoDatabase();
+    }
+
+    public void runParseWithThreads() throws FileNotFoundException {
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+
+        Future<?> parseMainsFuture = executor.submit(() -> {
+            try {
+                parseMains243XmlFile();
+                parseMoviesDocument();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        Future<?> parseActorsFuture = executor.submit(() -> {
+            try {
+                parseActors63XmlFile();
+                parseStarsDocument();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        // ... (Create tasks for other files)
+
+        try {
+            // Wait for these tasks to complete
+            parseMainsFuture.get();
+            parseActorsFuture.get();
+            // Get other futures as needed
+
+            // After both tasks have completed, proceed with the next set of parsing
+            parseCast124XmlFile();
+            parseCastDocument();
+            // Print or perform other actions related to parsing
+            printMovieData();
+            printStarData();
+
+            // Submit database insertions as tasks
+            Future<?> insertMoviesFuture = executor.submit(this::insertMoviesIntoDatabase);
+            Future<?> insertStarsFuture = executor.submit(this::insertStarsIntoDatabase);
+
+            // Wait for database insertions to complete
+            insertMoviesFuture.get();
+            insertStarsFuture.get();
+
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        // Finally, shutdown the executor service after all tasks are submitted
+        executor.shutdown();
     }
 
     private void parseMains243XmlFile() throws FileNotFoundException {
@@ -262,6 +317,16 @@ public class DomParser {
     private void logInconsistency(String elementType, Element element) {
         try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("error.log", true)))) {
             out.println("Inconsistent " + elementType + " element - Tag: " + element.getTagName() + ", Value: " + element.getTextContent());
+            out.flush(); // This ensures the content is immediately written
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void logTime(String message) {
+        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("time.log", true)))) {
+            out.println(message);
+            out.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -279,35 +344,28 @@ public class DomParser {
             String linkGenreCall = "{call link_genre_to_movie_parser(?, ?, ?, ?)}";
             String linkStarCall = "{call link_star_to_movie_parser(?, ?, ?, ?, ?)}";
 
-            for (Movie movie : movieByFid.values()) {
-                // Add the movie
-                try (CallableStatement addMovieStmt = connection.prepareCall(addMovieCall)) {
+            try (CallableStatement addMovieStmt = connection.prepareCall(addMovieCall);
+                 CallableStatement linkGenreStmt = connection.prepareCall(linkGenreCall);
+                 CallableStatement linkStarStmt = connection.prepareCall(linkStarCall)) {
+
+                for (Movie movie : movieByFid.values()) {
+                    // Add the movie
                     addMovieStmt.setString(1, movie.getTitle());
                     addMovieStmt.setInt(2, movie.getYear());
                     addMovieStmt.setString(3, movie.getDirector());
-                    System.out.println(addMovieStmt);
-//                    addMovieStmt.execute();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                    addMovieStmt.addBatch();
 
-                // Link genres to the movie
-                for (String genre : movie.getGenres()) {
-                    try (CallableStatement linkGenreStmt = connection.prepareCall(linkGenreCall)) {
+                    // Link genres to the movie
+                    for (String genre : movie.getGenres()) {
                         linkGenreStmt.setString(1, genre);
                         linkGenreStmt.setString(2, movie.getTitle());
                         linkGenreStmt.setInt(3, movie.getYear());
                         linkGenreStmt.setString(4, movie.getDirector());
-                        System.out.println(linkGenreStmt);
-//                        linkGenreStmt.execute();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                        linkGenreStmt.addBatch();
                     }
-                }
 
-                // Link stars to the movie
-                for (Star star : movie.getStars()) {
-                    try (CallableStatement linkStarStmt = connection.prepareCall(linkStarCall)) {
+                    // Link stars to the movie
+                    for (Star star : movie.getStars()) {
                         linkStarStmt.setString(1, star.getName());
                         if (star.getBirthYear() != 0) {
                             linkStarStmt.setInt(2, star.getBirthYear());
@@ -317,14 +375,20 @@ public class DomParser {
                         linkStarStmt.setString(3, movie.getTitle());
                         linkStarStmt.setInt(4, movie.getYear());
                         linkStarStmt.setString(5, movie.getDirector());
-                        System.out.println(linkStarStmt);
-//                        linkStarStmt.execute();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                        linkStarStmt.addBatch();
                     }
                 }
+
+                // Execute all batches
+                System.out.println(addMovieStmt);
+                System.out.println(linkGenreStmt);
+                System.out.println(linkStarStmt);
+                addMovieStmt.executeBatch();
+                linkGenreStmt.executeBatch();
+                linkStarStmt.executeBatch();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            connection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -339,24 +403,95 @@ public class DomParser {
             Connection connection = DriverManager.getConnection(url, user, password);
 
             String addStarCall = "{call add_star(?, ?)}";
+            connection.setAutoCommit(false);
 
             for (List<Star> stars : starsByName.values()) {
-                for (Star star : stars) {
-                    try (CallableStatement addStarStmt = connection.prepareCall(addStarCall)) {
+                try (CallableStatement addStarStmt = connection.prepareCall(addStarCall)) {
+                    for (Star star : stars) {
                         addStarStmt.setString(1, star.getName());
                         if (star.getBirthYear() != 0) {
                             addStarStmt.setInt(2, star.getBirthYear());
                         } else {
                             addStarStmt.setNull(2, java.sql.Types.INTEGER);
                         }
-                        System.out.println(addStarStmt);
-//                        addStarStmt.execute();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                        addStarStmt.addBatch();
                     }
+                    System.out.println(addStarStmt);
+                    addStarStmt.executeBatch();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
+
+            connection.commit();
             connection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void TESTinsertMoviesIntoDatabase() {
+        try {
+            String url = "jdbc:mysql://localhost:3306/moviedb";
+            String user = "root";
+            String password = "mangobanana109";
+
+            Connection connection = DriverManager.getConnection(url, user, password);
+
+            String addMovieCall = "{call add_movie_parser(?, ?, ?)}";
+            String linkGenreCall = "{call link_genre_to_movie_parser(?, ?, ?, ?)}";
+            String linkStarCall = "{call link_star_to_movie_parser(?, ?, ?, ?, ?)}";
+
+            try (CallableStatement addMovieStmt = connection.prepareCall(addMovieCall);
+                 CallableStatement linkGenreStmt = connection.prepareCall(linkGenreCall);
+                 CallableStatement linkStarStmt = connection.prepareCall(linkStarCall)) {
+
+                addMovieStmt.setString(1, "MOVIE10");
+                addMovieStmt.setInt(2, 2002);
+                addMovieStmt.setString(3, "DIRECTOR1");
+                addMovieStmt.addBatch();
+
+                linkGenreStmt.setString(1, "Action");
+                linkGenreStmt.setString(2, "MOVIE10");
+                linkGenreStmt.setInt(3, 2002);
+                linkGenreStmt.setString(4, "DIRECTOR1");
+                linkGenreStmt.addBatch();
+
+                linkStarStmt.setString(1, "STAR1");
+                linkStarStmt.setInt(2, 2002);
+                linkStarStmt.setString(3, "MOVIE10");
+                linkStarStmt.setInt(4, 2002);
+                linkStarStmt.setString(5, "DIRECTOR1");
+                linkStarStmt.addBatch();
+
+                addMovieStmt.setString(1, "MOVIE11");
+                addMovieStmt.setInt(2, 2002);
+                addMovieStmt.setString(3, "DIRECTOR1");
+                addMovieStmt.addBatch();
+
+                linkGenreStmt.setString(1, "Action");
+                linkGenreStmt.setString(2, "MOVIE11");
+                linkGenreStmt.setInt(3, 2002);
+                linkGenreStmt.setString(4, "DIRECTOR1");
+                linkGenreStmt.addBatch();
+
+                linkStarStmt.setString(1, "STAR1");
+                linkStarStmt.setInt(2, 2002);
+                linkStarStmt.setString(3, "MOVIE11");
+                linkStarStmt.setInt(4, 2002);
+                linkStarStmt.setString(5, "DIRECTOR1");
+                linkStarStmt.addBatch();
+
+                // Execute all batches
+                System.out.println(addMovieStmt);
+                System.out.println(linkGenreStmt);
+                System.out.println(linkStarStmt);
+                addMovieStmt.executeBatch();
+                linkGenreStmt.executeBatch();
+                linkStarStmt.executeBatch();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -364,7 +499,18 @@ public class DomParser {
 
     public static void main(String[] args) throws FileNotFoundException {
         DomParser domParser = new DomParser();
+
+//        long startTime = System.nanoTime();
+//        domParser.runParseWithThreads();
+//        long endTime = System.nanoTime();
+//        long timeElapsedWithThreads = endTime - startTime;
+//        domParser.logTime("Time with threads: " + (timeElapsedWithThreads / 1e6) + " milliseconds");
+
+        long startTime = System.nanoTime();
         domParser.runParse();
+        long endTime = System.nanoTime();
+        long timeElapsedWithoutThreads = endTime - startTime;
+        domParser.logTime("Time without threads: " + (timeElapsedWithoutThreads / 1e6) + " milliseconds");
     }
 
 }

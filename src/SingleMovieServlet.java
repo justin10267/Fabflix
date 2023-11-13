@@ -90,7 +90,7 @@ public class SingleMovieServlet extends HttpServlet {
                     "    r.rating\n" +
                     "FROM\n" +
                     "    movies m\n" +
-                    "        JOIN\n" +
+                    "        LEFT JOIN\n" +
                     "    ratings r ON m.id = r.movieId\n" +
                     "WHERE\n" +
                     "    m.id = ?;";
