@@ -20,6 +20,11 @@ import java.util.concurrent.*;
 
 public class DomParser {
     private DataSource dataSource;
+//    String user = "root";
+//    String password = "mangobanana109";
+    String user = "mytestuser";
+    String password = "My6$Password";
+
     Set<String> processedActors = new HashSet<>();
     Map<String, Movie> movieByFid = new HashMap<>();
     Map<String, List<Star>> starsByName = new HashMap<>();
@@ -211,8 +216,6 @@ public class DomParser {
 //    private void insertStarsChunkIntoDatabase(List<Star> stars) {
 //        try {
 //            String url = "jdbc:mysql://localhost:3306/moviedb";
-//            String user = "root";
-//            String password = "mangobanana109";
 //
 //            Connection connection = DriverManager.getConnection(url, user, password);
 //
@@ -454,8 +457,6 @@ public class DomParser {
     public void insertMoviesIntoDatabase() {
         try {
             String url = "jdbc:mysql://localhost:3306/moviedb";
-            String user = "root";
-            String password = "mangobanana109";
 
             Connection connection = DriverManager.getConnection(url, user, password);
 
@@ -516,8 +517,6 @@ public class DomParser {
     public void insertStarsIntoDatabase() {
         try {
             String url = "jdbc:mysql://localhost:3306/moviedb";
-            String user = "root";
-            String password = "mangobanana109";
 
             Connection connection = DriverManager.getConnection(url, user, password);
 
@@ -552,8 +551,6 @@ public class DomParser {
     public void TESTinsertMoviesIntoDatabase() {
         try {
             String url = "jdbc:mysql://localhost:3306/moviedb";
-            String user = "root";
-            String password = "mangobanana109";
 
             Connection connection = DriverManager.getConnection(url, user, password);
 

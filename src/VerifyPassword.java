@@ -28,8 +28,10 @@ public class VerifyPassword {
 
 	private static boolean verifyCredentials(String email, String password) throws Exception {
 		
-		String loginUser = "root";
-		String loginPasswd = "mangobanana109";
+//		String loginUser = "root";
+//		String loginPasswd = "mangobanana109";
+		String loginUser = "mytestuser";
+		String loginPasswd = "My6$Password";
 		String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
 
 		Class.forName("com.mysql.jdbc.Driver").newInstance();
