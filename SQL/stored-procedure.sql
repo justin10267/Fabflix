@@ -100,24 +100,23 @@ CREATE PROCEDURE add_movie_parser(
 )
 BEGIN
     DECLARE movieExists INT;
-    DECLARE newMovieId VARCHAR(10);
+    DECLARE newMovieId VARCHAR(50); -- Adjust size for your use case
+    
+    SET newMovieId = CONCAT('tt', SUBSTRING(REPLACE(UUID(), '-', ''), 1, 8)); -- Adjust substring to fit within VARCHAR length
     
     SELECT COUNT(*) INTO movieExists
     FROM movies
-    WHERE title = movieTitle AND year = movieYear AND director = movieDirector;
+    WHERE id = newMovieId;
 
     IF movieExists = 0 THEN
-        SELECT CONCAT('tt', id + 1) INTO newMovieId
-        FROM highestMovieId;
-        INSERT INTO movies (id, title, year, director, price) VALUES (newMovieId, movieTitle, movieYear, movieDirector, 1 + FLOOR(RAND() * 10));
-        
-        UPDATE highestMovieId SET id = id + 1;
-        
-		SELECT CONCAT("Success! Movie Id: ", newMovieId) as message;
-	ELSE
-		SELECT "Error! Movie Already Exists." as message;
+        INSERT INTO movies (id, title, year, director, price)
+        VALUES (newMovieId, movieTitle, movieYear, movieDirector, 1 + FLOOR(RAND() * 10));
+        SELECT CONCAT("Success! Movie Id: ", newMovieId) as message;
+    ELSE
+        SELECT "Error! Movie Already Exists." as message;
     END IF;
 END //
+
 
 DELIMITER ;
 

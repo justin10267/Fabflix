@@ -71,180 +71,168 @@ public class DomParser {
         parseStarsDocument();
         parseCast124XmlFile();
         parseCastDocument();
-        printMovieData();
-        printStarData();
+//        printMovieData();
+//        printStarData();
 //        insertMoviesIntoDatabase();
 //        insertStarsIntoDatabase();
-//        System.out.println((chunkMovies(new ArrayList<>(movieByFid.values()), 1000)).get(0));
+//        System.out.println((chunkMovies(new ArrayList<>(movieByFid.values()), 1000)).get(1));
 //        System.out.println(chunkStars(new ArrayList<>(starsByName.values()), 500).size());
-//        runInsertWithThreads();
-//        Thread moviesThread = new Thread(() -> insertMoviesIntoDatabase());
-//        Thread starsThread = new Thread(() -> insertStarsIntoDatabase());
-//
-//        moviesThread.start();
-//        starsThread.start();
-//
-//        try {
-//            moviesThread.join();
-//            starsThread.join();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        runInsertWithThreads();
     }
 
-//    public void runInsertWithThreads() throws FileNotFoundException {
-//        List<List<Movie>> movieChunks = chunkMovies(new ArrayList<>(movieByFid.values()), 1000);
-//        List<List<Star>> starChunks = chunkStars(new ArrayList<>(starsByName.values()), 500);
-//
-//        List<Thread> movieThreads = new ArrayList<>();
-//        List<Thread> starThreads = new ArrayList<>();
-//
-//        // Threads for movies
-//        for (List<Movie> chunk : movieChunks) {
-//            Thread thread = new Thread(() -> insertMoviesChunkIntoDatabase(chunk));
-//            movieThreads.add(thread);
-//            thread.start();
-//        }
-//
-//        // Threads for stars
-//        for (List<Star> chunk : starChunks) {
-//            Thread thread = new Thread(() -> insertStarsChunkIntoDatabase(chunk));
-//            starThreads.add(thread);
-//            thread.start();
-//        }
-//
-//        // Wait for movie threads to finish
-//        for (Thread thread : movieThreads) {
-//            try {
-//                thread.join();
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        // Wait for star threads to finish
-//        for (Thread thread : starThreads) {
-//            try {
-//                thread.join();
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-//    private List<List<Movie>> chunkMovies(List<Movie> movies, int chunkSize) {
-//        List<List<Movie>> chunks = new ArrayList<>();
-//        for (int i = 0; i < movies.size(); i += chunkSize) {
-//            chunks.add(movies.subList(i, Math.min(i + chunkSize, movies.size())));
-//        }
-//        return chunks;
-//    }
-//
-//    private List<List<Star>> chunkStars(List<List<Star>> stars, int chunkSize) {
-//        List<Star> flattenedList = new ArrayList<>();
-//        for (List<Star> starList : stars) {
-//            flattenedList.addAll(starList);
-//        }
-//        List<List<Star>> chunks = new ArrayList<>();
-//        for (int i = 0; i < flattenedList.size(); i += chunkSize) {
-//            chunks.add(flattenedList.subList(i, Math.min(i + chunkSize, flattenedList.size())));
-//        }
-//        return chunks;
-//    }
-//
-//    private void insertMoviesChunkIntoDatabase(List<Movie> movies) {
-//        try {
-//            String url = "jdbc:mysql://localhost:3306/moviedb";
-//            String user = "root";
-//            String password = "mangobanana109";
-//
-//            Connection connection = DriverManager.getConnection(url, user, password);
-//
-//            String addMovieCall = "{call add_movie_parser(?, ?, ?)}";
-//            String linkGenreCall = "{call link_genre_to_movie_parser(?, ?, ?, ?)}";
-//            String linkStarCall = "{call link_star_to_movie_parser(?, ?, ?, ?, ?)}";
-//
-//            try (CallableStatement addMovieStmt = connection.prepareCall(addMovieCall);
-//                 CallableStatement linkGenreStmt = connection.prepareCall(linkGenreCall);
-//                 CallableStatement linkStarStmt = connection.prepareCall(linkStarCall)) {
-//
-//                for (Movie movie : movies) {
-//                    // Add the movie
-//                    addMovieStmt.setString(1, movie.getTitle());
-//                    addMovieStmt.setInt(2, movie.getYear());
-//                    addMovieStmt.setString(3, movie.getDirector());
-//                    addMovieStmt.addBatch();
-//
-//                    // Link genres to the movie
-//                    for (String genre : movie.getGenres()) {
-//                        linkGenreStmt.setString(1, genre);
-//                        linkGenreStmt.setString(2, movie.getTitle());
-//                        linkGenreStmt.setInt(3, movie.getYear());
-//                        linkGenreStmt.setString(4, movie.getDirector());
-//                        linkGenreStmt.addBatch();
-//                    }
-//
-//                    // Link stars to the movie
-//                    for (Star star : movie.getStars()) {
-//                        linkStarStmt.setString(1, star.getName());
-//                        if (star.getBirthYear() != 0) {
-//                            linkStarStmt.setInt(2, star.getBirthYear());
-//                        } else {
-//                            linkStarStmt.setNull(2, java.sql.Types.INTEGER);
-//                        }
-//                        linkStarStmt.setString(3, movie.getTitle());
-//                        linkStarStmt.setInt(4, movie.getYear());
-//                        linkStarStmt.setString(5, movie.getDirector());
-//                        linkStarStmt.addBatch();
-//                    }
-//                }
-//
-//                // Execute all batches
-//                System.out.println(addMovieStmt);
-//                System.out.println(linkGenreStmt);
-//                System.out.println(linkStarStmt);
-//                addMovieStmt.executeBatch();
-//                linkGenreStmt.executeBatch();
-//                linkStarStmt.executeBatch();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    private void insertStarsChunkIntoDatabase(List<Star> stars) {
-//        try {
-//            String url = "jdbc:mysql://localhost:3306/moviedb";
-//
-//            Connection connection = DriverManager.getConnection(url, user, password);
-//
-//            String addStarCall = "{call add_star(?, ?)}";
-//
-//            try (CallableStatement addStarStmt = connection.prepareCall(addStarCall)) {
-//
-//                for (Star star : stars) {
-//                    addStarStmt.setString(1, star.getName());
-//                    if (star.getBirthYear() != 0) {
-//                        addStarStmt.setInt(2, star.getBirthYear());
-//                    } else {
-//                        addStarStmt.setNull(2, java.sql.Types.INTEGER);
-//                    }
-//                    addStarStmt.addBatch();
-//                }
-//
-//                // Execute the batch statement
-//                System.out.println(addStarStmt);
-//                addStarStmt.executeBatch();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            } finally {
-//                connection.close();
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+    public void runInsertWithThreads() throws FileNotFoundException {
+        List<List<Movie>> movieChunks = chunkMovies(new ArrayList<>(movieByFid.values()), 100);
+        List<List<Star>> starChunks = chunkStars(new ArrayList<>(starsByName.values()), 100);
+
+        List<Thread> movieThreads = new ArrayList<>();
+        List<Thread> starThreads = new ArrayList<>();
+
+        // Threads for movies
+        for (List<Movie> chunk : movieChunks) {
+            Thread thread = new Thread(() -> insertMoviesChunkIntoDatabase(chunk));
+            movieThreads.add(thread);
+            thread.start();
+        }
+
+        // Threads for stars
+        for (List<Star> chunk : starChunks) {
+            Thread thread = new Thread(() -> insertStarsChunkIntoDatabase(chunk));
+            starThreads.add(thread);
+            thread.start();
+        }
+
+        // Wait for movie threads to finish
+        for (Thread thread : movieThreads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Wait for star threads to finish
+        for (Thread thread : starThreads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private List<List<Movie>> chunkMovies(List<Movie> movies, int chunkSize) {
+        List<List<Movie>> chunks = new ArrayList<>();
+        for (int i = 0; i < movies.size(); i += chunkSize) {
+            chunks.add(movies.subList(i, Math.min(i + chunkSize, movies.size())));
+        }
+        return chunks;
+    }
+
+    private List<List<Star>> chunkStars(List<List<Star>> stars, int chunkSize) {
+        List<Star> flattenedList = new ArrayList<>();
+        for (List<Star> starList : stars) {
+            flattenedList.addAll(starList);
+        }
+        List<List<Star>> chunks = new ArrayList<>();
+        for (int i = 0; i < flattenedList.size(); i += chunkSize) {
+            chunks.add(flattenedList.subList(i, Math.min(i + chunkSize, flattenedList.size())));
+        }
+        return chunks;
+    }
+
+    private void insertMoviesChunkIntoDatabase(List<Movie> movies) {
+        try {
+            String url = "jdbc:mysql://localhost:3306/moviedb";
+            String user = "root";
+            String password = "mangobanana109";
+
+            Connection connection = DriverManager.getConnection(url, user, password);
+
+            String addMovieCall = "{call add_movie_parser(?, ?, ?)}";
+            String linkGenreCall = "{call link_genre_to_movie_parser(?, ?, ?, ?)}";
+            String linkStarCall = "{call link_star_to_movie_parser(?, ?, ?, ?, ?)}";
+
+            try (CallableStatement addMovieStmt = connection.prepareCall(addMovieCall);
+                 CallableStatement linkGenreStmt = connection.prepareCall(linkGenreCall);
+                 CallableStatement linkStarStmt = connection.prepareCall(linkStarCall)) {
+
+                for (Movie movie : movies) {
+                    // Add the movie
+                    addMovieStmt.setString(1, movie.getTitle());
+                    addMovieStmt.setInt(2, movie.getYear());
+                    addMovieStmt.setString(3, movie.getDirector());
+                    addMovieStmt.addBatch();
+
+                    // Link genres to the movie
+                    for (String genre : movie.getGenres()) {
+                        linkGenreStmt.setString(1, genre);
+                        linkGenreStmt.setString(2, movie.getTitle());
+                        linkGenreStmt.setInt(3, movie.getYear());
+                        linkGenreStmt.setString(4, movie.getDirector());
+                        linkGenreStmt.addBatch();
+                    }
+
+                    // Link stars to the movie
+                    for (Star star : movie.getStars()) {
+                        linkStarStmt.setString(1, star.getName());
+                        if (star.getBirthYear() != 0) {
+                            linkStarStmt.setInt(2, star.getBirthYear());
+                        } else {
+                            linkStarStmt.setNull(2, java.sql.Types.INTEGER);
+                        }
+                        linkStarStmt.setString(3, movie.getTitle());
+                        linkStarStmt.setInt(4, movie.getYear());
+                        linkStarStmt.setString(5, movie.getDirector());
+                        linkStarStmt.addBatch();
+                    }
+                }
+
+                // Execute all batches
+                System.out.println(addMovieStmt);
+                System.out.println(linkGenreStmt);
+                System.out.println(linkStarStmt);
+                addMovieStmt.executeBatch();
+                linkGenreStmt.executeBatch();
+                linkStarStmt.executeBatch();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void insertStarsChunkIntoDatabase(List<Star> stars) {
+        try {
+            String url = "jdbc:mysql://localhost:3306/moviedb";
+
+            Connection connection = DriverManager.getConnection(url, user, password);
+
+            String addStarCall = "{call add_star_parser(?, ?)}";
+
+            try (CallableStatement addStarStmt = connection.prepareCall(addStarCall)) {
+
+                for (Star star : stars) {
+                    addStarStmt.setString(1, star.getName());
+                    if (star.getBirthYear() != 0) {
+                        addStarStmt.setInt(2, star.getBirthYear());
+                    } else {
+                        addStarStmt.setNull(2, java.sql.Types.INTEGER);
+                    }
+                    addStarStmt.addBatch();
+                }
+
+                // Execute the batch statement
+                System.out.println(addStarStmt);
+                addStarStmt.executeBatch();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                connection.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private void parseMains243XmlFile() throws FileNotFoundException {
         InputStream inputStream = new FileInputStream("./XMLDataAndParser/mains243.xml");

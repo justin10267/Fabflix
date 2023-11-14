@@ -1,4 +1,5 @@
 USE moviedb;
+USE moviedb;
 DELIMITER //
 
 CREATE PROCEDURE add_genre(IN genre_name VARCHAR(32))
@@ -100,24 +101,23 @@ CREATE PROCEDURE add_movie_parser(
 )
 BEGIN
     DECLARE movieExists INT;
-    DECLARE newMovieId VARCHAR(10);
+    DECLARE newMovieId VARCHAR(10); -- Adjust size for your use case
+    
+    SET newMovieId = CONCAT('tt', SUBSTRING(REPLACE(UUID(), '-', ''), 1, 8)); -- Adjust substring to fit within VARCHAR length
     
     SELECT COUNT(*) INTO movieExists
     FROM movies
     WHERE title = movieTitle AND year = movieYear AND director = movieDirector;
 
     IF movieExists = 0 THEN
-        SELECT CONCAT('tt', id + 1) INTO newMovieId
-        FROM highestMovieId;
-        INSERT INTO movies (id, title, year, director, price) VALUES (newMovieId, movieTitle, movieYear, movieDirector, 1 + FLOOR(RAND() * 10));
-        
-        UPDATE highestMovieId SET id = id + 1;
-        
-		SELECT CONCAT("Success! Movie Id: ", newMovieId) as message;
-	ELSE
-		SELECT "Error! Movie Already Exists." as message;
+        INSERT INTO movies (id, title, year, director, price)
+        VALUES (newMovieId, movieTitle, movieYear, movieDirector, 1 + FLOOR(RAND() * 10));
+        SELECT CONCAT("Success! Movie Id: ", newMovieId) as message;
+    ELSE
+        SELECT "Error! Movie Already Exists." as message;
     END IF;
 END //
+
 
 DELIMITER ;
 
@@ -132,27 +132,34 @@ CREATE PROCEDURE link_genre_to_movie_parser(
 BEGIN
     DECLARE genreIdVar INT;
     DECLARE movieIdVar VARCHAR(10);
-    
+    DECLARE existingCount INT;
+
     CALL add_genre(genreName);
     SELECT id INTO genreIdVar FROM genres WHERE name = genreName;
     SELECT id INTO movieIdVar FROM movies WHERE title = movieTitle AND year = movieYear AND director = movieDirector;
-    INSERT INTO genres_in_movies (genreId, movieId) VALUES (genreIdVar, movieIdVar);
+
+    -- Check if the entry already exists in genres_in_movies
+    SELECT COUNT(*) INTO existingCount FROM genres_in_movies WHERE genreId = genreIdVar AND movieId = movieIdVar;
+
+    IF existingCount = 0 THEN
+        INSERT INTO genres_in_movies (genreId, movieId) VALUES (genreIdVar, movieIdVar);
+        SELECT "Success! Genre linked to the movie." as message;
+    ELSE
+        SELECT "Genre is already linked to the movie." as message;
+    END IF;
 END //
 
 DELIMITER ;
 
 DELIMITER //
 
-CREATE PROCEDURE add_star_parser(IN starName VARCHAR(100), IN starBirthYear INT, OUT formattedStarId VARCHAR(10))
+CREATE PROCEDURE add_star_parser(IN starName VARCHAR(100), IN starBirthYear INT, OUT formattedStarId VARCHAR(20))
 BEGIN
-    DECLARE newStarId INT;
-    DECLARE tempId VARCHAR(10);
-    UPDATE highestStarId SET id = id + 1;
-    SELECT id INTO newStarId FROM highestStarId;
-    SET tempId = CONCAT('nm', newStarId);
-    INSERT INTO stars (id, name, birthYear) VALUES (tempId, starName, starBirthYear);
-    SET formattedStarId = tempId;
-    SELECT CONCAT("Success! Star Id: ", tempId) as message;
+    DECLARE newStarId VARCHAR(20);
+    SET newStarId = CONCAT('nm', SUBSTRING(REPLACE(UUID(), '-', ''), 1, 12));
+    INSERT INTO stars (id, name, birthYear) VALUES (newStarId, starName, starBirthYear);
+    SET formattedStarId = newStarId;
+    SELECT CONCAT("Success! Star Id: ", newStarId) as message;
 END //
 
 DELIMITER ;
@@ -167,11 +174,14 @@ CREATE PROCEDURE link_star_to_movie_parser(
     IN movieDirector VARCHAR(100)
 )
 BEGIN
-    DECLARE starIdVar VARCHAR(10);
+    DECLARE starIdVar VARCHAR(20);
     DECLARE movieIdVar VARCHAR(10);
-    DECLARE starExists INT;
     
     CALL add_star_parser(starName, starBirthYear, starIdVar);
+    
+    -- Select the ID returned from the stored procedure
+    SELECT starIdVar INTO starIdVar;
+    
     SELECT id INTO movieIdVar FROM movies WHERE title = movieTitle AND year = movieYear AND director = movieDirector;
     
     INSERT INTO stars_in_movies (starId, movieId) VALUES (starIdVar, movieIdVar);

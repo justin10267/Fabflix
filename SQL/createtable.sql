@@ -10,14 +10,14 @@ CREATE TABLE moviedb.movies (
 );
 
 CREATE TABLE moviedb.stars (
-	id VARCHAR(10) NOT NULL,
+	id VARCHAR(20) NOT NULL,
     name VARCHAR(100) NOT NULL,
     birthYear INT,
     PRIMARY KEY (id)
 );
 
 CREATE TABLE moviedb.stars_in_movies (
-	starId VARCHAR(10) NOT NULL,
+	starId VARCHAR(20) NOT NULL,
     movieId VARCHAR(10) NOT NULL,
     FOREIGN KEY (starId) REFERENCES stars(id),
     FOREIGN KEY (movieId) REFERENCES movies(id)
