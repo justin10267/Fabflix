@@ -135,8 +135,8 @@ BEGIN
     DECLARE existingCount INT;
 
     CALL add_genre(genreName);
-    SELECT id INTO genreIdVar FROM genres WHERE name = genreName;
-    SELECT id INTO movieIdVar FROM movies WHERE title = movieTitle AND year = movieYear AND director = movieDirector;
+    SELECT id INTO genreIdVar FROM genres WHERE name = genreName LIMIT 1;
+    SELECT id INTO movieIdVar FROM movies WHERE title = movieTitle AND year = movieYear AND director = movieDirector LIMIT 1;
 
     -- Check if the entry already exists in genres_in_movies
     SELECT COUNT(*) INTO existingCount FROM genres_in_movies WHERE genreId = genreIdVar AND movieId = movieIdVar;
