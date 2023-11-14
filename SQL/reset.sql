@@ -1,5 +1,4 @@
 USE moviedb;
-USE moviedb;
 DELIMITER //
 
 CREATE PROCEDURE add_genre(IN genre_name VARCHAR(32))

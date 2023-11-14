@@ -142,8 +142,6 @@ public class DomParser {
     private void insertMoviesChunkIntoDatabase(List<Movie> movies) {
         try {
             String url = "jdbc:mysql://localhost:3306/moviedb";
-            String user = "root";
-            String password = "mangobanana109";
 
             Connection connection = DriverManager.getConnection(url, user, password);
 
