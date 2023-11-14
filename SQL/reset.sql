@@ -21,13 +21,10 @@ DELIMITER //
 
 CREATE PROCEDURE add_star(IN starName VARCHAR(100), IN starBirthYear INT)
 BEGIN
-	DECLARE newStarId INT;
-    DECLARE formattedStarId VARCHAR(10);
-    UPDATE highestStarId SET id = id + 1;
-    SELECT id INTO newStarId FROM highestStarId;
-    SET formattedStarId = CONCAT('nm', newStarId);
-    INSERT INTO stars (id, name, birthYear) VALUES (formattedStarId, starName, starBirthYear);
-    SELECT CONCAT("Success! Star Id: ", formattedStarId) as message;
+    DECLARE newStarId VARCHAR(20);
+    SET newStarId = CONCAT('nm', SUBSTRING(REPLACE(UUID(), '-', ''), 1, 18));
+    INSERT INTO stars (id, name, birthYear) VALUES (newStarId, starName, starBirthYear);
+    SELECT CONCAT("Success! Star Id: ", newStarId) as message;
 END //
 
 DELIMITER ;
@@ -46,7 +43,7 @@ BEGIN
     DECLARE movieExists INT;
     DECLARE newMovieId VARCHAR(10);
     DECLARE existingGenreId INT;
-    DECLARE existingStarId VARCHAR(10);
+    DECLARE existingStarId VARCHAR(20);
     DECLARE existingStar INT;
     
     SELECT COUNT(*) INTO movieExists
@@ -60,10 +57,14 @@ BEGIN
         
         UPDATE highestMovieId SET id = id + 1;
 
-        CALL add_genre(genreName);
         SELECT id INTO existingGenreId
         FROM genres
         WHERE name = genreName;
+
+        IF existingGenreId IS NULL THEN
+            INSERT INTO genres (name) VALUES (genreName);
+            SELECT id INTO existingGenreId FROM genres WHERE name = genreName;
+        END IF;
         
         SELECT COUNT(*) INTO existingStar
         FROM stars
@@ -155,7 +156,7 @@ DELIMITER //
 CREATE PROCEDURE add_star_parser(IN starName VARCHAR(100), IN starBirthYear INT, OUT formattedStarId VARCHAR(20))
 BEGIN
     DECLARE newStarId VARCHAR(20);
-    SET newStarId = CONCAT('nm', SUBSTRING(REPLACE(UUID(), '-', ''), 1, 12));
+    SET newStarId = CONCAT('nm', SUBSTRING(REPLACE(UUID(), '-', ''), 1, 18));
     INSERT INTO stars (id, name, birthYear) VALUES (newStarId, starName, starBirthYear);
     SET formattedStarId = newStarId;
     SELECT CONCAT("Success! Star Id: ", newStarId) as message;

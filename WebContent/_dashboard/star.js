@@ -14,7 +14,7 @@ function submitStarForm(formSubmitEvent) {
     $.ajax(
         "api/dashboardStar", {
             method: "POST",
-            data: movie_form.serialize(),
+            data: star_form.serialize(),
             success: handleStarResult
         }
     );

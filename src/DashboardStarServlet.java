@@ -43,28 +43,22 @@ public class DashboardStarServlet extends HttpServlet {
                 try (CallableStatement statement = connection.prepareCall(addMovieCall)) {
                     statement.setString(1, starName);
                     if (birthYear != null && !birthYear.isEmpty()) {
-                        statement.setInt(5, Integer.parseInt(birthYear));
+                        statement.setInt(2, Integer.parseInt(birthYear));
                     } else {
-                        statement.setNull(5, java.sql.Types.INTEGER);
+                        statement.setNull(2, java.sql.Types.INTEGER);
                     }
-                    System.out.println(statement.toString());
                     ResultSet rs = statement.executeQuery();
                     JsonObject messageObject = new JsonObject();
-                    boolean hasResultSet = statement.getMoreResults();
-                    while (hasResultSet) {
-                        rs = statement.getResultSet();
-                        if (rs.next()) {
-                            String message = rs.getString("message");
-                            messageObject.addProperty("message", message);
-                        }
-                        hasResultSet = statement.getMoreResults();
-                    }
+                    rs.next();
+                    String message = rs.getString("message");
+                    messageObject.addProperty("message", message);
                     out.write(messageObject.toString());
                     response.setStatus(HttpServletResponse.SC_OK);
                 }
             } catch (Exception e) {
                 JsonObject errorObject = new JsonObject();
                 errorObject.addProperty("error", e.getMessage());
+                e.printStackTrace();
                 out.write(errorObject.toString());
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             } finally {

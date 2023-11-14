@@ -55,18 +55,13 @@ public class DashboardMovieServlet extends HttpServlet {
                         statement.setNull(5, java.sql.Types.INTEGER);
                     }
                     statement.setString(6, genre);
-                    System.out.println(statement.toString());
+                    System.out.println(statement);
                     ResultSet rs = statement.executeQuery();
                     JsonObject messageObject = new JsonObject();
-                    boolean hasResultSet = statement.getMoreResults();
-                    while (hasResultSet) {
-                        rs = statement.getResultSet();
-                        if (rs.next()) {
-                            String message = rs.getString("message");
-                            messageObject.addProperty("message", message);
-                        }
-                        hasResultSet = statement.getMoreResults();
-                    }
+                    rs.next();
+                    String message = rs.getString("message");
+                    messageObject.addProperty("message", message);
+                    System.out.println(messageObject);
                     out.write(messageObject.toString());
                     response.setStatus(HttpServletResponse.SC_OK);
                 }
@@ -75,6 +70,7 @@ public class DashboardMovieServlet extends HttpServlet {
                 errorObject.addProperty("error", e.getMessage());
                 out.write(errorObject.toString());
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                e.printStackTrace();
             } finally {
                 out.close();
             }

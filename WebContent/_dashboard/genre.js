@@ -14,7 +14,7 @@ function submitMovieForm(formSubmitEvent) {
     $.ajax(
         "api/dashboardGenre", {
             method: "POST",
-            data: movie_form.serialize(),
+            data: genre_form.serialize(),
             success: handleGenreResult
         }
     );

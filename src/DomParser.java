@@ -205,7 +205,7 @@ public class DomParser {
 
             Connection connection = DriverManager.getConnection(url, user, password);
 
-            String addStarCall = "{call add_star_parser(?, ?)}";
+            String addStarCall = "{call add_star(?, ?)}";
 
             try (CallableStatement addStarStmt = connection.prepareCall(addStarCall)) {
 
