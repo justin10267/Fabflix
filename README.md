@@ -29,17 +29,17 @@ https://youtu.be/Ud1ASciy0-g (Project 2)
 https://youtu.be/L8IfwK66wAs (Project 3)
 
 ### Files with Prepared Statements
-DomParser.java
-ConfirmationServlet
-DashboardGenreServlet
-DashboardLoginServlet
-DashboardMovieServlet
-DashboardStarServlet
-ListServlet
-LoginServlet
-PlaceOrderServlet
-SingleMovieServlet
-SingleStarServlet
+- DomParser.java
+- ConfirmationServlet
+- DashboardGenreServlet
+- DashboardLoginServlet
+- DashboardMovieServlet
+- DashboardStarServlet
+- ListServlet
+- LoginServlet
+- PlaceOrderServlet
+- SingleMovieServlet
+- SingleStarServlet
 
 ### Optimization Strategies
 - We use batch statements instead of individually executing statements
