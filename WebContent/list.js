@@ -32,17 +32,28 @@ function handleMovieResult(resultData) {
             }
         }
         rowHTML += "</th>";
-        let stars = movieData[i]["movie_stars"].split(",");
-        rowHTML += "<th>"
-        for (let i = 0; i < stars.length; i++) {
-            let star_info = stars[i].split(":");
-            rowHTML += '<a href="single-star.html?id=' + star_info[0] + '">' + star_info[1] + '</a>';
-            if (i !== stars.length - 1) {
-                rowHTML += ", ";
+
+        if (movieData[i]["movie_stars"]) {
+            let stars = movieData[i]["movie_stars"].split(",");
+            rowHTML += "<th>"
+            for (let i = 0; i < stars.length; i++) {
+                let star_info = stars[i].split(":");
+                rowHTML += '<a href="single-star.html?id=' + star_info[0] + '">' + star_info[1] + '</a>';
+                if (i !== stars.length - 1) {
+                    rowHTML += ", ";
+                }
             }
+            rowHTML += "</th>"
         }
-        rowHTML += "</th>"
-        rowHTML += "<th>" + movieData[i]["movie_rating"] + "</th>";
+        else {
+            rowHTML += "<th>N/A</th>";
+        }
+        if (movieData[i]["movie_rating"]) {
+            rowHTML += "<th>" + movieData[i]["movie_rating"] + "</th>";
+        }
+        else{
+            rowHTML += "<th>N/A</th>";
+        }
         rowHTML += `<th><button class="addToCart" data-movie-id="${movieData[i]['movie_id']}" data-movie-title="${movieData[i]['movie_title']}" data-movie-price="${movieData[i]['movie_price']}">Add to Cart</button></th>`;
         rowHTML += "</tr>";
 
@@ -99,6 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+
     let currentPage = sessionStorage.getItem("currentPage");
     if (currentPage === null) {
         currentPage = 1;

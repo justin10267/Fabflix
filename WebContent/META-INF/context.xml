@@ -7,11 +7,12 @@
               auth="Container"
               driverClassName="com.mysql.cj.jdbc.Driver"
               type="javax.sql.DataSource"
-              username="mytestuser"
-              password="My6$Password"
+              username="root"
+              password="mangobanana109"
               url="jdbc:mysql://localhost:3306/moviedb"/>
-<!--              username="root"-->
-<!--              password="mangobanana109"-->
+<!--              username="mytestuser"-->
+<!--              password="My6$Password"-->
 <!--              url="jdbc:mysql://localhost:3306/moviedb"/>-->
+
 
 </Context>

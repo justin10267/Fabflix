@@ -224,3 +224,5 @@ email varchar(50) not null,
 password varchar(20) not null,
 foreign key(ccId) references creditcards(id));
 insert into customers_backup select * from customers;
+
+ALTER TABLE movies ADD FULLTEXT(title);

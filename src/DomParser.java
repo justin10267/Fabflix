@@ -19,11 +19,10 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class DomParser {
-    private DataSource dataSource;
-//    String user = "root";
-//    String password = "mangobanana109";
-    String user = "mytestuser";
-    String password = "My6$Password";
+    String user = "root";
+    String password = "mangobanana109";
+//    String user = "mytestuser";
+//    String password = "My6$Password";
 
     Set<String> processedActors = new HashSet<>();
     Map<String, Movie> movieByFid = new HashMap<>();
@@ -64,6 +63,7 @@ public class DomParser {
     Document moviesDom;
     Document starsDom;
     Document castsDom;
+    
     public void runParse() throws FileNotFoundException {
         parseMains243XmlFile();
         parseMoviesDocument();
@@ -71,37 +71,24 @@ public class DomParser {
         parseStarsDocument();
         parseCast124XmlFile();
         parseCastDocument();
-//        printMovieData();
-//        printStarData();
-//        insertMoviesIntoDatabase();
-//        insertStarsIntoDatabase();
-//        System.out.println((chunkMovies(new ArrayList<>(movieByFid.values()), 1000)).get(1));
-//        System.out.println(chunkStars(new ArrayList<>(starsByName.values()), 500).size());
         runInsertWithThreads();
     }
 
     public void runInsertWithThreads() throws FileNotFoundException {
         List<List<Movie>> movieChunks = chunkMovies(new ArrayList<>(movieByFid.values()), 100);
         List<List<Star>> starChunks = chunkStars(new ArrayList<>(starsByName.values()), 100);
-
         List<Thread> movieThreads = new ArrayList<>();
         List<Thread> starThreads = new ArrayList<>();
-
-        // Threads for movies
         for (List<Movie> chunk : movieChunks) {
             Thread thread = new Thread(() -> insertMoviesChunkIntoDatabase(chunk));
             movieThreads.add(thread);
             thread.start();
         }
-
-        // Threads for stars
         for (List<Star> chunk : starChunks) {
             Thread thread = new Thread(() -> insertStarsChunkIntoDatabase(chunk));
             starThreads.add(thread);
             thread.start();
         }
-
-        // Wait for movie threads to finish
         for (Thread thread : movieThreads) {
             try {
                 thread.join();
@@ -109,8 +96,6 @@ public class DomParser {
                 e.printStackTrace();
             }
         }
-
-        // Wait for star threads to finish
         for (Thread thread : starThreads) {
             try {
                 thread.join();
@@ -119,6 +104,7 @@ public class DomParser {
             }
         }
     }
+
     private List<List<Movie>> chunkMovies(List<Movie> movies, int chunkSize) {
         List<List<Movie>> chunks = new ArrayList<>();
         for (int i = 0; i < movies.size(); i += chunkSize) {
@@ -142,25 +128,18 @@ public class DomParser {
     private void insertMoviesChunkIntoDatabase(List<Movie> movies) {
         try {
             String url = "jdbc:mysql://localhost:3306/moviedb";
-
             Connection connection = DriverManager.getConnection(url, user, password);
-
             String addMovieCall = "{call add_movie_parser(?, ?, ?)}";
             String linkGenreCall = "{call link_genre_to_movie_parser(?, ?, ?, ?)}";
             String linkStarCall = "{call link_star_to_movie_parser(?, ?, ?, ?, ?)}";
-
             try (CallableStatement addMovieStmt = connection.prepareCall(addMovieCall);
                  CallableStatement linkGenreStmt = connection.prepareCall(linkGenreCall);
                  CallableStatement linkStarStmt = connection.prepareCall(linkStarCall)) {
-
                 for (Movie movie : movies) {
-                    // Add the movie
                     addMovieStmt.setString(1, movie.getTitle());
                     addMovieStmt.setInt(2, movie.getYear());
                     addMovieStmt.setString(3, movie.getDirector());
                     addMovieStmt.addBatch();
-
-                    // Link genres to the movie
                     for (String genre : movie.getGenres()) {
                         linkGenreStmt.setString(1, genre);
                         linkGenreStmt.setString(2, movie.getTitle());
@@ -168,8 +147,6 @@ public class DomParser {
                         linkGenreStmt.setString(4, movie.getDirector());
                         linkGenreStmt.addBatch();
                     }
-
-                    // Link stars to the movie
                     for (Star star : movie.getStars()) {
                         linkStarStmt.setString(1, star.getName());
                         if (star.getBirthYear() != 0) {
@@ -183,8 +160,6 @@ public class DomParser {
                         linkStarStmt.addBatch();
                     }
                 }
-
-                // Execute all batches
                 System.out.println(addMovieStmt);
                 System.out.println(linkGenreStmt);
                 System.out.println(linkStarStmt);
@@ -440,179 +415,13 @@ public class DomParser {
         }
     }
 
-    public void insertMoviesIntoDatabase() {
-        try {
-            String url = "jdbc:mysql://localhost:3306/moviedb";
-
-            Connection connection = DriverManager.getConnection(url, user, password);
-
-            String addMovieCall = "{call add_movie_parser(?, ?, ?)}";
-            String linkGenreCall = "{call link_genre_to_movie_parser(?, ?, ?, ?)}";
-            String linkStarCall = "{call link_star_to_movie_parser(?, ?, ?, ?, ?)}";
-
-            try (CallableStatement addMovieStmt = connection.prepareCall(addMovieCall);
-                 CallableStatement linkGenreStmt = connection.prepareCall(linkGenreCall);
-                 CallableStatement linkStarStmt = connection.prepareCall(linkStarCall)) {
-
-                for (Movie movie : movieByFid.values()) {
-                    // Add the movie
-                    addMovieStmt.setString(1, movie.getTitle());
-                    addMovieStmt.setInt(2, movie.getYear());
-                    addMovieStmt.setString(3, movie.getDirector());
-                    addMovieStmt.addBatch();
-
-                    // Link genres to the movie
-                    for (String genre : movie.getGenres()) {
-                        linkGenreStmt.setString(1, genre);
-                        linkGenreStmt.setString(2, movie.getTitle());
-                        linkGenreStmt.setInt(3, movie.getYear());
-                        linkGenreStmt.setString(4, movie.getDirector());
-                        linkGenreStmt.addBatch();
-                    }
-
-                    // Link stars to the movie
-                    for (Star star : movie.getStars()) {
-                        linkStarStmt.setString(1, star.getName());
-                        if (star.getBirthYear() != 0) {
-                            linkStarStmt.setInt(2, star.getBirthYear());
-                        } else {
-                            linkStarStmt.setNull(2, java.sql.Types.INTEGER);
-                        }
-                        linkStarStmt.setString(3, movie.getTitle());
-                        linkStarStmt.setInt(4, movie.getYear());
-                        linkStarStmt.setString(5, movie.getDirector());
-                        linkStarStmt.addBatch();
-                    }
-                }
-
-                // Execute all batches
-                System.out.println(addMovieStmt);
-                System.out.println(linkGenreStmt);
-                System.out.println(linkStarStmt);
-                addMovieStmt.executeBatch();
-                linkGenreStmt.executeBatch();
-                linkStarStmt.executeBatch();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void insertStarsIntoDatabase() {
-        try {
-            String url = "jdbc:mysql://localhost:3306/moviedb";
-
-            Connection connection = DriverManager.getConnection(url, user, password);
-
-            String addStarCall = "{call add_star(?, ?)}";
-            connection.setAutoCommit(false);
-
-            for (List<Star> stars : starsByName.values()) {
-                try (CallableStatement addStarStmt = connection.prepareCall(addStarCall)) {
-                    for (Star star : stars) {
-                        addStarStmt.setString(1, star.getName());
-                        if (star.getBirthYear() != 0) {
-                            addStarStmt.setInt(2, star.getBirthYear());
-                        } else {
-                            addStarStmt.setNull(2, java.sql.Types.INTEGER);
-                        }
-                        addStarStmt.addBatch();
-                    }
-                    System.out.println(addStarStmt);
-                    addStarStmt.executeBatch();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            connection.commit();
-            connection.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void TESTinsertMoviesIntoDatabase() {
-        try {
-            String url = "jdbc:mysql://localhost:3306/moviedb";
-
-            Connection connection = DriverManager.getConnection(url, user, password);
-
-            String addMovieCall = "{call add_movie_parser(?, ?, ?)}";
-            String linkGenreCall = "{call link_genre_to_movie_parser(?, ?, ?, ?)}";
-            String linkStarCall = "{call link_star_to_movie_parser(?, ?, ?, ?, ?)}";
-
-            try (CallableStatement addMovieStmt = connection.prepareCall(addMovieCall);
-                 CallableStatement linkGenreStmt = connection.prepareCall(linkGenreCall);
-                 CallableStatement linkStarStmt = connection.prepareCall(linkStarCall)) {
-
-                addMovieStmt.setString(1, "MOVIE10");
-                addMovieStmt.setInt(2, 2002);
-                addMovieStmt.setString(3, "DIRECTOR1");
-                addMovieStmt.addBatch();
-
-                linkGenreStmt.setString(1, "Action");
-                linkGenreStmt.setString(2, "MOVIE10");
-                linkGenreStmt.setInt(3, 2002);
-                linkGenreStmt.setString(4, "DIRECTOR1");
-                linkGenreStmt.addBatch();
-
-                linkStarStmt.setString(1, "STAR1");
-                linkStarStmt.setInt(2, 2002);
-                linkStarStmt.setString(3, "MOVIE10");
-                linkStarStmt.setInt(4, 2002);
-                linkStarStmt.setString(5, "DIRECTOR1");
-                linkStarStmt.addBatch();
-
-                addMovieStmt.setString(1, "MOVIE11");
-                addMovieStmt.setInt(2, 2002);
-                addMovieStmt.setString(3, "DIRECTOR1");
-                addMovieStmt.addBatch();
-
-                linkGenreStmt.setString(1, "Action");
-                linkGenreStmt.setString(2, "MOVIE11");
-                linkGenreStmt.setInt(3, 2002);
-                linkGenreStmt.setString(4, "DIRECTOR1");
-                linkGenreStmt.addBatch();
-
-                linkStarStmt.setString(1, "STAR1");
-                linkStarStmt.setInt(2, 2002);
-                linkStarStmt.setString(3, "MOVIE11");
-                linkStarStmt.setInt(4, 2002);
-                linkStarStmt.setString(5, "DIRECTOR1");
-                linkStarStmt.addBatch();
-
-                // Execute all batches
-                System.out.println(addMovieStmt);
-                System.out.println(linkGenreStmt);
-                System.out.println(linkStarStmt);
-                addMovieStmt.executeBatch();
-                linkGenreStmt.executeBatch();
-                linkStarStmt.executeBatch();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void main(String[] args) throws FileNotFoundException {
         DomParser domParser = new DomParser();
-
-//        long startTime = System.nanoTime();
-//        domParser.runParseWithThreads();
-//        long endTime = System.nanoTime();
-//        long timeElapsedWithThreads = endTime - startTime;
-//        domParser.logTime("Time with threads: " + (timeElapsedWithThreads / 1e6) + " milliseconds");
-
         long startTime = System.nanoTime();
         domParser.runParse();
         long endTime = System.nanoTime();
         long timeElapsedWithoutThreads = endTime - startTime;
-        domParser.logTime("Time without threads: " + (timeElapsedWithoutThreads / 1e6) + " milliseconds");
+        domParser.logTime("Time with threads: " + (timeElapsedWithoutThreads / 1e6) + " milliseconds");
     }
 
 }
