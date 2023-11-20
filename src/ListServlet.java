@@ -55,36 +55,8 @@ public class ListServlet extends HttpServlet {
             int queryLimit = Integer.parseInt(limit) + 1;
             sort = User.getSortQuery(sort);
             String offset = Integer.toString((Integer.parseInt(page) - 1 ) * Integer.parseInt(limit));
-            PreparedStatement statement;
-            if (title != null || year != null || director != null || stars != null) {
-                statement = createSearchStatement(conn, sort, title, year, director, stars, queryLimit, offset);
-                sessionUser.setPreviousQueryType("search");
-                sessionUser.setPreviousSearchParameters(title, year, director, stars);
-            }
-            else if (genre != null) {
-                statement = createGenreStatement(conn, sort, genre, queryLimit, offset);
-                sessionUser.setPreviousQueryType("genre");
-                sessionUser.setPreviousGenre(genre);
-            }
-            else if (prefix != null) {
-                statement = createTitleStatement(conn, sort, prefix, queryLimit, offset);
-                sessionUser.setPreviousQueryType("prefix");
-                sessionUser.setPreviousPrefix(prefix);
-            }
-            else {
-                String queryType = sessionUser.getPreviousQueryType();
-                if (queryType.equals("search")) {
-                    statement = createSearchStatement(conn, sort, sessionUser.getPreviousTitle(),
-                            sessionUser.getPreviousYear(), sessionUser.getPreviousDirector().toUpperCase(),
-                            sessionUser.getPreviousStars().toUpperCase(), queryLimit, offset);
-                }
-                else if (queryType.equals("genre")) {
-                    statement = createGenreStatement(conn, sort, sessionUser.getPreviousGenre(), queryLimit, offset);
-                }
-                else {
-                    statement = createTitleStatement(conn, sort, sessionUser.getPreviousPrefix(), queryLimit, offset);
-                }
-            }
+            PreparedStatement statement = createAppropriateStatement(conn, sessionUser, sort, title, year, director,
+                    stars, genre, prefix, queryLimit, offset);
             System.out.println(statement);
             ResultSet rs = statement.executeQuery();
             JsonArray jsonArray = processResultSet(rs, queryLimit, out, response);
@@ -108,40 +80,69 @@ public class ListServlet extends HttpServlet {
         }
     }
 
+    private PreparedStatement createAppropriateStatement(Connection conn, User sessionUser, String sort, String title,
+                                                         String year, String director, String stars, String genre,
+                                                         String prefix, int queryLimit, String offset) throws Exception
+    {
+        PreparedStatement statement;
+        if (title != null || year != null || director != null || stars != null) {
+            statement = createSearchStatement(conn, sort, title, year, director, stars, queryLimit, offset);
+            sessionUser.setPreviousQueryType("search");
+            sessionUser.setPreviousSearchParameters(title, year, director, stars);
+        }
+        else if (genre != null) {
+            statement = createGenreStatement(conn, sort, genre, queryLimit, offset);
+            sessionUser.setPreviousQueryType("genre");
+            sessionUser.setPreviousGenre(genre);
+        }
+        else if (prefix != null) {
+            statement = createTitleStatement(conn, sort, prefix, queryLimit, offset);
+            sessionUser.setPreviousQueryType("prefix");
+            sessionUser.setPreviousPrefix(prefix);
+        }
+        else {
+            String queryType = sessionUser.getPreviousQueryType();
+            if (queryType.equals("search")) {
+                statement = createSearchStatement(conn, sort, sessionUser.getPreviousTitle(),
+                        sessionUser.getPreviousYear(), sessionUser.getPreviousDirector().toUpperCase(),
+                        sessionUser.getPreviousStars().toUpperCase(), queryLimit, offset);
+            }
+            else if (queryType.equals("genre")) {
+                statement = createGenreStatement(conn, sort, sessionUser.getPreviousGenre(), queryLimit, offset);
+            }
+            else {
+                statement = createTitleStatement(conn, sort, sessionUser.getPreviousPrefix(), queryLimit, offset);
+            }
+        }
+        return statement;
+    }
+
     private JsonArray processResultSet(ResultSet rs, int limit, PrintWriter out, HttpServletResponse response) throws
             Exception {
         JsonArray jsonArray = new JsonArray();
         int count = 0;
-        try {
-            while (rs.next() && count < limit) {
-                String movie_id = rs.getString("id");
-                String movie_title = rs.getString("title");
-                String movie_year = rs.getString("year");
-                String movie_director = rs.getString("director");
-                String movie_price = rs.getString("price");
-                String movie_genres = rs.getString("genres");
-                String movie_stars = rs.getString("stars");
-                String movie_rating = rs.getString("rating");
+        while (rs.next() && count < limit) {
+            String movie_id = rs.getString("id");
+            String movie_title = rs.getString("title");
+            String movie_year = rs.getString("year");
+            String movie_director = rs.getString("director");
+            String movie_price = rs.getString("price");
+            String movie_genres = rs.getString("genres");
+            String movie_stars = rs.getString("stars");
+            String movie_rating = rs.getString("rating");
 
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("movie_id", movie_id);
-                jsonObject.addProperty("movie_title", movie_title);
-                jsonObject.addProperty("movie_year", movie_year);
-                jsonObject.addProperty("movie_director", movie_director);
-                jsonObject.addProperty("movie_price", movie_price);
-                jsonObject.addProperty("movie_genres", movie_genres);
-                jsonObject.addProperty("movie_stars", movie_stars);
-                jsonObject.addProperty("movie_rating", movie_rating);
-
-                jsonArray.add(jsonObject);
-                count++;
-            }
-        }
-        catch (Exception e) {
             JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("errorMessage", e.getMessage());
-            out.write(jsonObject.toString());
-            response.setStatus(500);
+            jsonObject.addProperty("movie_id", movie_id);
+            jsonObject.addProperty("movie_title", movie_title);
+            jsonObject.addProperty("movie_year", movie_year);
+            jsonObject.addProperty("movie_director", movie_director);
+            jsonObject.addProperty("movie_price", movie_price);
+            jsonObject.addProperty("movie_genres", movie_genres);
+            jsonObject.addProperty("movie_stars", movie_stars);
+            jsonObject.addProperty("movie_rating", movie_rating);
+
+            jsonArray.add(jsonObject);
+            count++;
         }
         return jsonArray;
     }
