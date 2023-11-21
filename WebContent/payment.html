@@ -1,20 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment</title>
-    <link rel="stylesheet" href="payment.css"> <!-- Add your own styles if needed -->
+    <link rel="stylesheet" href="payment.css">
 </head>
-
 <body>
-
 <h2>Payment Details</h2>
-
 <p id="totalPrice">Total Price: $0.00</p>
-
 <form id="paymentForm" method="post" action="#" >
     <div>
         <label for="firstName">First Name:</label>
@@ -34,15 +29,10 @@
     </div>
     <button type="submit">Place Order</button>
 </form>
-
 <div id="payment_error_message"></div>
-
 <div id="payment_success_message"></div>
-
-<!-- Link to the JavaScript file -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="payment.js"></script>
-
 </body>
 </html>

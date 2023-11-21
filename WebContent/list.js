@@ -1,3 +1,4 @@
+const storage = window.sessionStorage;
 document.addEventListener("DOMContentLoaded", function () {
     setupEventListeners();
     initializePageSettings();
@@ -8,9 +9,24 @@ function setupEventListeners() {
     document.getElementById("updateButton").addEventListener("click", updateSettings);
     document.getElementById("previousPageButton").addEventListener("click", () => changePage(-1));
     document.getElementById("nextPageButton").addEventListener("click", () => changePage(1));
+    document.getElementById("autocompleteSearchButton").addEventListener("click", () => handleNormalSearch($('#autocomplete').val()));
     document.body.addEventListener("click", addToCartHandler);
     const resultsLink = document.querySelector('a[href="./list.html"]');
     resultsLink.addEventListener('click', handleResultsLinkClick);
+
+    $('#autocomplete').keypress(function(event) {
+        if (event.keyCode === 13) { // Enter key
+            handleNormalSearch($('#autocomplete').val());
+        }
+    });
+
+    $('#autocomplete').autocomplete({
+        lookup: handleLookup,
+        onSelect: handleSelectSuggestion,
+        deferRequestBy: 300,
+        minChars: 3,
+        triggerSelectOnValidInput: false
+    });
 }
 
 function initializePageSettings() {
@@ -148,4 +164,45 @@ function handleResultsLinkClick(event) {
     } else {
         window.location.href = "./list.html";
     }
+}
+
+function handleLookup(query, doneCallback) {
+    console.log("autocomplete initiated")
+    if (storage.getItem(query.toLowerCase())) {
+        console.log("using autocompleteCache for lookup")
+        console.log(JSON.parse(storage.getItem(query.toLowerCase())));
+        doneCallback( { suggestions: JSON.parse(storage.getItem(query.toLowerCase())) } );
+    }
+    else {
+        console.log("sending AJAX request to backend Java Servlet")
+        jQuery.ajax({
+            "method": "GET",
+            "url": `api/autocomplete?title=${escape(query)}`,
+            "success": function(data) {
+                console.log(`api/autocomplete?title=${escape(query)}`)
+                handleLookupAjaxSuccess(data, query, doneCallback)
+            },
+            "error": function(errorData) {
+                console.log("lookup ajax error")
+                console.log(errorData)
+            }
+        })
+    }
+}
+
+function handleLookupAjaxSuccess(data, query, doneCallback) {
+    console.log("lookup ajax successful")
+    console.log(data);
+    storage.setItem(query.toLowerCase(), JSON.stringify(data));
+    doneCallback( { suggestions: data } );
+}
+
+function handleSelectSuggestion(suggestion) {
+    console.log("Title: " + suggestion["value"] + " with ID: " + suggestion["data"])
+    window.location.href = `./single-movie.html?id=${suggestion["data"]}`;
+}
+
+function handleNormalSearch(query) {
+    console.log("doing normal search with query: " + query);
+    window.location.href = `./list.html?title=${query}&year=&director=&stars=`;
 }

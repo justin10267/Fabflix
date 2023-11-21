@@ -1,60 +1,112 @@
 function getParameterByName(target) {
-    // Get request URL
     let url = window.location.href;
-    // Encode target parameter name to url encoding
     target = target.replace(/[\[\]]/g, "\\$&");
-
-    // Ues regular expression to find matched parameter value
     let regex = new RegExp("[?&]" + target + "(=([^&#]*)|&|#|$)"),
         results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-
-    // Return the decoded parameter value
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
+    return !results ? null : !results[2] ? '' : decodeURIComponent(results[2].replace(/\+/g, " "));
 }
-function handleResult(resultData) {
-    console.log("handleResult: populating star info from resultData");
+
+function handleStarInfo(resultData) {
+    console.log("handleStarInfo: populating star info");
     let starInfoElement = jQuery("#star_info");
-    starInfoElement.append("<p>" + resultData[0]["star_name"] + "</p>");
-    starInfoElement.append("<p>Date of Birth: " + resultData[0]["star_dob"] + "</p>");
-
-    console.log("handleResult: populating movie table from resultData");
-    let movieTableBodyElement = jQuery("#movie_table_body");
-    for (let i = 0; i < Math.min(10, resultData.length); i++) {
-        let rowHTML = "";
-        rowHTML += "<tr>";
-        rowHTML += "<th>" + '<a href="single-movie.html?id=' + resultData[i]["movie_id"] + '">' + resultData[i]["movie_title"]+ '</a>' + "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["movie_director"] + "</th>";
-        rowHTML += "</tr>";
-        movieTableBodyElement.append(rowHTML);
-    }
+    starInfoElement.append(`<p>${resultData[0]["star_name"]}</p>`);
+    starInfoElement.append(`<p>Date of Birth: ${resultData[0]["star_dob"]}</p>`);
 }
+
+function handleMovieTable(resultData) {
+    console.log("handleMovieTable: populating movie table");
+    let movieTableBodyElement = jQuery("#movie_table_body");
+
+    resultData.slice(0, 10).forEach(movie => {
+        let rowHTML = `<tr>
+            <th><a href="single-movie.html?id=${movie["movie_id"]}">${movie["movie_title"]}</a></th>
+            <th>${movie["movie_year"]}</th>
+            <th>${movie["movie_director"]}</th>
+        </tr>`;
+        movieTableBodyElement.append(rowHTML);
+    });
+}
+
+function handleResult(resultData) {
+    handleStarInfo(resultData);
+    handleMovieTable(resultData);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
-    // Handle the "Results" link click event
+    setupAutocomplete();
+    bindNavigationLinks();
+    fetchStarDetails();
+});
+
+function bindNavigationLinks() {
     const resultsLink = document.querySelector('a[href="./list.html"]');
     resultsLink.addEventListener('click', function (event) {
-        event.preventDefault(); // Prevent the default link behavior
-
-        // Retrieve the recentResultUrl from session storage
+        event.preventDefault();
         const recentResultUrl = sessionStorage.getItem("recentResultUrl");
+        window.location.href = recentResultUrl ? recentResultUrl : "./list.html";
+    });
+    document.getElementById("autocompleteSearchButton").addEventListener("click", () => {
+        handleNormalSearch($('#autocomplete').val());
+    });
+}
 
-        if (recentResultUrl) {
-            // Navigate to the "Results" page with the recentResultUrl
-            window.location.href = recentResultUrl;
-        } else {
-            // Fallback to the default URL if recentResultUrl is not set
-            window.location.href = "./list.html";
+function fetchStarDetails() {
+    let starId = getParameterByName('id');
+    jQuery.ajax({
+        dataType: "json",
+        method: "GET",
+        url: `api/single-star?id=${starId}`,
+        success: handleResult
+    });
+}
+
+function setupAutocomplete() {
+    const storage = window.sessionStorage;
+    $('#autocomplete').autocomplete({
+        lookup: function (query, doneCallback) {
+            handleLookup(query, doneCallback, storage)
+        },
+        onSelect: handleSelectSuggestion,
+        deferRequestBy: 300,
+        minChars: 3,
+        triggerSelectOnValidInput: false
+    });
+
+    $('#autocomplete').keypress(function(event) {
+        if (event.keyCode === 13) { // Enter key
+            handleNormalSearch($('#autocomplete').val());
         }
     });
-});
-let starId = getParameterByName('id');
+}
 
-// Makes the HTTP GET request and registers on success callback function handleResult
-jQuery.ajax({
-    dataType: "json",  // Setting return data type
-    method: "GET",// Setting request method
-    url: "api/single-star?id=" + starId, // Setting request url, which is mapped by StarsServlet in Stars.java
-    success: (resultData) => handleResult(resultData) // Setting callback function to handle data returned successfully by the SingleStarServlet
-});
+function handleLookup(query, doneCallback, storage) {
+    console.log("autocomplete initiated");
+    let lowerCaseQuery = query.toLowerCase();
+    if (storage.getItem(lowerCaseQuery)) {
+        console.log("using autocompleteCache for lookup");
+        doneCallback({ suggestions: JSON.parse(storage.getItem(lowerCaseQuery)) });
+    } else {
+        jQuery.ajax({
+            "method": "GET",
+            "url": `api/autocomplete?title=${encodeURIComponent(query)}`,
+            "success": (data) => handleLookupAjaxSuccess(data, lowerCaseQuery, doneCallback, storage),
+            "error": (errorData) => console.error("lookup ajax error", errorData)
+        });
+    }
+}
+
+function handleLookupAjaxSuccess(data, lowerCaseQuery, doneCallback, storage) {
+    console.log("lookup ajax successful");
+    storage.setItem(lowerCaseQuery, JSON.stringify(data));
+    doneCallback({ suggestions: data });
+}
+
+function handleSelectSuggestion(suggestion) {
+    console.log("Title: " + suggestion["value"] + " with ID: " + suggestion["data"]);
+    window.location.href = `./single-movie.html?id=${suggestion["data"]}`;
+}
+
+function handleNormalSearch(query) {
+    console.log("doing normal search with query: " + query);
+    window.location.href = `./list.html?title=${encodeURIComponent(query)}&year=&director=&stars=`;
+}

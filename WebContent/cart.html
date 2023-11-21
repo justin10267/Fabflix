@@ -7,29 +7,19 @@
     <link rel="stylesheet" href="resultPage.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <title>Shopping Cart</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <nav class="navbar navbar-dark bg-dark">
     <a class="navbar-brand" href="./main.html">Fabflix</a>
-
     <a class="navbar-brand" href="./list.html">Results</a>
     <a class="navbar-brand" href="./movie-list.html">Top 20</a>
-
-    <div class="ml-auto">
-        <form class="form-inline" action="./list.html" method="GET">
-            <input class="form-control mr-sm-2" type="text" placeholder="Title" name="title">
-            <input class="form-control mr-sm-2" type="text" placeholder="Year" name="year">
-            <input class="form-control mr-sm-2" type="text" placeholder="Director" name="director">
-            <input class="form-control mr-sm-2" type="text" placeholder="Stars" name="stars">
-            <button class="btn btn-outline-light my-2 my-sm-0 search-button" type="submit">
-                Search
-            </button>
-        </form>
+    <a class="navbar-brand" href="./cart.html"><i class="fas fa-shopping-cart"></i></a>
+    <div class="container">
+        <input type="text" name="search" id="autocomplete" class="autocomplete-searchbox form-control" placeholder="Search FullText"/>
+        <button id="autocompleteSearchButton" class="btn btn-custom-search">Search</button>
     </div>
 </nav>
 <h1>Shopping Cart</h1>
-
 <table id="cartTable">
     <thead>
     <tr>
@@ -41,13 +31,14 @@
     </tr>
     </thead>
     <tbody>
-    <!-- Items will be populated here by JavaScript -->
     </tbody>
 </table>
-
 <button id="proceedToPayment">Proceed to Payment</button>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.11/jquery.autocomplete.min.js"></script>
 <script src="cart.js"></script>
-
 </body>
 </html>

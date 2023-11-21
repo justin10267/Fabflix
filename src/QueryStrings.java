@@ -149,4 +149,14 @@ public class QueryStrings {
                     "ORDER BY %s\n" +
                     "LIMIT ?\n" +
                     "OFFSET ?;";
+
+    public static String AUTOCOMPLETE_QUERY =
+            "SELECT \n" +
+            "    m.id,\n" +
+            "    m.title\n" +
+            "FROM\n" +
+            "    movies m\n" +
+            "WHERE \n" +
+            "    MATCH (title) AGAINST (? IN BOOLEAN MODE)\n" +
+            "LIMIT 10;";
 }

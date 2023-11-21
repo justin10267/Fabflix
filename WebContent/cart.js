@@ -1,111 +1,131 @@
 $(document).ready(function() {
+    setupEventListeners();
     loadCartItems();
-
-    $("#proceedToPayment").click(function() {
-        window.location.href = 'payment.html';  // assuming you'll have a payment.html for the payment process
-    });
-
-    // Binding event listeners for dynamically added buttons
-    $(document).on('click', '.increase-btn', function() {
-        const title = $(this).data('title');
-        increaseQuantity(title);
-    });
-
-    $(document).on('click', '.decrease-btn', function() {
-        const title = $(this).data('title');
-        decreaseQuantity(title);
-    });
-
-    $(document).on('click', '.delete-btn', function() {
-        const title = $(this).data('title');
-        deleteItem(title);
-    });
+    setupAutocomplete();
 });
+
+function setupEventListeners() {
+    $("#proceedToPayment").click(() => window.location.href = 'payment.html');
+    $(document).on('click', '.increase-btn', function() {
+        modifyItemQuantity($(this).data('title'), 'increase');
+    });
+    $(document).on('click', '.decrease-btn', function() {
+        modifyItemQuantity($(this).data('title'), 'decrease');
+    });
+    $(document).on('click', '.delete-btn', function() {
+        deleteItem($(this).data('title'));
+    });
+    $("#autocompleteSearchButton").click(() => {
+        handleNormalSearch($('#autocomplete').val());
+    });
+    bindResultsLink();
+}
+
+function bindResultsLink() {
+    const resultsLink = document.querySelector('a[href="./list.html"]');
+    if (resultsLink) {
+        resultsLink.addEventListener('click', function (event) {
+            event.preventDefault();
+            const recentResultUrl = sessionStorage.getItem("recentResultUrl");
+            window.location.href = recentResultUrl || "./list.html";
+        });
+    }
+}
 
 function loadCartItems() {
     $.ajax({
         url: 'api/cart',
         method: 'GET',
         dataType: 'json',
-        success: function(data) {
-            $("#cartTable tbody").empty();
-            let total = 0;
-            data.items.forEach(item => {
-                total += item.price * item.quantity;
-                $("#cartTable tbody").append(`
-                    <tr>
-                        <td>${item.title}</td>
-                        <td>
-                            <button class="decrease-btn" data-title="${item.title}">-</button>
-                            ${item.quantity}
-                            <button class="increase-btn" data-title="${item.title}">+</button>
-                        </td>
-                        <td>${item.price}</td>
-                        <td>${item.price * item.quantity}</td>
-                        <td>
-                            <button class="delete-btn" data-title="${item.title}">Delete</button>
-                        </td>
-                    </tr>
-                `);
-            });
-            $("#cartTable tbody").append(`
-                <tr>
-                    <td colspan="3">Total Price</td>
-                    <td colspan="2">${total}</td>
-                </tr>
-            `);
-        }
+        success: updateCartTable
     });
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    // Handle the "Results" link click event
-    const resultsLink = document.querySelector('a[href="./list.html"]');
-    resultsLink.addEventListener('click', function (event) {
-        event.preventDefault(); // Prevent the default link behavior
-
-        // Retrieve the recentResultUrl from session storage
-        const recentResultUrl = sessionStorage.getItem("recentResultUrl");
-
-        if (recentResultUrl) {
-            // Navigate to the "Results" page with the recentResultUrl
-            window.location.href = recentResultUrl;
-        } else {
-            // Fallback to the default URL if recentResultUrl is not set
-            window.location.href = "./list.html";
-        }
+function updateCartTable(data) {
+    let total = 0;
+    $("#cartTable tbody").empty();
+    data.items.forEach(item => {
+        total += item.price * item.quantity;
+        $("#cartTable tbody").append(createCartItemRow(item));
     });
-});
-
-function increaseQuantity(id) {
-    modifyItemQuantity(id, 'increase');
+    $("#cartTable tbody").append(`<tr><td colspan="3">Total Price</td><td colspan="2">${total}</td></tr>`);
 }
 
-function decreaseQuantity(id) {
-    modifyItemQuantity(id, 'decrease');
-}
-
-function deleteItem(id) {
-    $.ajax({
-        url: 'api/cart',
-        method: 'POST',
-        data: {
-            title: id,
-            action: 'delete'
-        },
-        success: function() {
-            loadCartItems();
-        }
-    });
+function createCartItemRow(item) {
+    return `
+        <tr>
+            <td>${item.title}</td>
+            <td>
+                <button class="decrease-btn" data-title="${item.title}">-</button>
+                ${item.quantity}
+                <button class="increase-btn" data-title="${item.title}">+</button>
+            </td>
+            <td>${item.price}</td>
+            <td>${item.price * item.quantity}</td>
+            <td><button class="delete-btn" data-title="${item.title}">Delete</button></td>
+        </tr>
+    `;
 }
 
 function modifyItemQuantity(id, action) {
     $.ajax({
         url: 'api/cart',
         method: 'POST',
-        data: `title=${id}&action=${action}`,  // modify data format
-        success: function() {
-            loadCartItems();
+        data: { title: id, action: action },
+        success: loadCartItems
+    });
+}
+
+function deleteItem(id) {
+    $.ajax({
+        url: 'api/cart',
+        method: 'POST',
+        data: { title: id, action: 'delete' },
+        success: loadCartItems
+    });
+}
+
+function setupAutocomplete() {
+    const storage = window.sessionStorage;
+
+    $('#autocomplete').autocomplete({
+        lookup: function(query, doneCallback) {
+            handleLookup(query, doneCallback, storage);
+        },
+        onSelect: handleSelectSuggestion,
+        deferRequestBy: 300,
+        minChars: 3,
+        triggerSelectOnValidInput: false
+    });
+
+    $('#autocomplete').keypress(function(event) {
+        if (event.keyCode === 13) {
+            handleNormalSearch($('#autocomplete').val());
         }
     });
+}
+
+function handleLookup(query, doneCallback, storage) {
+    if (storage.getItem(query.toLowerCase())) {
+        doneCallback({ suggestions: JSON.parse(storage.getItem(query.toLowerCase())) });
+    } else {
+        $.ajax({
+            method: "GET",
+            url: `api/autocomplete?title=${encodeURIComponent(query)}`,
+            success: (data) => handleLookupAjaxSuccess(data, query, doneCallback, storage)
+        });
+    }
+}
+
+function handleLookupAjaxSuccess(data, query, doneCallback, storage) {
+    storage.setItem(query.toLowerCase(), JSON.stringify(data));
+    doneCallback({ suggestions: data });
+}
+
+function handleSelectSuggestion(suggestion) {
+    window.location.href = `./single-movie.html?id=${suggestion["data"]}`;
+}
+
+function handleNormalSearch(query) {
+    window.location.href = `./list.html?title=${encodeURIComponent(query)}&year=&director=&stars=`;
 }
