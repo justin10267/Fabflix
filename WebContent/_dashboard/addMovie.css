@@ -1,16 +1,49 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #333; /* Darker background */
-    color: #ccc; /* Lighter text color for better contrast */
+    background-color: #333;
+    color: #ccc;
     margin: 0;
     padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column; /* Stack items vertically */
+    flex-direction: column;
     min-height: 100vh;
+    margin-top: 56px; /* Adjust margin-top to match the height of the navbar */
 }
+/* Navigation bar with horizontal layout */
+.navbar {
+    background-color: #333;
+    padding: 0.5rem 1rem;
+    position: fixed; /* Fixed position */
+    top: 0; /* Position at the top of the viewport */
+    width: 100%; /* Full width */
+    z-index: 1000; /* Ensure the navbar appears above other content */
+}
+
+/* Ensure the list is displayed horizontally */
+.navbar-nav {
+    list-style: none; /* Remove bullet points */
+    display: flex; /* Display nav items in a row */
+    padding-left: 0; /* Remove padding */
+    margin-bottom: 0; /* Remove margin */
+}
+
+.nav-item {
+    padding: 0.5rem 1rem; /* Spacing around each nav item */
+}
+
+/* Orange color for navbar links */
+.nav-link {
+    color: #FFA726;
+    text-decoration: none; /* Remove underline */
+}
+
+.nav-link:hover {
+    color: #FFD580; /* Lighter orange color on hover */
+}
+
 h1, h2 {
     text-align: center; /* Center headings */
     width: 100%; /* Full width */

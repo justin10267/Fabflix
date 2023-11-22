@@ -149,3 +149,38 @@ ul#genre_list li:hover {
 .search-button:hover {
     background-color: #FF8A00; /* Darker shade of orange on hover */
 }
+button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #FF4500;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #E55347;
+}
+
+/* Increment and decrement buttons */
+button.increase, button.decrease {
+    font-size: 1em;
+}
+.container {
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Align items vertically */
+    gap: 10px; /* Add some space between the input and the button */
+    max-width: 600px; /* Set a maximum width of the container */
+    margin: 0 auto; /* Center the search box in the middle of the page */
+}
+
+.autocomplete-searchbox {
+    padding: 10px; /* Add padding for the input text */
+    border: 1px solid #ccc; /* Add a border to the input */
+    border-radius: 4px; /* Round the corners of the input field */
+    font-size: 16px; /* Adjust font size */
+    width: 100%; /* Set width to use available space within the container */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+

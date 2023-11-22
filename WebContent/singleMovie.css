@@ -19,12 +19,13 @@ h1 {
 }
 /* Top Navbar */
 .navbar {
+    background-color: rgba(0, 0, 0, 0.5); /* Dark transparent background */
     border-bottom: 1px solid #333;
     padding: 15px 30px; /* Added padding for space */
     justify-content: center; /* Center-aligned navbar content */
 }
 
-.navbar-brand {
+.navbar .navbar-brand {
     margin: 0 15px; /* Space between navbar items */
 }
 
@@ -32,28 +33,27 @@ h1 {
     margin-left: 20px; /* Space between navbar items and the form */
 }
 
-/* Secondary Navigation */
-.topnav {
-    background-color: #232323;
-    border-bottom: 1px solid #333;
-    padding: 10px 0;
+.form-inline input {
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Lightened border */
+    border-radius: 4px; /* Slight rounded edges */
+    margin-bottom: 0; /* Remove margin to align with the button */
 }
 
+h1 {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+    text-align: center; /* Centered headers */
+}
 
 a {
     color: #FFA726;
     text-decoration: none;
 }
-.navbar a.navbar-brand[href="./main.html"] {
-    font-size: 27px; /* or whatever size you prefer */
-    color: #FF4500; /* a distinguishable color, adjust as needed */
-    font-weight: bold;
-}
 
-.topnav a.active, .topnav a:hover {
-    color: #FF7043;
-    background-color: rgba(255, 255, 255, 0.1);
-}
+
 
 /* Main Content Wrapper */
 .content-wrapper {
@@ -79,4 +79,32 @@ a {
 
 #movie_info:hover, #star_info:hover {
     background-color: #292929;
+}
+/* buttons */
+button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #FF4500;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #E55347;
+}
+#autocomplete {
+    padding: 10px; /* Add padding for the input text */
+    border: 1px solid #ccc; /* Add a border to the input */
+    border-radius: 4px; /* Round the corners of the input field */
+    font-size: 16px; /* Adjust font size */
+    width: 30%; /* Set width to use available space within the container */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+/*fablix logo*/
+.navbar a.navbar-brand[href="./main.html"] {
+    font-size: 27px; /* or whatever size you prefer */
+    color: #FF4500; /* a distinguishable color, adjust as needed */
+    font-weight: bold;
 }

@@ -50,59 +50,7 @@ a {
     padding: 20px; /* some padding around edges */
 }
 
-.styled-header {
-    font-size: 34px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    text-shadow: 2px 2px 4px #000000;
-    letter-spacing: 1.5px;
-    text-align: center; /* this will horizontally center the text */
-}
-.navbar a.navbar-brand[href="./main.html"] {
-    font-size: 27px; /* or whatever size you prefer */
-    color: #FF4500; /* a distinguishable color, adjust as needed */
-    font-weight: bold;
-}
-.form-inline {
-    margin-top: 10px; /* adjust the value as needed */
-}
-.form-inline input[type="text"] {
-    height: 36px; /* Adjust the height as needed */
-    font-size: 16px; /* Increase the font size */
-    padding: 0 15px; /* Adjust the padding for the larger size */
-    border: 1px solid rgba(255, 255, 255, 0.5); /* Lightened border */
-    border-radius: 4px; /* Slight rounded edges */
-    margin-bottom: 0; /* Remove margin to align with the button */
-}
 
-/* Style the search button to match the shopping cart style */
-.form-inline input[type="submit"] {
-    background-color: #FFA726; /* Orange background to match shopping cart */
-    border: none; /* No border */
-    color: #FFFFFF; /* White color for the icon */
-    font-size: 18px; /* Adjust the icon size */
-    cursor: pointer; /* Hand cursor */
-    transition: background-color 0.3s; /* Smooth color transition */
-    border-radius: 4px; /* Slight rounded edges */
-    padding: 8px 12px; /* Padding around the icon */
-}
-
-.form-inline input[type="submit"]:hover {
-    background-color: #FF8A00; /* Darker shade of orange on hover */
-}
-.search-button {
-    background-color: #FFA726; /* Orange background to match shopping cart */
-    border: none; /* No border */
-    color: #FFFFFF; /* White color for the icon */
-    font-size: 18px; /* Adjust the icon size */
-    cursor: pointer; /* Hand cursor */
-    transition: background-color 0.3s; /* Smooth color transition */
-    border-radius: 4px; /* Slight rounded edges */
-    padding: 8px 12px; /* Padding around the icon */
-}
-
-.search-button:hover {
-    background-color: #FF8A00; /* Darker shade of orange on hover */
-}
 label {
     font-weight: bold;
     margin-right: 10px;
@@ -321,12 +269,18 @@ button:hover {
 button.increase, button.decrease {
     font-size: 1em;
 }
-
-/* Delete button */
-button.delete {
-    background-color: #FF4500;
+#autocomplete {
+    padding: 10px; /* Add padding for the input text */
+    border: 1px solid #ccc; /* Add a border to the input */
+    border-radius: 4px; /* Round the corners of the input field */
+    font-size: 16px; /* Adjust font size */
+    width: 30%; /* Set width to use available space within the container */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
-button.delete:hover {
-    background-color: #E55347;
+/*fablix logo*/
+.navbar a.navbar-brand[href="./main.html"] {
+    font-size: 27px; /* or whatever size you prefer */
+    color: #FF4500; /* a distinguishable color, adjust as needed */
+    font-weight: bold;
 }

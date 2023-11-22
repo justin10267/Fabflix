@@ -1,42 +1,29 @@
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #121212;
-    color: #FFFFFF;
+    background-color: #f4f4f4;
+    color: #333;
     margin: 0;
     padding: 0;
 }
 
 .navbar {
     border-bottom: 1px solid #333;
-    padding: 15px 30px;
-    justify-content: center;
+    padding: 15px 30px; /* Added padding for space */
+    justify-content: center; /* Center-aligned navbar content */
 }
 
 .navbar .navbar-brand {
-    margin: 0 15px;
+    margin: 0 15px; /* Space between navbar items */
 }
 
 .navbar .ml-auto {
-    margin-left: 20px;
-}
-
-.navbar a.navbar-brand[href="./main.html"] {
-    font-size: 27px;
-    color: #FF4500;
-    font-weight: bold;
-}
-
-.form-inline {
-    margin-top: 10px;
+    margin-left: 20px; /* Space between navbar items and the form */
 }
 
 .form-inline input {
-    height: 36px;
-    font-size: 16px;
-    padding: 0 15px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 4px;
-    margin-bottom: 0;
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Lightened border */
+    border-radius: 4px; /* Slight rounded edges */
+    margin-bottom: 0; /* Remove margin to align with the button */
 }
 
 h1 {
@@ -45,76 +32,33 @@ h1 {
     font-weight: 700;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     margin-bottom: 20px;
-    text-align: center;
+    text-align: center; /* Centered headers */
 }
 
 a {
     color: #FFA726;
     text-decoration: none;
 }
-
-ul#genre_list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    list-style-type: none;
-    padding: 0;
-    gap: 20px;
-}
-
-ul#genre_list li {
-    background-color: #e0e0e0;
-    padding: 15px 25px;
-    border-radius: 15px;
-    font-size: 16px;
-    transition: transform 0.2s;
-}
-
-ul#genre_list li:hover {
-    transform: scale(1.05);
-    cursor: pointer;
-}
-
-#prefix_list {
-    background-color: transparent;
-    padding: 20px 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-#prefix_list li {
-    list-style-type: none;
-    margin: 0 15px;
-    padding: 0;
-    transition: color 0.3s;
-}
-
-#prefix_list li:hover {
-    color: #555;
-    cursor: pointer;
-}
-
-#prefix_list a {
-    text-decoration: none;
-    color: #FFA500;
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.content-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    padding: 20px;
-}
-
 .styled-header {
     font-size: 34px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-shadow: 2px 2px 4px #000000;
     letter-spacing: 1.5px;
-    text-align: center;
+    text-align: center; /* this will horizontally center the text */
+}
+.navbar a.navbar-brand[href="./main.html"] {
+    font-size: 27px; /* or whatever size you prefer */
+    color: #FF4500; /* a distinguishable color, adjust as needed */
+    font-weight: bold;
+}
+.form-inline {
+    margin-top: 10px; /* adjust the value as needed */
+}
+.form-inline input[type="text"] {
+    height: 36px; /* Adjust the height as needed */
+    font-size: 16px; /* Increase the font size */
+    padding: 0 15px; /* Adjust the padding for the larger size */
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Lightened border */
+    border-radius: 4px; /* Slight rounded edges */
+    margin-bottom: 0; /* Remove margin to align with the button */
 }
