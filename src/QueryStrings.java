@@ -34,7 +34,7 @@ public class QueryStrings {
                     "    AND year LIKE ?\n" +
                     "    AND UPPER(director) LIKE ?\n" +
                     "GROUP BY m.id , m.title , m.year , m.director , r.rating\n" +
-                    "HAVING UPPER(stars) LIKE ?\n" +
+                    "HAVING UPPER(stars) LIKE ? OR stars is null\n" +
                     "ORDER BY %s\n" +
                     "LIMIT ?\n" +
                     "OFFSET ?;";

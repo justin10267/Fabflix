@@ -60,8 +60,9 @@ function fetchStarDetails() {
     });
 }
 
+const storage = window.sessionStorage;
+
 function setupAutocomplete() {
-    const storage = window.sessionStorage;
     $('#autocomplete').autocomplete({
         lookup: function (query, doneCallback) {
             handleLookup(query, doneCallback, storage)

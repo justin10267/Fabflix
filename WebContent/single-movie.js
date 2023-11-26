@@ -11,10 +11,11 @@ function handleResult(resultData) {
     document.querySelector("h1").textContent = resultData[0]["movie_title"];
     let movieInfoElement = jQuery("#movie_info").empty();
     let genreLine = resultData[0]["movie_genres"].split(",").map(genre => `<a href="./list.html?genre=${genre.trim()}">${genre.trim()}</a>`).join(", ");
-    let starLine = resultData[0]["movie_stars"].split(",").map(star => {
-        let [id, name] = star.split(":");
-        return `<a href="single-star.html?id=${id.trim()}">${name.trim()}</a>`;
-    }).join(", ");
+    let starLine = resultData[0]["movie_stars"] ?
+        resultData[0]["movie_stars"].split(",").map(star => {
+            let [id, name] = star.split(":");
+            return `<a href="single-star.html?id=${id.trim()}">${name.trim()}</a>`;
+        }).join(", ") : "N/A";
     movieInfoElement.append(`
         <p>Release Year: ${resultData[0]["movie_year"]}</p>
         <p>Director: ${resultData[0]["movie_director"]}</p>
@@ -52,8 +53,9 @@ function bindResultsLink() {
     }
 }
 
+const storage = window.sessionStorage;
+
 function setupAutocomplete() {
-    const storage = window.sessionStorage;
     $('#autocomplete').autocomplete({
         lookup: function (query, doneCallback) {
             handleLookup(query, doneCallback, storage);

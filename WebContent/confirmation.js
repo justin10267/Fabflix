@@ -23,8 +23,9 @@ function fetchConfirmationDetails() {
     });
 }
 
+const storage = window.sessionStorage;
+
 function setupAutocomplete() {
-    const storage = window.sessionStorage;
 
     $('#autocomplete').autocomplete({
         lookup: function (query, doneCallback) {
