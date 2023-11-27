@@ -284,3 +284,23 @@ button.increase, button.decrease {
     color: #FF4500; /* a distinguishable color, adjust as needed */
     font-weight: bold;
 }
+.autocomplete-suggestions {
+    border: 1px solid #999;
+    background-color: #FFF; /* White background */
+    overflow: auto;
+    z-index: 9999; /* Ensure it's on top of other elements */
+}
+
+/* Style each suggestion */
+.autocomplete-suggestion {
+    padding: 10px;
+    border-bottom: 1px solid #999;
+    cursor: pointer;
+    color: #000; /* Black text color for visibility */
+}
+
+/* Style the highlighted suggestion on hover or when active */
+.autocomplete-suggestion:hover, .autocomplete-suggestion.autocomplete-selected {
+    background-color: #ADD8E6; /* Light blue background for highlighting */
+    color: #000; /* Black text color for visibility */
+}
