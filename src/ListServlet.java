@@ -61,6 +61,9 @@ public class ListServlet extends HttpServlet {
             ResultSet rs = statement.executeQuery();
             JsonArray jsonArray = processResultSet(rs, queryLimit, out, response);
             boolean isLastPage = jsonArray.size() < queryLimit;
+            if (jsonArray.size() == queryLimit) {
+                jsonArray.remove(jsonArray.size() - 1);
+            }
             JsonObject jsonResponse = new JsonObject();
             jsonResponse.addProperty("isLastPage", isLastPage);
             jsonResponse.addProperty("pageNum", page);

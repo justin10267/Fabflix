@@ -98,10 +98,8 @@ function createMovieRowHtml(movieData) {
     const genresHtml = movieData["movie_genres"].split(",").map(genre =>
         `<a href="list.html?genre=${encodeURIComponent(genre.trim())}">${genre.trim()}</a>`
     ).join(", ");
-    const starsHtml = movieData["movie_stars"] ? movieData["movie_stars"].split(",").map(star => {
-        const [id, name] = star.split(":");
-        return `<a href="single-star.html?id=${id.trim()}">${name.trim()}</a>`;
-    }).join(", ") : "N/A";
+
+    const starsHtml = movieData["movie_stars"] ? parseStars(movieData["movie_stars"]) : "N/A";
 
     return `<tr>
         <th><a href="single-movie.html?id=${movieData['movie_id']}">${movieData['movie_title']}</a></th>
@@ -112,6 +110,15 @@ function createMovieRowHtml(movieData) {
         <th>${movieData["movie_rating"] || "N/A"}</th>
         <th><button class="addToCart" data-movie-id="${movieData['movie_id']}" data-movie-title="${movieData['movie_title']}" data-movie-price="${movieData['movie_price']}">Add to Cart</button></th>
     </tr>`;
+}
+
+function parseStars(starsString) {
+    // Split the string first by colon, then by commas, while keeping names intact
+    const starPairs = starsString.split(/,(?=(?:[^:]*:[^:]*$))/);
+    return starPairs.map(pair => {
+        const [id, name] = pair.split(":");
+        return `<a href="single-star.html?id=${id.trim()}">${name.trim()}</a>`;
+    }).join(", ");
 }
 
 function changePage(offset) {

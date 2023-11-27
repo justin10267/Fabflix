@@ -159,4 +159,88 @@ public class QueryStrings {
             "WHERE \n" +
             "    MATCH (title) AGAINST (? IN BOOLEAN MODE)\n" +
             "LIMIT 10;";
+
+    public static String ANDROID_SEARCH_QUERY =
+            "SELECT \n" +
+            "    m.id,\n" +
+            "    m.title,\n" +
+            "    m.year,\n" +
+            "    m.director,\n" +
+            "    m.price,\n" +
+            "    SUBSTRING_INDEX(\n" +
+            "        (SELECT \n" +
+            "            GROUP_CONCAT(g.name ORDER BY g.name DESC)\n" +
+            "         FROM\n" +
+            "            genres_in_movies gm\n" +
+            "            INNER JOIN\n" +
+            "            genres g ON gm.genreId = g.id\n" +
+            "         WHERE\n" +
+            "            gm.movieId = m.id\n" +
+            "        ), \n" +
+            "        ',', \n" +
+            "        3\n" +
+            "    ) AS genres,\n" +
+            "    SUBSTRING_INDEX(\n" +
+            "        (SELECT \n" +
+            "            GROUP_CONCAT(CONCAT(s.id, ':', s.name) ORDER BY s.name DESC , s.id)\n" +
+            "         FROM\n" +
+            "            stars_in_movies sm\n" +
+            "            INNER JOIN\n" +
+            "            stars s ON sm.starId = s.id\n" +
+            "         WHERE\n" +
+            "            sm.movieId = m.id\n" +
+            "        ), \n" +
+            "        ',', \n" +
+            "        3\n" +
+            "    ) AS stars,\n" +
+            "    r.rating\n" +
+            "FROM\n" +
+            "    movies m\n" +
+            "    LEFT JOIN\n" +
+            "    ratings r ON m.id = r.movieId\n" +
+            "WHERE \n" +
+            "    MATCH (title) AGAINST (? IN BOOLEAN MODE)\n" +
+            "GROUP BY m.id, m.title, m.year, m.director, r.rating\n" +
+            "ORDER BY title asc, rating asc\n" +
+            "LIMIT 11\n" +
+            "OFFSET ?;";
+
+    public static String SINGLE_MOVIE_QUERY =
+            "SELECT \n" +
+            "    m.id,\n" +
+            "    m.title,\n" +
+            "    m.year,\n" +
+            "    m.director,\n" +
+            "    m.price,\n" +
+            "    (SELECT \n" +
+            "            GROUP_CONCAT(g.name ORDER BY g.name ASC)\n" +
+            "        FROM\n" +
+            "            genres_in_movies gm\n" +
+            "                INNER JOIN\n" +
+            "            genres g ON gm.genreId = g.id\n" +
+            "        WHERE\n" +
+            "            gm.movieId = m.id) AS genres,\n" +
+            "    (SELECT \n" +
+            "            GROUP_CONCAT(CONCAT(s.id, ':', s.name) ORDER BY starCount DESC, s.name ASC)\n" +
+            "        FROM\n" +
+            "            stars s\n" +
+            "            JOIN (\n" +
+            "                SELECT \n" +
+            "                    sm.starId,\n" +
+            "                    COUNT(*) AS starCount\n" +
+            "                FROM\n" +
+            "                    stars_in_movies sm\n" +
+            "                GROUP BY sm.starId\n" +
+            "            ) star_counts ON s.id = star_counts.starId\n" +
+            "            JOIN stars_in_movies sim ON s.id = sim.starId\n" +
+            "        WHERE\n" +
+            "            sim.movieId = m.id\n" +
+            "        ) AS stars,\n" +
+            "    r.rating\n" +
+            "FROM\n" +
+            "    movies m\n" +
+            "        LEFT JOIN\n" +
+            "    ratings r ON m.id = r.movieId\n" +
+            "WHERE\n" +
+            "    m.id = ?;";
 }
