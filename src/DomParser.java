@@ -19,10 +19,10 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class DomParser {
-    String user = "root";
-    String password = "mangobanana109";
-//    String user = "mytestuser";
-//    String password = "My6$Password";
+//    String user = "root";
+//    String password = "mangobanana109";
+    String user = "mytestuser";
+    String password = "My6$Password";
 
     Set<String> processedActors = new HashSet<>();
     Map<String, Movie> movieByFid = new HashMap<>();

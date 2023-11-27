@@ -1,0 +1,604 @@
+[33mcommit ba03aebbc5473c0536f85de1fd4cc5b760d05aa9[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sun Nov 26 21:45:39 2023 -0800
+
+    android
+
+[33mcommit 3c851c17b057fc571cd99ecca080b6da97360c77[m
+Merge: b602f4c b062239
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sun Nov 26 20:20:44 2023 -0800
+
+    Merge branch 'main' of https://github.com/uci-jherold2-fall23-cs122b/2023-fall-cs122b-garlic-team
+
+[33mcommit b602f4cf10bee9d209e8315f8ce879ee83e45f03[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sun Nov 26 20:20:37 2023 -0800
+
+    11/26
+
+[33mcommit b062239bb9739a2033b42efcb223864710002181[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Sat Nov 25 18:22:49 2023 -0800
+
+    add movie page, front end
+
+[33mcommit d0602993f8456276c0f3db4f44a92693cc9dda3f[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sat Nov 25 17:37:03 2023 -0800
+
+    11/25
+
+[33mcommit 5d3ac9b12c680b7021ad20cb57514b6b51d9d748[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Tue Nov 21 20:28:34 2023 -0800
+
+    Uniformed frontend style through out all the pages
+
+[33mcommit 9286c0df46f15e3b6d1245a08f579c22b349af55[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Tue Nov 21 02:48:51 2023 -0800
+
+    P4 T1 done. Front end needs to be beautified.
+
+[33mcommit 9db6c82417bf1408b0679a0ea4829acf14b45a44[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Nov 20 00:56:22 2023 -0800
+
+    refactor list.js and more refactor for list servlet
+
+[33mcommit ccacab4b63b39fe99fa669fe40199cd69cdae5b2[m
+Merge: beb064d 5110a71
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Nov 20 00:02:39 2023 -0800
+
+    Merge branch 'main' of https://github.com/uci-jherold2-fall23-cs122b/2023-fall-cs122b-garlic-team
+
+[33mcommit beb064da3c663bd5db05078b25f3487bcffc1012[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Nov 20 00:00:59 2023 -0800
+
+    Full text search and refactored list servlet code
+
+[33mcommit 5110a71267dd1d8432d0cf69cbe9a79007ba112d[m
+Author: justin10267 <93513655+justin10267@users.noreply.github.com>
+Date:   Mon Nov 13 21:13:41 2023 -0800
+
+    Update README.md
+
+[33mcommit e0a03da07ad41604657169f360111ec634f5b6e2[m
+Author: justin10267 <93513655+justin10267@users.noreply.github.com>
+Date:   Mon Nov 13 21:13:08 2023 -0800
+
+    Update README.md
+
+[33mcommit 1fa3cf2984f42a41c21683d2057cbcd9bee45024[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Nov 13 20:26:07 2023 -0800
+
+    fixed parser
+
+[33mcommit 7010fd86cd44be41cf9d8a30c37b0deea90f06ae[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Nov 13 19:56:26 2023 -0800
+
+    final 1
+
+[33mcommit 6e596fe578ae9789bec96fa43d2d410c05de37a6[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Nov 13 17:49:08 2023 -0800
+
+    fixed mysql parameters
+
+[33mcommit 9c04979d32b4a4bdb66bb2c2e8ee6429423b0dc8[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Nov 13 17:38:37 2023 -0800
+
+    changed sql parameters
+
+[33mcommit e076fedf5e248b9eb32305ec767f18822e743fea[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Nov 13 17:21:45 2023 -0800
+
+    optimization done
+
+[33mcommit 0ecabea21825e15b1b8664428b834314ba7b54c6[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Nov 13 14:54:18 2023 -0800
+
+    sql fixed
+
+[33mcommit 6e6bf9f378df6b324537d262d5cfa17af262be15[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Nov 13 14:23:30 2023 -0800
+
+    changed db username and password
+
+[33mcommit be8e4784a7540384327cca707397e1a0a588c223[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Nov 13 14:12:38 2023 -0800
+
+    11/13
+
+[33mcommit f0a8f2b6703881ed3e961d952b0861211e95d093[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Nov 13 13:42:28 2023 -0800
+
+    threading
+
+[33mcommit 0f1f7c80e3d30eeb524b60ca647c84a71515b60c[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Nov 13 04:00:19 2023 -0800
+
+    parser complete with batch optimization. still need thread optimization
+
+[33mcommit 54309fa207101f37b14bab846f83ab7b48725fa3[m
+Merge: e6daf72 fe097f9
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sun Nov 12 21:13:51 2023 -0800
+
+    Merge branch 'main' of https://github.com/uci-jherold2-fall23-cs122b/2023-fall-cs122b-garlic-team
+    parser done
+
+[33mcommit e6daf72541e93af25fe0903ab6d0f1c3274b11c4[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sun Nov 12 21:13:34 2023 -0800
+
+    parser completed
+
+[33mcommit fe097f9cf79979da03aef21c36009344f47e0b95[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Sun Nov 12 20:36:25 2023 -0800
+
+    add movie page, front end
+
+[33mcommit 7f7b0ab8e76ebbf3cf893e1583f6f101349d3b0e[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sun Nov 12 01:40:02 2023 -0800
+
+    stored procedures completed
+
+[33mcommit cf39140ea2e4c915a98f73c0777787056719b3c1[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Sun Nov 12 01:38:23 2023 -0800
+
+    Front end modify, project 1
+
+[33mcommit 0211d7103abdb8dc3aab7f4c35745afc134ebf23[m
+Merge: aca96c7 252c767
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Sat Nov 11 13:06:17 2023 -0800
+
+    Merge remote-tracking branch 'origin/main'
+    
+    # Conflicts:
+    #       WebContent/resultPage.css
+
+[33mcommit 252c7673fe5c6d6eddebb0d22259a8ba852dc4c6[m
+Author: JixingGithub <125625653+JixingGithub@users.noreply.github.com>
+Date:   Sat Nov 11 13:05:57 2023 -0800
+
+    Update cart.html
+    
+    updated shopping cart page
+
+[33mcommit 8133983407a422170105ea42573dfb24401fcacc[m
+Author: JixingGithub <125625653+JixingGithub@users.noreply.github.com>
+Date:   Sat Nov 11 13:05:11 2023 -0800
+
+    Update resultPage.css
+    
+    add to cart button in result page, updated shopping cart page
+
+[33mcommit aca96c723f8ba391ac6bdccf9d6648721962ad66[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Sat Nov 11 13:01:20 2023 -0800
+
+    Front end modify, project 1
+
+[33mcommit 409e8dd19ee2dadcc98c6f60c4dea7fb122e4cc0[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sat Nov 11 12:15:13 2023 -0800
+
+    11/11
+
+[33mcommit a85978d5873ed9ccb8f14f6a2daa28954589798a[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sat Nov 11 06:49:58 2023 -0800
+
+    Task 5 half done
+
+[33mcommit d43b12713989e67987e8f38e63686036801667dc[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Fri Nov 10 20:32:02 2023 -0800
+
+    Project 3 Half Complete
+
+[33mcommit 942b0b522ee207212a2501e73bd742058fbf0e7e[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Tue Nov 7 16:04:58 2023 -0800
+
+    Front end modify, project 1
+
+[33mcommit 6fd9889cb289fcba5a204b59c6bec8f514f7a7e1[m
+Author: justin10267 <93513655+justin10267@users.noreply.github.com>
+Date:   Mon Oct 30 21:36:14 2023 -0700
+
+    Update README.md
+
+[33mcommit a4851466e10a9909bdfd20355feaf7a9ec0f81ec[m
+Merge: 1d70cea a92bdf8
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Oct 30 20:36:24 2023 -0700
+
+    Merge branch 'main' of https://github.com/uci-jherold2-fall23-cs122b/2023-fall-cs122b-garlic-team
+
+[33mcommit 1d70cea8627d3c22285c479b764ecac7a694367b[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Oct 30 20:36:09 2023 -0700
+
+    8:36
+
+[33mcommit a92bdf88ba372123da26090e339c69c5a51df470[m
+Author: justin10267 <93513655+justin10267@users.noreply.github.com>
+Date:   Mon Oct 30 20:26:36 2023 -0700
+
+    Update context.xml
+
+[33mcommit d4230013091ea25e3de921eb99e4d6106043af43[m
+Merge: 881a808 32064e4
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Oct 30 20:25:49 2023 -0700
+
+    Merge branch 'main' of https://github.com/uci-jherold2-fall23-cs122b/2023-fall-cs122b-garlic-team
+
+[33mcommit 881a808383505e1c17d0fe4ad0eba196a308c51b[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Oct 30 20:25:43 2023 -0700
+
+    fixed offset
+
+[33mcommit 32064e465babdf7c6ee8c6a3f06a31afc6d9c32f[m
+Merge: a3acbba 7565d9f
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Mon Oct 30 20:06:06 2023 -0700
+
+    Merge remote-tracking branch 'origin/main'
+
+[33mcommit a3acbba832e573dd071f41ea73e60bfb99031878[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Mon Oct 30 20:05:56 2023 -0700
+
+    Front end modify, project 1
+
+[33mcommit 7565d9f3e47a9f21f901029594bf5572f27b00a0[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Oct 30 20:03:25 2023 -0700
+
+    removed fablix_war paths
+
+[33mcommit b933f49e208f5828520665466ee9a1a636bcc4ce[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Oct 30 19:59:56 2023 -0700
+
+    login message
+
+[33mcommit a67298a51b7bb21a1806f8e5d88ea824bac6972b[m
+Merge: 816bf9a 4a2c5d8
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Oct 30 19:54:50 2023 -0700
+
+    Merge branch 'main' of https://github.com/uci-jherold2-fall23-cs122b/2023-fall-cs122b-garlic-team
+
+[33mcommit 816bf9a0806cafa22a447aa6cbec8ab4a7e14c4b[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Oct 30 19:54:45 2023 -0700
+
+    final change
+
+[33mcommit 4a2c5d80fc2d510b4cb68bb4012f976913afef34[m
+Author: justin10267 <93513655+justin10267@users.noreply.github.com>
+Date:   Mon Oct 30 19:46:25 2023 -0700
+
+    Update context.xml
+
+[33mcommit 28f24e65916225081c974af2a8209ed1bf9e2b10[m
+Author: justin10267 <93513655+justin10267@users.noreply.github.com>
+Date:   Mon Oct 30 19:35:44 2023 -0700
+
+    Update README.md
+
+[33mcommit 03d87aeb346cf804a82c02b883a5cbf619f9b750[m
+Merge: 1e2fe15 44a4a77
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Mon Oct 30 19:33:47 2023 -0700
+
+    Merge remote-tracking branch 'origin/main'
+
+[33mcommit 1e2fe15435a9446d06abac535f5215b579b0f124[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Mon Oct 30 19:33:36 2023 -0700
+
+    Front end modify, project 1
+
+[33mcommit 44a4a775e7c427fd5eb1e1368a3f6a3b93602824[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Mon Oct 30 18:24:48 2023 -0700
+
+    final draft of backend
+
+[33mcommit c1ec044a3407b6aad8c2d702ee72675f8d6339f7[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sun Oct 29 23:18:44 2023 -0700
+
+    buy buttons for results
+
+[33mcommit 4bc407e5dda30791110143db4651b5074f820d57[m
+Merge: 2128042 ec9f50c
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sun Oct 29 22:57:22 2023 -0700
+
+    Merge branch 'main' of https://github.com/uci-jherold2-fall23-cs122b/2023-fall-cs122b-garlic-team
+
+[33mcommit ec9f50cde45b383aa39975b6761726b4fd36177a[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Sun Oct 29 22:56:19 2023 -0700
+
+    Front end modify, project 1
+
+[33mcommit 2128042ee76b7fa4804bd3b797791e7f1bf8b2f2[m
+Merge: f9e5cf3 52b7e96
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sun Oct 29 22:11:37 2023 -0700
+
+    Merge branch 'main' of https://github.com/uci-jherold2-fall23-cs122b/2023-fall-cs122b-garlic-team
+
+[33mcommit f9e5cf3b23e80ad4d1ca92668aba044c4cd96bcb[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sun Oct 29 22:11:15 2023 -0700
+
+    everydone but shopping functionality
+
+[33mcommit 52b7e9684db8e288758979eab26001dc2030759f[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Sun Oct 29 22:11:07 2023 -0700
+
+    Front end modify, project 1
+
+[33mcommit ad32602346a9d4b856de2faa652922c09f79c104[m
+Merge: 02298cf b885693
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Sun Oct 29 21:08:27 2023 -0700
+
+    Merge remote-tracking branch 'origin/main'
+
+[33mcommit 02298cf51a8c03a860ad858e5f887593fb70bc77[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Sun Oct 29 21:08:17 2023 -0700
+
+    Front end modify, project 1
+
+[33mcommit b8856937249daabe7aa2cccf99a0bf0bfef1e0bc[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sun Oct 29 21:05:36 2023 -0700
+
+    updated login messages and navbar
+
+[33mcommit 17963ebd52cfc6eef2eab0bb999f96996ca612fa[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sun Oct 29 20:47:02 2023 -0700
+
+    Task 3 Completed
+
+[33mcommit e183125782c1387069146f2e68e9471592a31973[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sun Oct 29 20:20:04 2023 -0700
+
+    Task 2 and half of 3 complete
+
+[33mcommit c3b8429325d2e732a95c28e0cd2a970fcdc54371[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sun Oct 29 19:43:58 2023 -0700
+
+    List HTML, JS, and SERVLET are completely functional
+
+[33mcommit 0b76c8e5dac1bec3ed26cc6c0604e5df211eae66[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Sun Oct 29 17:40:56 2023 -0700
+
+    Front end modify, project 1
+
+[33mcommit ad266212749d696af873db8fde8524c9bb0f73be[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Sun Oct 29 17:39:57 2023 -0700
+
+    Front end modify, project 1
+
+[33mcommit 1830f11ba475808168b3aba2a15f3369f89e9964[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sun Oct 29 16:06:54 2023 -0700
+
+     Need to add previous and next page buttons that dynamically grey out
+
+[33mcommit 599aab1dd64295c4ed5537f99b6d1eee20e616e9[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sun Oct 29 13:56:48 2023 -0700
+
+    List genre, title, and prefix all work now
+
+[33mcommit 8dcc3434b8dc6a0753e1ee5a13647bfb602b63d9[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sun Oct 29 11:39:00 2023 -0700
+
+    ListServlet Beta 1
+
+[33mcommit 4168f7af1d373e4167a6340016306099cd4ac0a8[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Sun Oct 29 00:52:02 2023 -0700
+
+    Front end modify, project 1
+
+[33mcommit 0d6bf77700de854fa4ec9b6b5a7680fb4f7b7dbb[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Sat Oct 28 21:13:28 2023 -0700
+
+    Front end modify, project 1
+
+[33mcommit 93f72ea7ce2a3c507a325793e1e774c790d0526f[m
+Author: JixingGithub <125625653+JixingGithub@users.noreply.github.com>
+Date:   Sat Oct 28 21:17:32 2023 -0700
+
+    Add files via upload
+
+[33mcommit ac903354c9d83171913284dcb7c56dab2b335cc1[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sat Oct 28 01:54:47 2023 -0700
+
+    some work on listservlet
+
+[33mcommit 1f12a17f89023cb8857e6d8013c90fdd46bad11e[m
+Author: JixingGithub <125625653+JixingGithub@users.noreply.github.com>
+Date:   Sat Oct 28 01:08:29 2023 -0700
+
+    Add files via upload
+
+[33mcommit 6da06f2c94812375776e3334cabcd098981a7e43[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Fri Oct 27 23:07:50 2023 -0700
+
+    search forms added to htmls
+
+[33mcommit c20cda618d3e24ebbc86c3fe6ce1cbceba5780ef[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Fri Oct 27 22:41:46 2023 -0700
+
+    main page genres and titles are dynamically generated
+
+[33mcommit c5d81fbf462ae13c3f68c1ce0898568e3ace8ffd[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Fri Oct 27 21:37:53 2023 -0700
+
+    GENRES in main html are now dynamically generated but prefixes are still static
+
+[33mcommit cdde6858c2c0f69a23e9f90123cef5c90cb9ad12[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Thu Oct 26 11:46:08 2023 -0700
+
+    Fixed some logical errors in ListServlet and added more set up for queries.
+
+[33mcommit a3ba2d2bdceaa54c814a755403c8d758527e0cf0[m
+Merge: 2cd8ef1 63d8824
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Wed Oct 25 23:06:31 2023 -0700
+
+    List Servlet Beginning Phase
+
+[33mcommit 2cd8ef18530bbbbac408d27fd0fb7d80cb830823[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Wed Oct 25 18:14:19 2023 -0700
+
+    Login functinality
+
+[33mcommit 63d88242ec4af53c54e624c4f0800820792d098b[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Tue Oct 24 00:24:23 2023 -0700
+
+    Front end modify, project 1
+
+[33mcommit 18a1dce43b24cdd6ada12985d435772e27727427[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Mon Oct 23 21:53:49 2023 -0700
+
+    Front end modify, project 1
+
+[33mcommit e50edd39e4a2ad64fc11481c5757ff2ffc1ee5f8[m
+Merge: e492028 ace5d92
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Mon Oct 23 20:48:26 2023 -0700
+
+    Merge remote-tracking branch 'origin/main'
+
+[33mcommit e492028937359660706f42773d31425de2f9207f[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Mon Oct 23 20:44:58 2023 -0700
+
+    Front end modify, project 1
+
+[33mcommit ace5d92828ba435e8a1c4a596c369b16a817f0ed[m
+Author: justin10267 <93513655+justin10267@users.noreply.github.com>
+Date:   Sun Oct 15 13:52:22 2023 -0700
+
+    Update README.md
+
+[33mcommit 4baa56d3725766eb981b545a2fe54582015b6fd4[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Sun Oct 15 13:06:51 2023 -0700
+
+    Front end modify, project 1
+
+[33mcommit 9f87b3038754bbab6c78f19259583f50c7458ef8[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Sun Oct 15 02:06:32 2023 -0700
+
+    Front end modify, project 1
+
+[33mcommit 3d5bb63405df71e13fe06d062e8532f16534dc77[m
+Merge: 925ff08 bb210a5
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Sun Oct 15 02:06:05 2023 -0700
+
+    Merge remote-tracking branch 'origin/main'
+
+[33mcommit 925ff08513a8eaf3a2ca9a092c3f87b2f85e7c1b[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Sun Oct 15 02:01:27 2023 -0700
+
+    Front end modify, project 1
+
+[33mcommit bb210a5962927cff75ba84b660d2aba70a47eb3b[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sun Oct 15 01:24:15 2023 -0700
+
+    Credentials for Production Machine
+
+[33mcommit 2020c5a2ec13681bf9a8fabfe4b87430288d8317[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Sun Oct 15 00:48:39 2023 -0700
+
+    still requires fixing of html
+
+[33mcommit a2105bca224cccb96d961e61359dded3ca4e9bbc[m
+Author: JixingGithub <bianjixing@gmail.com>
+Date:   Sat Oct 14 22:53:24 2023 -0700
+
+    Front end modify, project 1
+
+[33mcommit 54dec013c07227ec5675db467f1d50ee5c14d119[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Thu Oct 12 23:04:11 2023 -0700
+
+    changed href for navbar to work for AWS website & context xml to use mysql credentials on AWS machine
+
+[33mcommit b716f2432e86a276e75e0106f20333b5ecc80a21[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Thu Oct 12 21:23:44 2023 -0700
+
+    adding sql files
+
+[33mcommit ef019de1802c867d9acba58459829192ac091f28[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Thu Oct 12 21:10:16 2023 -0700
+
+    hyperlinked movies on single star page, HW1 requirements should be done
+
+[33mcommit f3aa1b54d9740782bb29679a3c3dc86a9f0fa825[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Thu Oct 12 20:34:56 2023 -0700
+
+    10/12
+
+[33mcommit f63b564d6a51db0a2eb9d88c6390de19197830c1[m
+Author: justin10267 <opiryg10267@gmail.com>
+Date:   Wed Oct 11 23:11:03 2023 -0700
+
+    missing last step: hyperlinking movies on single star page
