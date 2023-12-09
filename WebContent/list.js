@@ -113,8 +113,8 @@ function createMovieRowHtml(movieData) {
 }
 
 function parseStars(starsString) {
-    // Split the string first by colon, then by commas, while keeping names intact
-    const starPairs = starsString.split(/,(?=(?:[^:]*:[^:]*$))/);
+    // Split the string first by commas, then by colon
+    const starPairs = starsString.split(",");
     return starPairs.map(pair => {
         const [id, name] = pair.split(":");
         return `<a href="single-star.html?id=${id.trim()}">${name.trim()}</a>`;
