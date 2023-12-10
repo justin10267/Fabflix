@@ -28,7 +28,7 @@ public class User {
 
     public User(String username) {
         this.username = username;
-        this.limit = "25";
+        this.limit = "50";
         this.sort = "1";
         this.previousSearchParameters = new HashMap<String, String>();
     }

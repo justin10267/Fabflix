@@ -9,8 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,6 +27,7 @@ public class ListServlet extends HttpServlet {
         }
     }
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        long startTimeTS = System.nanoTime();
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         try (Connection conn = dataSource.getConnection()) {
@@ -55,10 +55,14 @@ public class ListServlet extends HttpServlet {
             int queryLimit = Integer.parseInt(limit) + 1;
             sort = User.getSortQuery(sort);
             String offset = Integer.toString((Integer.parseInt(page) - 1 ) * Integer.parseInt(limit));
+            long startTimeTJ = System.nanoTime();
             PreparedStatement statement = createAppropriateStatement(conn, sessionUser, sort, title, year, director,
                     stars, genre, prefix, queryLimit, offset);
             System.out.println(statement);
             ResultSet rs = statement.executeQuery();
+            long endTimeTJ = System.nanoTime();
+            String elapsedTimeTJ = Long.toString(endTimeTJ - startTimeTJ);
+
             JsonArray jsonArray = processResultSet(rs, queryLimit, out, response);
             boolean isLastPage = jsonArray.size() < queryLimit;
             if (jsonArray.size() == queryLimit) {
@@ -72,7 +76,9 @@ public class ListServlet extends HttpServlet {
             statement.close();
             out.write(jsonResponse.toString());
             response.setStatus(200);
-
+            long endTimeTS = System.nanoTime();
+            String elapsedTimeTS = Long.toString(endTimeTS - startTimeTS);
+            logElapsedTime(String.format("TJ:%s,TS:%s", elapsedTimeTJ, elapsedTimeTS));
         } catch (Exception e) {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("errorMessage", e.getMessage());
@@ -202,5 +208,21 @@ public class ListServlet extends HttpServlet {
             statement.setInt(3, Integer.parseInt(offset));
         }
         return statement;
+    }
+
+    private void logElapsedTime(String logMessage) throws IOException {
+        String contextPath = getServletContext().getRealPath("/");
+        String logFilePath = contextPath + "\\timeLog.txt";
+        File logFile = new File(logFilePath);
+        if (!logFile.exists()) {
+            logFile.createNewFile();
+        }
+        try (FileWriter fw = new FileWriter(logFile, true);
+             BufferedWriter bw = new BufferedWriter(fw);
+             PrintWriter out = new PrintWriter(bw)) {
+            out.println(logMessage);
+        } catch (IOException e) {
+            System.err.println("Error writing to log file: " + e.getMessage());
+        }
     }
 }
