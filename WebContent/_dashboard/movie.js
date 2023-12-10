@@ -2,6 +2,7 @@ let movie_form = $("#movieForm");
 
 function handleMovieResult(resultDataJson) {
     const messageContainer = $("#messageContainer");
+    console.log(resultDataJson)
     const message = resultDataJson.message;
 
     messageContainer.text(message);
