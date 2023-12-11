@@ -60,22 +60,26 @@ public class LoginServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
-//        String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
-        JsonObject responseJsonObject = new JsonObject();
-//        System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
-//        try {
-//            RecaptchaVerifyUtils.verify(gRecaptchaResponse);
-//        } catch (Exception e) {
-//            System.out.println("Recaptcha Failed");
-//            responseJsonObject.addProperty("status", "fail");
-//            request.getServletContext().log("Recaptcha Failed");
-//            responseJsonObject.addProperty("message", "Recaptcha Verification Error: Please do Recaptcha");
-//            System.out.println(responseJsonObject);
-//            out.write(responseJsonObject.toString());
-//            out.close();
-//        }
         String username = request.getParameter("username");
         String password = request.getParameter("password");
+        String bypassRecaptcha = request.getParameter("bypass");
+        JsonObject responseJsonObject = new JsonObject();
+        if (!bypassRecaptcha.equals("true")) {
+            String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+            System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
+            try {
+                RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+            } catch (Exception e) {
+                System.out.println("Recaptcha Failed");
+                responseJsonObject.addProperty("status", "fail");
+                request.getServletContext().log("Recaptcha Failed");
+                responseJsonObject.addProperty("message", "Recaptcha Verification Error: Please do Recaptcha");
+                response.setHeader("loggedIn", "CaptchaFailed");
+                System.out.println(responseJsonObject);
+                out.write(responseJsonObject.toString());
+                out.close();
+            }
+        }
         try (Connection conn = dataSource.getConnection()) {
             String result = verifyCredentials(username, password, conn);
             if (result.equals("Incorrect Password") || result.equals("Incorrect Username") || result.equals("Error")) {
@@ -83,6 +87,7 @@ public class LoginServlet extends HttpServlet {
                 responseJsonObject.addProperty("status", "fail");
                 request.getServletContext().log("Login failed");
                 responseJsonObject.addProperty("message", result);
+                response.setHeader("loggedIn", "False");
             }
             else {
                 String[] userInformation = result.split(",");
@@ -90,6 +95,7 @@ public class LoginServlet extends HttpServlet {
                 request.getSession().setAttribute("user", new User(userInformation[0]));
                 responseJsonObject.addProperty("status", "success");
                 responseJsonObject.addProperty("message", "success");
+                response.setHeader("loggedIn", "True");
             }
         } catch (Exception e) {
             responseJsonObject.addProperty("errorMessage", e.getMessage());

@@ -78,7 +78,7 @@ public class ListServlet extends HttpServlet {
             response.setStatus(200);
             long endTimeTS = System.nanoTime();
             String elapsedTimeTS = Long.toString(endTimeTS - startTimeTS);
-            logElapsedTime(String.format("TJ:%s,TS:%s", elapsedTimeTJ, elapsedTimeTS));
+            logElapsedTime(request, String.format("TJ:%s,TS:%s", elapsedTimeTJ, elapsedTimeTS));
         } catch (Exception e) {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("errorMessage", e.getMessage());
@@ -210,10 +210,13 @@ public class ListServlet extends HttpServlet {
         return statement;
     }
 
-    private void logElapsedTime(String logMessage) throws IOException {
-        String contextPath = getServletContext().getRealPath("/");
+    private void logElapsedTime(HttpServletRequest request, String logMessage) throws IOException {
+        System.out.println("entered function");
+        String contextPath = request.getServletContext().getRealPath("/");
         String logFilePath = contextPath + "\\timeLog.txt";
+        System.out.println(logFilePath);
         File logFile = new File(logFilePath);
+        System.out.println(logFile.getAbsolutePath());
         if (!logFile.exists()) {
             logFile.createNewFile();
         }
