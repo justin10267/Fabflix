@@ -213,7 +213,7 @@ public class ListServlet extends HttpServlet {
     private void logElapsedTime(HttpServletRequest request, String logMessage) throws IOException {
         System.out.println("entered function");
         String contextPath = request.getServletContext().getRealPath("/");
-        String logFilePath = contextPath + "\\timeLog.txt";
+        String logFilePath = contextPath + File.separator + "timeLog.txt";
         System.out.println(logFilePath);
         File logFile = new File(logFilePath);
         System.out.println(logFile.getAbsolutePath());
