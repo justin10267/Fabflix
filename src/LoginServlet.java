@@ -64,7 +64,7 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
         String bypassRecaptcha = request.getParameter("bypass");
         JsonObject responseJsonObject = new JsonObject();
-        if (!bypassRecaptcha.equals("true")) {
+        if (bypassRecaptcha == null) {
             String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
             System.out.println("gRecaptchaResponse=" + gRecaptchaResponse);
             try {
