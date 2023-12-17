@@ -9,10 +9,10 @@
 This substring matching occurs in the SEARCH_QUERY in the ListServlet.
 
 ### Demo video URL
-https://youtu.be/34alaFpLQOQ (Project 1)
-https://youtu.be/Ud1ASciy0-g (Project 2)
-https://youtu.be/L8IfwK66wAs (Project 3)
-https://youtu.be/FS-iLCJ5kPU (Project 4)
+- https://youtu.be/34alaFpLQOQ (Project 1)
+- https://youtu.be/Ud1ASciy0-g (Project 2)
+- https://youtu.be/L8IfwK66wAs (Project 3)
+- https://youtu.be/FS-iLCJ5kPU (Project 4)
 
 ### Files with Prepared Statements
 - DomParser.java
